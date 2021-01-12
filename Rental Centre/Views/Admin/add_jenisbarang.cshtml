@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "add_pagejenisbarang";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-header">Data Baru</div><br />
+                    <div class="row">
+                        <div class="col">
+                            Nama jenis barang
+                            <input class="form-control" type="text" name="nama_jenisbarang" value="" required/>
+                        </div>
+                        <div class="col-4">
+                            Kelompok jenis
+                            <select name="id_kelompokjenis" onchange="changeId()" class="form-control" required>
+                                <option value="">- Pilih kelompok -</option>
+                                @foreach (var item in ViewBag.mskelompokjenis)
+                                {
+                                    <option value="@item.id_kelompokjenis">@item.nama_kelompokjenis</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br />
+                    Deskripsi
+                    <textarea class="form-control" name="deskripsi"></textarea>
+                    <br />
+                    <a href="page_jenisbarang" class="btn btn-secondary">Kembali</a>
+                    <input class="btn btn-warning float-right" type="submit" name="submit" value="Simpan data" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

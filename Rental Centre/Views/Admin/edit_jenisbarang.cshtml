@@ -1,0 +1,50 @@
+﻿@model Rental_Centre.Models.msjenisbarang
+
+@{
+    ViewBag.Title = "edit_jenisbarang";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-header">Data Baru</div><br />
+                    <div class="row">
+                        <input type="hidden" name="id_jenisbarang" value="@Model.id_jenisbarang" />
+                        <div class="col">
+                            Nama jenis barang
+                            <input class="form-control" type="text" name="nama_jenisbarang" value=@Model.nama_jenisbarang required />
+                        </div>
+                        <div class="col-4">
+                            Kelompok jenis
+                            <select name="id_kelompokjenis" onchange="changeId()" class="form-control" required>
+                                <option value="">- Pilih kelompok -</option>
+                                @foreach (var item in ViewBag.mskelompokjenis)
+                                {
+                                    if (item.id_kelompokjenis == Model.id_kelompokjenis)
+                                    {
+                                        <option selected value="@item.id_kelompokjenis">@item.nama_kelompokjenis</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.id_kelompokjenis">@item.nama_kelompokjenis</option>
+                                    }
+
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br />
+                    Deskripsi
+                    <textarea class="form-control" name="deskripsi">@Model.deskripsi</textarea>
+                    <br />
+                    <a href="page_jenisbarang" class="btn btn-secondary">Kembali</a>
+                    <input class="btn btn-warning float-right" type="submit" name="submit" value="Perbarui data" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

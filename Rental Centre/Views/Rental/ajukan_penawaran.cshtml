@@ -1,0 +1,256 @@
+﻿@model Rental_Centre.Models.msbarang
+
+@{
+    ViewBag.Title = "kelola_barang";
+    ViewBag.Profile = "undraw_profile_2.svg";
+    ViewBag.Nama_user = "Rental 1";
+    ViewBag.Toko_user = "Toko 1";
+
+    ViewBag.msjenisbarang = ViewBag.msjenisbarang;
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<div class="container">
+    <div id="divAdd">
+
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header"></div>
+                    @using (Html.BeginForm())
+                    {
+                        <div class="card-body">
+                            <h5><span class="fa fa-tag float-md-right"></span> Barang baru</h5>
+
+                            <select class="form-control" onchange="changeJenisBarang()" id="ddlKelompokJenis" required>
+                                <option disabled class="form-control" selected value="">Pilih Kelompok Jenis</option>
+                                @foreach (var data in ViewBag.mskelompokjenis)
+                                {
+                                    <option class="form-control" value="@data.id_kelompokjenis">@data.nama_kelompokjenis</option>
+                                }
+                            </select>
+                            <br />
+                            <select class="form-control" id="ddljenisbarang" required>
+                                <option disabled selected value="" class="form-control">Pilih Jenis Barang</option>
+                                @foreach (var data in ViewBag.msjenisbarang)
+                                {
+                                    <option class="form-control" id="jenisbarang_@data.id_kelompokjenis" value="@data.id_jenisbarang" style="display:none">@data.nama_jenisbarang</option>
+                                }
+                            </select>
+                            @Html.HiddenFor(model => model.id_jenisbarang)
+                            <br />
+                            @*<input type="text" class="form-control" id="inama_barang" placeholder="Judul" />*@
+                            @Html.EditorFor(model => model.nama_barang, new { htmlAttributes = new { @onblur = "preview()", @required ="required", @class = "form-control", @type = "text", @placeholder = "Judul" } })
+                            <br />
+                            <div class="row">
+                                <div class="col-8">
+                                    <input required type="text" value="Rp. " class="form-control" onblur="preview()" id="iharga_sewa" placeholder="Harga sewa" onkeyup="this.value = formatCurrency(this.value,'')" />
+                                    @Html.HiddenFor(model => model.harga_sewa)
+                                </div>
+                                <div class="col">
+                                    @*<input type="number" class="form-control" id="istok_barang" placeholder="Stok" />*@
+                                    @Html.EditorFor(model => model.stok_barang, new { htmlAttributes = new { @onblur = "preview()", @required ="required", @type = "number", @class = "form-control", @placeholder = "Stok" } })
+                                </div>
+                            </div>
+                            <br />
+                            <textarea type="text" required multiple rows="3" class="form-control form-mu" id="ideskripsi_barang" placeholder="Deskripsi barang" onblur="preview()"></textarea>
+                            @Html.HiddenFor(model => model.deskripsi_barang)
+                            <br />
+                            @*<input type="file" class="form-control-file" id="ilink_gambar" placeholder="Gambar produk" />*@
+                            @Html.EditorFor(model => model.link_gambar, new { htmlAttributes = new { @onblur="preview()", @required="required", @type = "file", @class = "form-control-file", @placeholder = "Gambar produk" } })
+                            <hr />
+
+                            <div class="row">
+                                <div class="col">
+                                    
+                                    <a class="btn btn-primary" href="page_penawaran?id=1">Batal</a>
+                                    
+                                    <button class="btn btn-primary float-right" id="btnSubmit" onclick="SubmitData()">Ajukan tawaran</button>
+                                    @*<button class="btn btn-warning float-right" onblur="preview()">Preview Penawaran</button>*@
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col align-self-center" id="_PREVIEW">
+                <div class="card">
+                    <div class="card-header">Preview</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-2">
+
+                                <img id="nlink_gambar" src="~/Content/RoleAdmin/img/Canon_1.jpg" class="card-img-top" alt="...">
+
+                            </div>
+                            <div class="col">
+
+                                <h5 style="color:black"><b><div id="nnama_barang">Kamera Nicon</div></b></h5>
+                                <p style=" color:black;line-height:1px">
+                                    <small>
+                                        <div id="nharga_sewa">
+                                            Rp. 75.000/hari
+                                        </div>
+                                    </small>
+                                </p>
+                                <p style="line-height:1px">
+                                    <small>
+                                        Stok Tersedia · Diperbarui @DateTime.Now.ToString("dd/MM/yyyy")
+                                    </small>
+                                </p>
+                                <p style="line-height:1px">
+                                    <small>
+                                        10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
+                                        ·
+                                        3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
+                                    </small>
+                                </p>
+
+                                <p>
+                                    <small>
+                                        <div id="ndeskripsi_barang">
+                                            Dropdown menus can be placed in the card header in order to extend the functionality
+                                            of a basic card. In this dropdown card example, the Font Awesome vertical ellipsis
+                                            icon in the card header can be clicked on in order to toggle a dropdown menu.
+                                        </div>
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function() {
+        $("#link_gambar").change(function () {
+            alert('lala');
+            var fd = new FormData();
+            var gambar = document.getElementById("link_gambar");
+            if (gambar == null) {
+                alert('hm');
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Rental/uploadFile');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    alert(xhr.responseText);
+                }
+            }
+        });
+    });
+
+    function changeJenisBarang(){
+        var id = document.getElementById("ddlKelompokJenis").value;
+        var totalkelompok = @ViewBag.totalkelompokjenis;
+        var data;
+        
+        for (i = 1; i <= totalkelompok; i++) {
+            data = document.querySelectorAll("#jenisbarang_" + i);
+            for (g = 0; g < data.length; g++) {
+                data[g].style.display = "none";
+            }
+        }
+        //erase dlljenisbarang
+        document.getElementById("id_jenisbarang").selectedIndex = 0;
+
+        data = document.querySelectorAll("#jenisbarang_" + id);
+        for (g = 0; g < data.length; g++) {
+            data[g].style.display = "block";
+        }
+    }
+
+    function formatCurrency(value, prefix) {
+
+        var number_string = value.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+
+    }
+
+    function preview() {
+
+
+        // Get Data
+        var nama_barang = document.getElementById("nama_barang").value;
+        var harga_sewa = document.getElementById("iharga_sewa").value;
+        var link_gambar = document.getElementById("link_gambar").value;
+        var deskripsi_barang = document.getElementById("ideskripsi_barang").value;
+        {
+        //if (nama_barang == "" || harga_sewa == "" || link_gambar == "" || id_jenisbarang == "") {
+        //    if (nama_barang == "") {
+        //        alert("Judul belum didefinisikan");
+        //        return;
+        //    }
+        //    if (harga_sewa == "") {
+        //        alert("Harga belum didefinisikan");
+        //        return;
+        //    }
+        //    if (link_gambar == "") {
+        //        alert("Belum ada gambar yang dipilih");
+        //        return;
+        //    }
+        //    if (id_jenisbarang == "") {
+        //        alert("Belum jenis yang dipilih");
+        //        return;
+        //    }
+        //    return;
+        //}
+        }
+        document.getElementById("nlink_gambar").setAttribute("src", "");
+        document.getElementById("nnama_barang").innerHTML = "";
+        document.getElementById("nharga_sewa").innerHTML = "";
+        document.getElementById("ndeskripsi_barang").innerHTML = "";
+
+
+        link_gambar = link_gambar.split("\\");
+
+        //Set preview
+        document.getElementById("nnama_barang").innerHTML = nama_barang;
+        document.getElementById("nharga_sewa").innerHTML = harga_sewa;
+        document.getElementById("ndeskripsi_barang").innerHTML = deskripsi_barang;
+        document.getElementById("nlink_gambar").setAttribute("src", "http://localhost:51457/Content/Temp/" + link_gambar[2]);
+
+        //alert(document.getElementById("harga_sewa").value);
+
+        //document.getElementById("btnSubmit").disabled = false;
+    }
+
+    function SubmitData() {
+        var harga_sewa = document.getElementById("iharga_sewa").value;
+        var deskripsi_barang = document.getElementById("ideskripsi_barang").value;
+
+
+        //Set model
+        document.getElementById("deskripsi_barang").value = deskripsi_barang;
+        document.getElementById("harga_sewa").value = harga_sewa.replace(/[^,\d]/g, '').toString(),
+            split = harga_sewa.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        document.getElementById("id_jenisbarang").value = document.getElementById("ddljenisbarang").value;
+        alert(document.getElementById("id_jenisbarang").value);
+    }
+</script>

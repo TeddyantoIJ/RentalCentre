@@ -1,0 +1,205 @@
+﻿@model IEnumerable<Rental_Centre.Models.msjenisbarang>
+
+@{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    ViewBag.Title = "page_kelompokjenisbarang";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+
+<h2>Data Jenis Barang</h2>
+
+
+<div id="view">
+    <div class="row">
+        <div class="col-2">
+            <p>
+                <a class="btn btn-primary" href="add_jenisbarang">Tambah Data</a>
+            </p>
+        </div>
+        <div class="col">
+            @*<select class="form-control" id="ddlkelompokjenis" onchange="ubah(@ViewBag.jumlahkelompok)">
+                <option id="0" value="0">SEMUA</option>
+                @foreach (var item in ViewBag.mskelompokjenis)
+                {
+                    <option id="@item.id_kelompokjenis" value="@item.id_kelompokjenis">@item.nama_kelompokjenis</option>
+                }
+            </select>*@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @{ int i = 1;}
+            <div class="table-responsive">
+               <table class="table table-striped">
+            <tr>
+                <th>
+                    No.
+                </th>
+                <th>
+                    Nama Jenis
+                </th>
+                <th>
+                    Deskripsi
+                </th>
+                <th>
+                    Pembuat
+                </th>
+                <th>
+                    Tanggal Pembuatan
+                </th>
+                <th>
+                    Diperbarui
+                </th>
+                <th>
+                    Tanggal Pembaruan
+                </th>
+                <th>Aksi</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                if (item.status == 1)
+                {
+            <tr id="d_@item.id_kelompokjenis">
+                <td>@i.</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nama_jenisbarang)
+                </td>
+                <td>
+                    @{ if (item.deskripsi == "")
+                        {
+                            <p>-</p>
+                        }
+                        else
+                        {
+                            @item.deskripsi
+                        }
+                    }
+                </td>
+                <td>
+                    @foreach (var admin in ViewBag.msadmin)
+                    {
+                        if (@item.creaby == @admin.id_admin)
+                        {
+                            @admin.nama_admin;
+                            break;
+                        }
+                    }
+                </td>
+                <td>
+                    @item.creadate.Value.ToString("dd/MMM/yyyy")
+                </td>
+                <td>
+                    @{ bool found = false;}
+                    @foreach (var admin in ViewBag.msadmin)
+                    {
+                        if (@item.modiby == @admin.id_admin)
+                        {
+                            @admin.nama_admin;
+                            found = true;
+                            break;
+                        }
+                    }
+                    @{ if (found == false)
+                        {
+                            <p>-</p>
+                        }
+                    }
+
+                </td>
+                <td>
+                    @{if (item.modidate != null)
+                        {
+                            @item.modidate.Value.ToString("dd/MM/yyyy")
+                        }
+                        else
+                        {
+                            <p>-</p>
+                        }
+                    }
+                </td>
+                <td>
+                    <div class="row">
+                        <div class="col">
+                            <a href="edit_jenisbarang?id=@item.id_jenisbarang"><span class="fa fa-edit"></span></a> |
+                            <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_jenisbarang','@item.deskripsi')"><span class="fa fa-info"></span></a> |
+                            <a onclick="return confirm('Yakin akan menghapus jenis ?')"
+                               href="hapus_jenisbarang?id=@item.id_jenisbarang"><span class="fa fa-trash"></span></a>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+                    i++;
+                }
+            }
+
+        </table>
+    </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function setDetail(a,b) {
+        var header = a;
+        var body = b;
+
+        document.getElementById("detail_header").innerHTML = "";
+        document.getElementById("detail_body").innerHTML = "";
+
+        document.getElementById("detail_header").innerHTML = header;
+        document.getElementById("detail_body").innerHTML = body;
+
+
+    }
+
+    function ubah(jumlahkelompok) {
+        var n = document.getElementById("ddlkelompokjenis").value;
+        if (n == 0) {
+            for (i = 1; i <= jumlahkelompok; i++) {
+                var x = document.querySelectorAll("#d_" + i);
+                for (g = 0; g < x.length; g++) {
+                    x[g].hidden = false;
+                }
+            }
+        } else {
+            for (i = 1; i <= jumlahkelompok; i++) {
+                var x = document.querySelectorAll("#d_" + i);
+                for (g = 0; g < x.length; g++) {
+                    x[g].hidden = true;
+                }
+            }
+            var x = document.querySelectorAll("#d_" + n);
+            for (g = 0; g < x.length; g++) {
+                x[g].hidden = false;
+            }
+        }
+        
+    }
+</script>

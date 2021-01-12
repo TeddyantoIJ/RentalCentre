@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="RCDBModelStoreContainer" CdmEntityContainer="RCDBEntities">
+    <EntitySetMapping Name="mskelompokjenis">
+      <EntityTypeMapping TypeName="RCDBModel.mskelompokjeni">
+        <MappingFragment StoreEntitySet="mskelompokjenis">
+          <ScalarProperty Name="id_kelompokjenis" ColumnName="id_kelompokjenis" />
+          <ScalarProperty Name="nama_kelompokjenis" ColumnName="nama_kelompokjenis" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="creaby" ColumnName="creaby" />
+          <ScalarProperty Name="creadate" ColumnName="creadate" />
+          <ScalarProperty Name="modiby" ColumnName="modiby" />
+          <ScalarProperty Name="modidate" ColumnName="modidate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="mskodepos">
+      <EntityTypeMapping TypeName="RCDBModel.mskodepos">
+        <MappingFragment StoreEntitySet="mskodepos">
+          <ScalarProperty Name="id_kodepos" ColumnName="id_kodepos" />
+          <ScalarProperty Name="kodepos" ColumnName="kodepos" />
+          <ScalarProperty Name="kelurahan" ColumnName="kelurahan" />
+          <ScalarProperty Name="kecamatan" ColumnName="kecamatan" />
+          <ScalarProperty Name="kota" ColumnName="kota" />
+          <ScalarProperty Name="provinsi" ColumnName="provinsi" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="msprovinsis">
+      <EntityTypeMapping TypeName="RCDBModel.msprovinsi">
+        <MappingFragment StoreEntitySet="msprovinsi">
+          <ScalarProperty Name="id_provinsi" ColumnName="id_provinsi" />
+          <ScalarProperty Name="nama_provinsi" ColumnName="nama_provinsi" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="msbarangs">
+      <EntityTypeMapping TypeName="RCDBModel.msbarang">
+        <MappingFragment StoreEntitySet="msbarang">
+          <ScalarProperty Name="modidate" ColumnName="modidate" />
+          <ScalarProperty Name="modiby" ColumnName="modiby" />
+          <ScalarProperty Name="creadate" ColumnName="creadate" />
+          <ScalarProperty Name="creaby" ColumnName="creaby" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="link_gambar" ColumnName="link_gambar" />
+          <ScalarProperty Name="deskripsi_barang" ColumnName="deskripsi_barang" />
+          <ScalarProperty Name="stok_barang" ColumnName="stok_barang" />
+          <ScalarProperty Name="harga_sewa" ColumnName="harga_sewa" />
+          <ScalarProperty Name="nama_barang" ColumnName="nama_barang" />
+          <ScalarProperty Name="id_rental" ColumnName="id_rental" />
+          <ScalarProperty Name="id_jenisbarang" ColumnName="id_jenisbarang" />
+          <ScalarProperty Name="id_barang" ColumnName="id_barang" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RCDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="mskelompokjeni">
+    <Key>
+      <PropertyRef Name="id_kelompokjenis" />
+    </Key>
+    <Property Name="id_kelompokjenis" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nama_kelompokjenis" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="creaby" Type="Int32" />
+    <Property Name="creadate" Type="DateTime" Precision="3" />
+    <Property Name="modiby" Type="Int32" />
+    <Property Name="modidate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="mskodepos">
+    <Key>
+      <PropertyRef Name="id_kodepos" />
+    </Key>
+    <Property Name="id_kodepos" Type="Int32" Nullable="false" />
+    <Property Name="kodepos" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="kelurahan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="kecamatan" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="kota" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="provinsi" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="msprovinsi">
+    <Key>
+      <PropertyRef Name="id_provinsi" />
+    </Key>
+    <Property Name="id_provinsi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nama_provinsi" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityContainer Name="RCDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="mskelompokjenis" EntityType="Self.mskelompokjeni" />
+    <EntitySet Name="mskodepos" EntityType="Self.mskodepos" />
+    <EntitySet Name="msprovinsis" EntityType="Self.msprovinsi" />
+    <EntitySet Name="msbarangs" EntityType="RCDBModel.msbarang" />
+  </EntityContainer>
+  <EntityType Name="msbarang">
+    <Key>
+      <PropertyRef Name="id_barang" />
+    </Key>
+    <Property Name="id_barang" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="id_jenisbarang" Type="Int32" />
+    <Property Name="id_rental" Type="Int32" />
+    <Property Name="nama_barang" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="harga_sewa" Type="Int32" />
+    <Property Name="stok_barang" Type="Int32" />
+    <Property Name="deskripsi_barang" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="link_gambar" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="creaby" Type="Int32" />
+    <Property Name="creadate" Type="DateTime" Precision="3" />
+    <Property Name="modiby" Type="Int32" />
+    <Property Name="modidate" Type="DateTime" Precision="3" />
+  </EntityType>
+</Schema>

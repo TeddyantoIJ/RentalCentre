@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="RCDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="msbarang">
+    <Key>
+      <PropertyRef Name="id_barang" />
+    </Key>
+    <Property Name="id_barang" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id_jenisbarang" Type="int" />
+    <Property Name="id_rental" Type="int" />
+    <Property Name="nama_barang" Type="varchar" MaxLength="50" />
+    <Property Name="harga_sewa" Type="int" />
+    <Property Name="stok_barang" Type="int" />
+    <Property Name="deskripsi_barang" Type="varchar(max)" />
+    <Property Name="link_gambar" Type="varchar(max)" />
+    <Property Name="status" Type="int" />
+    <Property Name="creaby" Type="int" />
+    <Property Name="creadate" Type="datetime" />
+    <Property Name="modiby" Type="int" />
+    <Property Name="modidate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="msjenisbarang">
+    <Key>
+      <PropertyRef Name="id_jenisbarang" />
+    </Key>
+    <Property Name="id_jenisbarang" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="id_kelompokjenis" Type="int" />
+    <Property Name="nama_jenisbarang" Type="varchar" MaxLength="50" />
+    <Property Name="status" Type="int" />
+    <Property Name="creaby" Type="int" />
+    <Property Name="creadate" Type="datetime" />
+    <Property Name="modiby" Type="int" />
+    <Property Name="modidate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="mskelompokjenis">
+    <Key>
+      <PropertyRef Name="id_kelompokjenis" />
+    </Key>
+    <Property Name="id_kelompokjenis" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nama_kelompokjenis" Type="varchar" MaxLength="50" />
+    <Property Name="status" Type="int" />
+    <Property Name="creaby" Type="int" />
+    <Property Name="creadate" Type="datetime" />
+    <Property Name="modiby" Type="int" />
+    <Property Name="modidate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="mskodepos">
+    <Key>
+      <PropertyRef Name="id_kodepos" />
+    </Key>
+    <Property Name="id_kodepos" Type="int" Nullable="false" />
+    <Property Name="kodepos" Type="varchar" MaxLength="5" />
+    <Property Name="kelurahan" Type="varchar" MaxLength="50" />
+    <Property Name="kecamatan" Type="varchar" MaxLength="50" />
+    <Property Name="kota" Type="varchar" MaxLength="50" />
+    <Property Name="provinsi" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="msprovinsi">
+    <Key>
+      <PropertyRef Name="id_provinsi" />
+    </Key>
+    <Property Name="id_provinsi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nama_provinsi" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityContainer Name="RCDBModelStoreContainer">
+    <EntitySet Name="msbarang" EntityType="Self.msbarang" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="msjenisbarang" EntityType="Self.msjenisbarang" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="mskelompokjenis" EntityType="Self.mskelompokjenis" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="mskodepos" EntityType="Self.mskodepos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="msprovinsi" EntityType="Self.msprovinsi" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

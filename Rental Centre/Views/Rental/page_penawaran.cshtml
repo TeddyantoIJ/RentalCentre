@@ -1,0 +1,266 @@
+﻿
+@{
+
+    ViewBag.Title = "Page 2";
+    ViewBag.Profile = "undraw_profile_2.svg";
+    ViewBag.Nama_user = "Rental 1";
+    ViewBag.Toko_user = "Toko 1";
+
+    ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
+    ViewBag.msjenisbarang = ViewBag.msjenisbarang;
+    ViewBag.msbarang = ViewBag.msbarang;
+
+
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div id="headerjenisbarang_0" class="card border-left-primary shadow h-100 py-2" style="cursor:pointer" onclick="changeDataKelompok(0)">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Semua jenis
+                                <div id="semua"></div>
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">$0</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @foreach (var data in ViewBag.msjenisbarang)
+        {
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div id="headerjenisbarang_@data.id_jenisbarang" class="card border-left-secondary shadow h-100 py-2" style="cursor:pointer" onclick="changeDataKelompok(@data.id_jenisbarang)">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    @data.nama_jenisbarang
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">$0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-md-6 mb-4">
+            <form action="~/Rental/ajukan_penawaran">
+                <button class="btn btn-primary float-right"><span class="fa fa-plus-circle"></span> Ajukan produk sewa baru</button>
+            </form>
+        </div>
+    </div>
+    <!-- CARD PENAWARAN-->
+    <div class="row" hidden>
+        <!-- Dropdown Card Example -->
+        <div class="col">
+            <div class="card shadow mb-4">
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="dropdown no-arrow float-right">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                             aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Kelola penawaran</div>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Perbarui</a>
+                            <a class="dropdown-item" href="#">Hapus</a>
+
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <img src="~/Content/RoleAdmin/img/Canon_1.jpg" class="card-img-top" alt="...">
+                        </div>
+                        <div class="col">
+
+                            <h5 style="color:black"><b>Kamera Canon</b></h5>
+                            <p style=" color:black;line-height:1px">
+                                <small>
+                                    Rp 75.000/hari
+                                </small>
+                            </p>
+                            <p style="line-height:1px">
+                                <small>
+                                    Stok Tersedia · Diperbarui @DateTime.Now.ToString("dd/MM/yyyy")
+                                </small>
+                            </p>
+                            <p style="line-height:1px">
+                                <small>
+                                    10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
+                                    ·
+                                    3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
+                                </small>
+                            </p>
+
+                            <p>
+                                <small>
+                                    Dropdown menus can be placed in the card header in order to extend the functionality
+                                    of a basic card. In this dropdown card example, the Font Awesome vertical ellipsis
+                                    icon in the card header can be clicked on in order to toggle a dropdown menu.
+                                </small>
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @foreach (var data in ViewBag.msbarang)
+    {
+        if (data.status == 1)
+        {
+        <div class="row" id="jenisbarang_@data.id_jenisbarang">
+            <div class="col">
+                <!-- Dropdown Card Example -->
+                <div class="card shadow mb-4">
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="dropdown no-arrow float-right">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                 aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Kelola penawaran</div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="edit_penawaran?id=@data.id_barang">Perbarui</a>    
+                                <a class="dropdown-item" href="hapus_penawaran?id=@data.id_barang" onclick="return confirm('Yakin akan menghapus produk?')">Hapus</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                <img src="@data.link_gambar" class="card-img-top" alt="...">
+                            </div>
+                            <div class="col">
+
+                                <h5 style="color:black"><b>@data.nama_barang</b></h5>
+                                <p style=" color:black;line-height:1px">
+                                    <small>
+                                        @{
+                                            string harga = String.Format("{0:c}", data.harga_sewa);
+                                        }
+                                        Rp @harga.Replace("Rp","")/hari
+                                    </small>
+                                </p>
+                                <p style="line-height:1px">
+                                    <small>
+                                        Stok Tersedia · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
+                                    </small>
+                                </p>
+                                <p style="line-height:1px">
+                                    <small>
+                                        10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
+                                        ·
+                                        3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
+                                    </small>
+                                </p>
+
+                                <p>
+                                    <small>
+                                        @data.deskripsi_barang
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        }
+
+
+    }
+
+
+</div>
+<!-- INFO INFO -->
+
+<div class="modal fade" id="infoSewa" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">Info Penyewa <span class="fa fa-window-close" data-dismiss="modal" style="cursor:pointer"></span></div>
+            <div class="modal-body">
+                <p>Adalah jumlah banyaknya pelanggan yang sudah menyewa produk milik anda</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="infoTayangan" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">Info Tayangan <span class="fa fa-window-close" data-dismiss="modal" style="cursor:pointer"></span></div>
+            <div class="modal-body">
+                <p>Adalah jumlah banyaknya pelanggan yang melihat produk milik anda dalam kurun waktu 7 hari</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPT -->
+<script >
+    function changeDataKelompok(data) {
+        
+        var totalbarang = @ViewBag.totalbarang;
+        var totaljenis = @ViewBag.totaljenisbarang;
+        
+        if (data == 0) {
+            for (i = 1; i <= totaljenis; i++) {
+                x = document.querySelectorAll("#jenisbarang_" + i);
+                y = document.querySelectorAll("#headerjenisbarang_" + i);                
+                for (g = 0; g < x.length; g++) {
+                    x[g].style.display = "block";
+                }
+                for (g = 0; g < y.length; g++) {
+                    y[g].className = "card border-left-secondary shadow h-100 py-2";
+                }
+            }
+            document.getElementById("headerjenisbarang_0").className = "card border-left-primary shadow h-100 py-2";
+        } else {
+            for (i = 0; i <= totaljenis; i++) {
+                y = document.querySelectorAll("#headerjenisbarang_" + i);
+                for (g = 0; g < y.length; g++) {
+                    y[g].className = "card border-left-secondary shadow h-100 py-2";
+                }
+            }
+            document.getElementById("headerjenisbarang_" + data).className = "card border-left-primary shadow h-100 py-2";
+            for (i = 1; i <= totaljenis; i++) {
+                x = document.querySelectorAll("#jenisbarang_" + i);
+                if (i == data) {
+                    for (g = 0; g < x.length; g++) {
+                        x[g].style.display = "block";
+                    }
+                } else {
+                    for (g = 0; g < x.length; g++) {
+                        x[g].style.display = "none";
+                    }
+                }
+
+                
+            }
+        }
+    }
+</script>
