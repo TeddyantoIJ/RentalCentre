@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    ViewBag.Title = "add_provinsi";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+<br />
+<form action="add_provinsi" method="post">
+    <div id="add">
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header">
+                    Tambah data
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col">
+                        Nama Provinsi
+                        <input type="text" name="nama_provinsi" value="" placeholder="Ketik di sini" class="form-control" required />
+                    </div>
+                </div>
+                <br />
+                <a class="btn btn-secondary" href="page_provinsi">Kembali</a>
+                <input type="submit" id="btnInsert" name="btnInsert" value="Tambah data" class="btn btn-warning float-right" />
+            </div>
+        </div>
+    </div>
+</form>

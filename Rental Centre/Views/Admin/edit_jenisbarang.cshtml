@@ -1,6 +1,8 @@
 ﻿@model Rental_Centre.Models.msjenisbarang
 
 @{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
     ViewBag.Title = "edit_jenisbarang";
     Layout = "~/Views/Shared/_AdminTemplate.cshtml";
 }

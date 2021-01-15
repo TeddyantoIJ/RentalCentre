@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Rental_Centre.Models.msprovinsi>
+
+@{
+    ViewBag.Title = "page_provinsi";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<div id="view">
+    <div class="row">
+        <div class="col-2">
+            <p>
+                <a class="btn btn-primary" href="add_provinsi">Tambah Data</a>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @{ int i = 1;}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            Nama Provinsi
+                        </th>
+                        <th>Aksi</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr id="d_@item.id_provinsi">
+                            <td>@i.</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.nama_provinsi)
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="edit_provinsi?id=@item.id_provinsi"><span class="fa fa-edit"></span></a> |
+                                        <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_provinsi','@item.nama_provinsi')"><span class="fa fa-info"></span></a> |
+                                        <a onclick="return confirm('Yakin akan menghapus jenis ?')"
+                                           href="hapus_provinsi?id=@item.id_provinsi"><span class="fa fa-trash"></span></a>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        i++;
+
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- Modal -->
+
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDetail(a, b) {
+        var header = a;
+        var body = b;
+
+        document.getElementById("detail_header").innerHTML = "";
+        document.getElementById("detail_body").innerHTML = "";
+
+        document.getElementById("detail_header").innerHTML = header;
+        document.getElementById("detail_body").innerHTML = body;
+
+
+    }
+</script>

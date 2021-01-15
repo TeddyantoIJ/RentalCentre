@@ -1,0 +1,54 @@
+﻿@model Rental_Centre.Models.msadmin
+@{
+    ViewBag.Title = "hapus_admin";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<form action="hapus_admin" method="post">
+    <div class="row">
+        <div class="col-2">
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col">
+                            <center>
+                                <b style="color:red">Peringatan!</b><br />
+                                <p style="color:black">Dengan menghapus akun anda tidak bisa melakukan login lagi</p>
+                            </center>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="password" name="password" value="" class="form-control" placeholder="Password" required/>
+                        </div>
+                        <div class="col">
+                            <input type="password" name="ipassword" value="" class="form-control" placeholder="Verifikasi Password" required/>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col">
+                            <p>Masukkan kata / kalimat berikut "hapus @Model.username"</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+
+                            <input type="text" name="input" value="" placeholder="..." class="form-control" required/>
+                        </div>
+                        <div class="col">
+                            <input type="hidden" name="id_admin" value="@Model.id_admin" />
+                            <input type="submit" name="btnSubmit" value="HAPUS" class="btn btn-danger float-left" style="border-radius:0" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2">
+
+        </div>
+    </div>
+</form>

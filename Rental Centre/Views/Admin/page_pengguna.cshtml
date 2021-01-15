@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    ViewBag.Title = "page_pengguna";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<br />
+<div id="view">
+    <div id="viewAdmin">
+        <a href="add_admin" class="btn btn-primary">Tambah Data</a>
+        <br />
+        <br />
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Username</th>
+                        <th>Nama pengguna</th>
+                        <th>Jenis kelamin</th>
+                        <th>Email</th>
+                        <th>Tempat lahir</th>
+                        <th>Tanggal lahir</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1;}
+                    @foreach (var item in ViewBag.msadmin)
+                    {
+                        if(@item.status == 1)
+                        {
+                            <tr>
+                                <td>@i.</td>
+                                <td>@item.username</td>
+                                <td>@item.nama_admin</td>
+                                @{ if (item.jenis_kelamin == 1)
+                                    {
+                                        <td>Laki-laki</td>
+                                    }
+                                    else
+                                    {
+                                        <td>Perempuan</td>
+                                    }
+                                }
+                                <td>@item.email</td>
+                                <td>@item.tempat_lahir</td>
+                                <td>@item.tgl_lahir.ToString("dd/MMM/yyyy")</td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col">
+                                            <a href="edit_admin?id=@item.id_admin"><span class="fa fa-edit"></span></a> |
+                                            <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_admin')"><span class="fa fa-info"></span></a> |
+                                            <a onclick="return confirm('Yakin akan menghapus ?')"
+                                               href="hapus_admin?id=@item.id_admin"><span class="fa fa-trash"></span></a>
+                                        </div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                            i++;
+                        }
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDetail(a) {
+        var header = a;
+        var body = a;
+
+        document.getElementById("detail_header").innerHTML = "";
+        document.getElementById("detail_body").innerHTML = "";
+
+        document.getElementById("detail_header").innerHTML = header;
+        document.getElementById("detail_body").innerHTML = body;
+
+
+    }
+</script>

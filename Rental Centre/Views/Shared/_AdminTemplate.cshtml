@@ -125,12 +125,12 @@
                 <div id="master" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">rekening</h6>
-                        <a class="collapse-item" href="page_kelompokjenisbarang">Kelompok jenis barang</a>
-                        <a class="collapse-item" href="page_jenisbarang">Jenis barang</a>
-                        <a class="collapse-item" href="page_barang">Barang sewa</a>
-                        <a class="collapse-item" href="page_pengguna">Pengguna</a>
-                        <a class="collapse-item" href="page_provinsi">Provinsi</a>
-                        <a class="collapse-item" href="page_kodepos">Kodepos</a>
+                        <a class="collapse-item" href="@Url.Action("page_kelompokjenisbarang", "Admin")">Kelompok jenis barang</a>
+                        <a class="collapse-item" href="@Url.Action("page_jenisbarang", "Admin")">Jenis barang</a>
+                        <a class="collapse-item" href="@Url.Action("page_barang", "Admin")">Barang sewa</a>
+                        <a class="collapse-item" href="@Url.Action("page_pengguna", "Admin")">Pengguna</a>
+                        <a class="collapse-item" href="@Url.Action("page_provinsi", "Admin")">Provinsi</a>
+                        <a class="collapse-item" href="@Url.Action("page_kodepos", "Admin")">Kodepos</a>
                     </div>
                 </div>
             </li>
@@ -149,10 +149,10 @@
                 <div id="profil" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">profil</h6>
-                        <a class="collapse-item" href="#">Profil saya</a>
-                        <a class="collapse-item" href="#">Ubah profil akun</a>
-                        <a class="collapse-item" href="#">Ubah password akun</a>
-                        <a class="collapse-item" href="#">Hapus akun</a>
+                        <a class="collapse-item" href="@Url.Action("view_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Profil saya</a>
+                        <a class="collapse-item" href="@Url.Action("edit_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Ubah profil akun</a>
+                        <a class="collapse-item" href="@Url.Action("password_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Ubah password akun</a>
+                        <a class="collapse-item" href="@Url.Action("hapus_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Hapus akun</a>
                     </div>
                 </div>
             </li>
@@ -437,14 +437,14 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@ViewBag.Nama_user</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@ViewBag.logged_in.nama_admin</span>
                                 <img class="img-profile rounded-circle"
-                                     src="~/Content/RoleAdmin/img/@ViewBag.Profile">
+                                     src="~/Content/RoleAdmin/img/@ViewBag.logged_in.profil">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                  aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="@Url.Action("view_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>

@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    ViewBag.Title = "add_kodepos";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    <div id="add">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-header">Data Baru</div><br />
+                        Kode Pos
+                        <input class="form-control" type="text" placeholder="Masukkan Kodepos" name="kodepos" value="" required />
+                        <br />
+                        Kelurahan
+                        <input class="form-control" type="text" placeholder="Masukkan kelurahan" name="kelurahan" value="" required />
+                        <br />
+                        Kecamatan
+                        <input class="form-control" type="text" placeholder="Masukkan Kecamatan" name="kecamatan" value="" required />
+                        <br />
+                        Kota
+                        <input class="form-control" type="text" placeholder="Masukkan Kota" name="kota" value="" required />
+                        <br />
+                        Provinsi
+                        <input class="form-control" type="text" placeholder="Masukkan Provinsi" name="provinsi" value="" required />
+                        <br />
+                        <a href="page_kodepos" class="btn btn-secondary">Kembali</a>
+                        <input class="btn btn-warning float-right" id="btnInsert" type="submit" name="btnSubmit" value="Tambah data" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

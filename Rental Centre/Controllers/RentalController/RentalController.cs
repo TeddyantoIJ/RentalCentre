@@ -97,7 +97,7 @@ namespace Rental_Centre.Controllers.RentalController
         }
         #endregion
         [HttpPost]
-        public ActionResult uploadFile()
+        public void uploadFile()
         {
             // Hapus file yang ada di temp
             //DirectoryInfo di = new DirectoryInfo(Server.MapPath("~/Content/Temp"));
@@ -113,7 +113,7 @@ namespace Rental_Centre.Controllers.RentalController
                                                Path.GetFileName(file.FileName));
             file.SaveAs(path);
 
-            return RedirectToAction("page_penawaran");
+            //return RedirectToAction("page_penawaran");
         }
         #region  edit
         //-- Edit barang 

@@ -1,0 +1,164 @@
+﻿@model IEnumerable<Rental_Centre.Models.mskodepos>
+@{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    ViewBag.Title = "page_kelompokjenisbarang";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+
+<h2>Data Kode Pos</h2>
+
+
+<div id="view">
+    <div class="row">
+        <div class="col-2">
+            <p>
+                <a class="btn btn-primary" href="add_kodepos">Tambah Data</a>
+            </p>
+        </div>
+        <div class="col">
+            @*<select class="form-control" id="ddlkelompokjenis" onchange="ubah(@ViewBag.jumlahkelompok)">
+                    <option id="0" value="0">SEMUA</option>
+                    @foreach (var item in ViewBag.mskelompokjenis)
+                    {
+                        <option id="@item.id_kelompokjenis" value="@item.id_kelompokjenis">@item.nama_kelompokjenis</option>
+                    }
+                </select>*@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @{ int i = 1;}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            Kode Pos
+                        </th>
+                        <th>
+                            Kelurahan
+                        </th>
+                        <th>
+                            Kecamatan
+                        </th>
+                        <th>
+                            Kota
+                        </th>
+                        <th>
+                            Provinsi
+                        </th>
+                        <th>Aksi</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+
+                        <tr id="d_@item.kodepos">
+                            <td>@i.</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.kodepos)
+                            </td>
+                            <td>
+                                @{ if (item.kelurahan == "")
+                                    {
+                                        <p>-</p>
+                                    }
+                                    else
+                                    {
+                                        @item.kelurahan
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @{ if (item.kecamatan == "")
+                                    {
+                                        <p>-</p>
+                                    }
+                                    else
+                                    {
+                                        @item.kecamatan
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @{if (item.kota == "")
+                                    {
+                                        <p>-</p>
+                                    }
+                                    else
+                                    {
+                                        @item.kota
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @{ if (@item.provinsi == "")
+                                    {
+                                        <p>-</p>
+                                    }
+                                    else
+                                    {
+                                        @item.provinsi
+                                    }
+                                }
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        <a href="edit_kodepos?id=@item.id_kodepos"><span class="fa fa-edit"></span></a> |
+                                        <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.kelurahan','@item.kelurahan')"><span class="fa fa-info"></span></a> |
+                                        <a onclick="return confirm('Yakin akan menghapus jenis ?')"
+                                           href="hapus_kodepos?id=@item.id_kodepos"><span class="fa fa-trash"></span></a>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDetail(a, b) {
+        var header = a;
+        var body = b;
+
+        document.getElementById("detail_header").innerHTML = "";
+        document.getElementById("detail_body").innerHTML = "";
+
+        document.getElementById("detail_header").innerHTML = header;
+        document.getElementById("detail_body").innerHTML = body;
+
+
+    }
+</script>

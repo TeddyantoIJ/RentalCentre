@@ -1,0 +1,270 @@
+﻿@model Rental_Centre.Models.mspenyewa
+@{
+    ViewBag.Title = "edit_myAccount";
+    Layout = "~/Views/Shared/_PenyewaAddTemplate.cshtml";
+}
+
+<style>
+    input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 3px solid blue;
+        width: inherit;
+    }
+</style>
+<form action="edit_myAccount" method="post">
+    <div class="container">
+        <div class="footer-widget">
+            <h4 style="color:black">Edit Profile</h4>
+            <br />
+            <div class="row">
+                <input type="hidden" name="id_penyewa" value="@Model.id_penyewa" />
+                <div class="col">
+                    Nama pengguna
+                    <input type="text" name="nama_penyewa" id="nama_penyewa" value="@Model.nama_penyewa" required />
+                </div>
+                <div class="col">
+                    Foto profil
+                    <input type="file" name="iprofil" id="iprofil" class="form-control" />
+                    <input type="hidden" name="profil" id="profil" value="@Model.profil" />
+                    <input type="hidden" name="temp_profil" id="temp_profil" value="@Model.profil" />
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col align-self-center">
+                    <div class="row">
+                        <div class="col-3">
+                            Jenis kelamin
+                            <div class="radio-inline ">
+                                <input type="radio" name="jenis_kelamin" id="laki-laki" value="0" class="radio" checked /> Laki-laki<br />
+                                <input type="radio" name="jenis_kelamin" id="perempuan" value="1" class="radio" /> Perempuan
+                            </div>
+                        </div>
+                        <div class="col">
+                            Email
+                            <input type="email" name="email" id="email" value="@Model.email" required />
+                        </div>
+                        <div class="col">
+                            No telepon
+                            <input type="number" name="no_telepon" id="no_telepon" value="@Model.no_telepon" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card-img">
+                        <img id="gambar" src="~/Content/RoleUser/images/profil_user/@Model.profil" alt="" class="card-img" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            Tempat lahir
+                            <input type="text" name="tempat_lahir" id="tempat_lahir" value="@Model.tempat_lahir" required />
+                        </div>
+                        <div class="col">
+                            Tanggal lahir
+                            <input type="date" name="tgl_lahir" id="tgl_lahir" value="@Model.tgl_lahir.ToString("yyyy-MM-dd")" required />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col">
+                            Alamat
+                            <textarea rows="3" id="isi_alamat" class="form-control" required>@Model.alamat</textarea>
+                            <input type="hidden" name="alamat" id="alamat" value="@Model.alamat"/>
+                        </div>
+                        <div class="col-4">
+                            Kodepos
+                            <select name="kodepos" id="kodepos" class="form-control" required>
+                                <option value="">- Pilih kodepos -</option>
+                                <option value="52363" selected>52363</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    NIK
+                                    <input type="number" name="NIK" id="NIK" required value="@Model.NIK" />
+                                </div>
+                                <div class="col">
+                                    Foto KTP
+                                    <input type="file" name="iberkas1" id="iberkas1" class="form-control" />
+                                    <input type="hidden" name="berkas1" id="berkas1" value="@Model.berkas1" />
+                                    <input type="hidden" name="temp_berkas1" id="temp_berkas1" value="@Model.berkas1" />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col">
+                                    SKCK
+                                    <input type="text" name="SKCK" id="SKCK" required value="@Model.SKCK"/>
+                                </div>
+                                <div class="col">
+                                    Foto SKCK
+                                    <input type="file" name="iberkas2" id="iberkas2" class="form-control" />
+                                    <input type="hidden" name="berkas2" id="berkas2" value="@Model.berkas2" />
+                                    <input type="hidden" name="temp_berkas2" id="temp_berkas2" value="@Model.berkas2" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="footer-widget" style="width:100px">
+                <h4 style="color:black">Akun</h4>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Username Akun
+                    <input type="text" name="username" id="username" class="form-control" required value="@Model.username" readonly/>
+
+                </div>
+                <div class="col">
+                    Password
+                    <input type="password" name="password" id="passsword" required />
+                </div>
+                <div class="col">
+                    Verifikasi Password
+                    <input type="password" name="ver_password" id="ver_passsword" required />
+                </div>
+            </div>
+            <hr />
+            <a href="Index" class="btn btn-secondary" style="border-radius:0">Home</a>
+            <input type="submit" name="btnInsert" id="btnInsert" class="btn btn-primary" style="border-radius:0;" value="Perbarui data" />
+        </div>
+    </div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#iprofil").change(function () {
+            var fd = new FormData();
+            var gambar = document.getElementById("iprofil");
+            if (gambar.value == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Penyewa/uploadFile');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                }
+            }
+            document.getElementById("gambar").src = "/Content/Temp/" + gambar.files[0].name;
+        });
+        $("#iprofil").on('input',function () {
+            var a = document.getElementById("iprofil");
+            $("#profil").val($("#temp_profil").val());
+            if (a.files[0].name != "") {
+                $("#profil").val(a.files[0].name);
+            }
+        });
+        $("#iberkas1").on('input', function () {
+            var a = document.getElementById("iberkas1");
+            $("#berkas1").val($("#temp_berkas1").val());
+            if (a.files[0].name != "") {
+                $("#berkas1").val(a.files[0].name);
+            }
+        });
+        $("#iberkas2").on('input', function () {
+            var a = document.getElementById("iberkas2");
+            $("#berkas2").val($("#temp_berkas2").val());
+            if (a.files[0].name != "") {
+                $("#berkas2").val(a.files[0].name);
+            }
+        });
+        $("#btnInsert").click(function () {
+            alert('jalan');
+            document.getElementById("alamat").value = document.getElementById("isi_alamat").value;
+
+            var gambar = document.getElementById("iprofil");
+            var berkas_1 = document.getElementById("iberkas1");
+            var berkas_2 = document.getElementById("iberkas2");
+            
+            //check apakah ada yg diubah
+            if (gambar != null) {
+                document.getElementById("profil").value = gambar.files[0].name;
+                alert('jalan');
+                uploadFoto();
+            }
+            if (berkas_1 != null) {
+                document.getElementById("berkas1").value = berkas_1.files[0].name;
+                alert('jalan');
+                uploadberkas1();
+            }
+            if (berkas_2 != null) {
+                document.getElementById("berkas2").value = berkas_2.files[0].name;
+                alert('jalan');
+                uploadberkas2();
+            }
+        });
+    });
+    function uploadFoto() {
+        var fd = new FormData();
+        var gambar = document.getElementById("iprofil");
+        if (gambar.value == null) {
+            return;
+        }
+        fd.append(gambar.files[0].name, gambar.files[0]);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Penyewa/uploadprofil');
+        xhr.send(fd);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+            }
+        }
+    }
+    function uploadberkas1() {
+        var fd = new FormData();
+        var gambar = document.getElementById("iberkas1");
+        if (gambar.value == null) {
+            return;
+        }
+        fd.append(gambar.files[0].name, gambar.files[0]);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Penyewa/uploadberkas1');
+        xhr.send(fd);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+            }
+        }
+    }
+    function uploadberkas2() {
+        var fd = new FormData();
+        var gambar = document.getElementById("iberkas2");
+        if (gambar.value == null) {
+            return;
+        }
+        fd.append(gambar.files[0].name, gambar.files[0]);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Penyewa/uploadberkas2');
+        xhr.send(fd);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+            }
+        }
+    }
+
+</script>
+

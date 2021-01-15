@@ -1,0 +1,134 @@
+﻿@model Rental_Centre.Models.msadmin
+@{
+    ViewBag.Title = "view_admin";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+<style>
+    #tr{
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 3px solid grey;
+        width: inherit;
+    }
+</style>
+<br />
+<div class="card">
+    <div class="card-body">
+        <div class="card-header"><center><h3>@Model.nama_admin</h3></center></div>
+        <br />
+        <div class="row">
+            <div class="col justify-content-center">
+                <div class="row">
+                    <div class="col-3">
+                        Nama
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="form-control">@Model.nama_admin</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        Username
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="form-control">@Model.username</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        Password
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="form-control">*****@Model.password.Substring(3)</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        Jenis kelamin
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @{
+                            if (Model.jenis_kelamin == 0)
+                            {
+                                <p class="form-control">Laki - laki</p>
+                            }
+                            else
+                            {
+                                <p class="form-control">Perempuan</p>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        Email
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="form-control">@Model.email</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        Tempat lahir
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="form-control">@Model.tempat_lahir</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        Tanggal lahir
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p class="form-control">@Model.tgl_lahir.ToString("dd MMM yyyy")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <center><h3 class="lead" style="background-color:gray;color:black">Profil</h3></center>
+                <img src="~/Content/RoleAdmin/img/@Model.profil" alt="Profil" class="card-img" />
+            </div>
+        </div>
+        <script>
+            document.write('<a href="' + document.referrer + '" class="btn btn-secondary">Kembali</a>');
+        </script>
+        <a href="@Url.Action("edit_admin", "Admin",new { id = Model.id_admin })" class="btn btn-warning">Edit data</a>
+    </div>
+</div>
+

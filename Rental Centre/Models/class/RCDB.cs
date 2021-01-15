@@ -13,5 +13,8 @@ namespace Rental_Centre.Models
         public DbSet<msjenisbarang> msjenisbarang { get; set; }
         public DbSet<msbarang> msbarang { get; set; }
         public DbSet<msadmin> msadmin { get; set; }
+        public DbSet<msprovinsi> msprovinsi { get; set; }
+        public DbSet<mspenyewa> mspenyewa { get; set; }
+        public DbSet<mskodepos> mskodepos { get; set; }
     }
 }

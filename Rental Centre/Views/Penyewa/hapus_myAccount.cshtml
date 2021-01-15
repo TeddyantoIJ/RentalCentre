@@ -1,0 +1,36 @@
+﻿@model Rental_Centre.Models.mspenyewa
+@{
+    ViewBag.Title = "hapus_myAccount";
+    Layout = "~/Views/Shared/_PenyewaAddTemplate.cshtml";
+}
+<style>
+    .blueline {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 3px solid blue;
+        width: inherit;
+    }
+</style>
+
+<form action="hapus_myAccount" method="post">
+    <div style="height:500px">
+        <div class="container">
+            <center>
+                <b style="color:red">PERINGATAN!</b>
+                <input type="hidden" name="id_penyewa" value="@Model.id_penyewa" />
+                <p>Dengan menghapus akun, anda tidak dapat menggunakan akun ini lagi</p>
+
+                <input type="checkbox" name="check" value="Saya mengerti" class="checkbox checkbox-inline" required/> Saya paham dengan <span style="color:red;font-size:17px">risiko</span> saya<br />
+                Mohon masukkan kata / kaliman "hapus @Model.nama_penyewa"<br />
+                <input type="text" name="konfirmasi" class="blueline" required/><br /><br />
+                <script>
+                    document.write('<a href="' + document.referrer + '" class="btn btn-secondary" style="border-radius:0">Kembali</a>');
+                </script>
+                <input type="submit" name="btnSubmit" value="HAPUS" class=" btn btn-danger" style="border-radius:0" />
+            </center>
+        </div>
+    </div>
+</form>
+
+

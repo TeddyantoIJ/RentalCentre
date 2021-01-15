@@ -19,10 +19,14 @@ namespace Rental_Centre.Controllers.AdminController
         model_kelompokjenis mskelompokjenis = new model_kelompokjenis();
         model_barang msbarang = new model_barang();
         model_msadmin msadmin = new model_msadmin();
+        model_msprovinsi msprovinsi = new model_msprovinsi();
+        model_mskodepos mskodepos = new model_mskodepos();
 
         public ActionResult Index()
         {
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
             return View();
         }
         #region Kelompok jenis barang
@@ -189,6 +193,271 @@ namespace Rental_Centre.Controllers.AdminController
         {
             this.msjenisbarang.hapusData(id);
             return RedirectToAction("page_jenisbarang");
+        }
+        #endregion
+        #endregion
+
+        #region Provinsi
+        #region View
+        public ActionResult page_provinsi()
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag yang dibutuhkan / Data
+            var msprovinsi = this.msprovinsi.getAllProvinsi();
+            return View(msprovinsi.ToList<msprovinsi>());
+        }
+        #endregion
+        #region add
+        public ActionResult add_provinsi()
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult add_provinsi(msprovinsi msprovinsi)
+        {
+            var a = msprovinsi.nama_provinsi;
+            this.msprovinsi.addData(msprovinsi);
+
+            return RedirectToAction("page_provinsi");
+        }
+        #endregion
+        #region edit
+        public ActionResult edit_provinsi(int id)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // Data yang dibutuhkan
+            msprovinsi msprovinsi = this.msprovinsi.getProvinsi(id);
+            return View(msprovinsi);
+        }
+        [HttpPost]
+        public ActionResult edit_provinsi(msprovinsi msprovinsi)
+        {
+            this.msprovinsi.editData(msprovinsi);
+
+            return RedirectToAction("page_provinsi");
+        }
+        #endregion
+        #region hapus
+        public ActionResult hapus_provinsi(int id)
+        {
+            this.msprovinsi.hapusData(id);
+            return RedirectToAction("page_provinsi");
+        }
+        #endregion
+        #endregion
+
+        #region pengguna
+        #region view
+        public ActionResult view_admin(int id)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //data kebutuhan
+            msadmin msadmin = this.msadmin.getAdmin(id);
+            return View(msadmin);
+        }
+        
+
+
+        public ActionResult page_pengguna()
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // ViewBag dibutuhkan
+            ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
+
+            return View();
+        }
+        #region admin
+        #region add
+        public ActionResult add_admin()
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult add_admin(msadmin msadmin)
+        {
+            msadmin.nama_admin = msadmin.nama_admin;
+            msadmin.username = msadmin.username;
+            msadmin.password = msadmin.password;
+            msadmin.tempat_lahir = msadmin.tempat_lahir;
+            msadmin.jenis_kelamin = msadmin.jenis_kelamin;
+            msadmin.email = msadmin.email;
+
+            msadmin.creaby = logged_id;
+            msadmin.creadate = DateTime.Now;
+            msadmin.status = 1;
+            this.msadmin.addData(msadmin);
+                
+            return RedirectToAction("page_pengguna");
+        }
+        [HttpPost]
+        public void uploadFile()
+        {
+            HttpPostedFileBase file = Request.Files[0]; //Uploaded file
+            string path = Path.Combine(Server.MapPath("~/Content/Temp"),
+                                               Path.GetFileName(file.FileName));
+
+            file.SaveAs(path);
+        }
+        [HttpPost]
+        public void uploadFileFix()
+        {
+            HttpPostedFileBase file = Request.Files[0]; //Uploaded file
+            string path = Path.Combine(Server.MapPath("~/Content/RoleAdmin/img"),
+                                               Path.GetFileName(file.FileName));
+
+            file.SaveAs(path);
+        }
+        #endregion
+        #region edit
+        public ActionResult edit_admin(int id)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // View bag dibutuhkan
+            msadmin msadmin = this.msadmin.getAdmin(id);
+            return View(msadmin);
+        }
+        [HttpPost]
+        public ActionResult edit_admin(msadmin msadmin)
+        {
+            msadmin.modiby = logged_id;
+            msadmin.modidate = DateTime.Now;
+
+            this.msadmin.editData(msadmin);
+            return RedirectToAction("page_pengguna");
+        }
+        #endregion
+        #region hapus
+        public ActionResult hapus_admin(int id)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // View bag dibutuhkan
+            msadmin msadmin = this.msadmin.getAdmin(id);
+            return View(msadmin);
+        }
+        [HttpPost]
+        public ActionResult hapus_admin(msadmin msadmin)
+        {
+            msadmin.modiby = logged_id;
+            msadmin.modidate = DateTime.Now;
+            this.msadmin.hapusData(msadmin.id_admin);
+            return RedirectToAction("Index");
+        }
+        #endregion
+        #region ubah password
+        public ActionResult password_admin(int id)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // View bag dibutuhkan
+            msadmin msadmin = this.msadmin.getAdmin(logged_id);
+            return View(msadmin);
+        }
+        [HttpPost]
+        public ActionResult password_admin(msadmin msadmin)
+        {
+            msadmin.modiby = logged_id;
+            msadmin.modidate = DateTime.Now;
+
+            this.msadmin.ubahPassword(msadmin);
+            return RedirectToAction("Index");
+        }
+        #endregion
+        #endregion
+        #endregion
+        #endregion
+
+        #region Kodepos
+        #region View
+        public ActionResult page_kodepos()
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //view bag yang dibutuhkan / data
+            List<mskodepos> mskodepos = this.mskodepos.getAllKodePos();
+            return View(mskodepos);
+        }
+        #endregion
+        #region Tambah
+        public ActionResult add_kodepos()
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult add_kodepos(mskodepos mskodepos)
+        {
+            mskodepos.kodepos = mskodepos.kodepos;
+            mskodepos.kelurahan = mskodepos.kelurahan;
+            mskodepos.kecamatan = mskodepos.kecamatan;
+            mskodepos.kota = mskodepos.kota;
+            mskodepos.provinsi = mskodepos.provinsi;
+
+            this.mskodepos.addData(mskodepos);
+            return RedirectToAction("page_kodepos");
+        }
+        #endregion
+        #region Edit
+        public ActionResult edit_kodepos(int id)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag dibutuhkan
+            return View(this.mskodepos.getKodepos(id));
+        }
+        [HttpPost]
+        public ActionResult edit_kodepos(mskodepos mskodepos)
+        {
+            mskodepos.id_kodepos = mskodepos.id_kodepos;
+            mskodepos.kodepos = mskodepos.kodepos;
+            mskodepos.kelurahan = mskodepos.kelurahan;
+            mskodepos.kecamatan = mskodepos.kecamatan;
+            mskodepos.kota = mskodepos.kota;
+            mskodepos.provinsi = mskodepos.provinsi;
+
+            this.mskodepos.editData(mskodepos);
+            return RedirectToAction("page_kodepos");
+        }
+        #endregion
+        #region Hapus
+        public ActionResult hapus_kodepos(int id)
+        {
+            this.mskodepos.hapusData(id);
+            return RedirectToAction("page_kodepos");
         }
         #endregion
         #endregion

@@ -136,17 +136,24 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PenyewaController\PenyewaController.cs" />
     <Compile Include="Controllers\RentalController\RentalController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\class\mskodepos.cs" />
+    <Compile Include="Models\model_mskodepos.cs" />
     <Compile Include="Models\class\msadmin.cs" />
     <Compile Include="Models\class\msbarang.cs" />
     <Compile Include="Models\class\msjenisbarang.cs" />
+    <Compile Include="Models\class\mspenyewa.cs" />
+    <Compile Include="Models\class\msprovinsi.cs" />
     <Compile Include="Models\model_barang.cs" />
     <Compile Include="Models\model_jenisbarang.cs" />
     <Compile Include="Models\model_kelompokjenis.cs" />
     <Compile Include="Models\model_msadmin.cs" />
+    <Compile Include="Models\model_msprovinsi.cs" />
+    <Compile Include="Models\model_mspenyewa.cs" />
     <Compile Include="Models\RentalModel\msbarang.cs">
       <DependentUpon>RCDB.tt</DependentUpon>
     </Compile>
@@ -2190,6 +2197,23 @@
     <Content Include="Views\Admin\page_jenisbarang.cshtml" />
     <Content Include="Views\Admin\add_jenisbarang.cshtml" />
     <Content Include="Views\Admin\edit_jenisbarang.cshtml" />
+    <Content Include="Views\Admin\page_provinsi.cshtml" />
+    <Content Include="Views\Admin\add_provinsi.cshtml" />
+    <Content Include="Views\Admin\edit_provinsi.cshtml" />
+    <Content Include="Views\Admin\page_pengguna.cshtml" />
+    <Content Include="Views\Admin\edit_admin.cshtml" />
+    <Content Include="Views\Admin\add_admin.cshtml" />
+    <Content Include="Views\Penyewa\Index.cshtml" />
+    <Content Include="Views\Penyewa\add_myAccount.cshtml" />
+    <Content Include="Views\Shared\_PenyewaAddTemplate.cshtml" />
+    <Content Include="Views\Penyewa\edit_myAccount.cshtml" />
+    <Content Include="Views\Admin\view_admin.cshtml" />
+    <Content Include="Views\Admin\hapus_admin.cshtml" />
+    <Content Include="Views\Penyewa\hapus_myAccount.cshtml" />
+    <Content Include="Views\Admin\add_kodepos.cshtml" />
+    <Content Include="Views\Admin\edit_kodepos.cshtml" />
+    <Content Include="Views\Admin\page_kodepos.cshtml" />
+    <Content Include="Views\Admin\password_admin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -131,11 +131,10 @@
 
     $(document).ready(function() {
         $("#link_gambar").change(function () {
-            alert('lala');
             var fd = new FormData();
             var gambar = document.getElementById("link_gambar");
+            alert(gambar);
             if (gambar == null) {
-                alert('hm');
                 return;
             }
             fd.append(gambar.files[0].name, gambar.files[0]);

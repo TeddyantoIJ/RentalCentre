@@ -1,0 +1,134 @@
+﻿@model Rental_Centre.Models.msadmin
+@{
+    ViewBag.Profile = ViewBag.Logged_in.profil;
+    ViewBag.Nama_user = ViewBag.Logged_in.nama_admin;
+    ViewBag.Title = "add_admin";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+
+<form method="post" action="add_admin">
+    <div id="add">
+        @using (Html.BeginForm())
+        {
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-header">Tambah Admin</div>
+                    <br />
+                    <br />
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    Nama
+                                    <input type="text" name="nama_admin" id="nama_admin" value="" class="form-control" required/>
+                                </div>
+                                <div class="col-4">
+                                    Username
+                                    <input type="text" name="username" id="username" value="" class="form-control" required/>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col">
+                                    Password
+                                    <input type="password" name="password" id="password" value="" class="form-control" required/>
+                                </div>
+                                <div class="col">
+                                    Verifikasi Password
+                                    <input type="password" name="Ver_password" id="Ver_password" value="" class="form-control" required/>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col">
+                                    Email
+                                    <input type="email" name="email" id="email" value="" class="form-control" required/>
+                                </div>
+                                <div class="col">
+                                    Profil
+                                    <input type="file" name="profil" id="profil1"/>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col">
+                                    Tempat Lahir
+                                    <input type="text" name="tempat_lahir" id="tempat_lahir" value="" class="form-control" required/>
+                                </div>
+                                <div class="col">
+                                    Tanggal Lahir
+                                    <input type="date" name="tgl_lahir" id="tgl_lahir" value="" class="form-control" required/>
+                                </div>
+                                <div class="col-3">
+                                    Gender
+                                    <div class="form-control radio-inline">
+                                        <input type="radio" name="jenis_kelamin" value="0" checked/> L
+                                        <input type="radio" name="jenis_kelamin" value="1" /> P
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <img src="~/Content/RoleAdmin/img/Canon_1.jpg" id="gambar" alt="Alternate Text" class="card-img" />
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-4">
+                            <script>
+                                document.write('<a href="' + document.referrer + '" class="btn btn-secondary">Kembali</a>');
+                            </script>
+                            <input type="submit" id="btnSubmit" name="btnSubmit" value="Tambah Data" class="btn btn-warning" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+</form>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#profil1").change(function () {
+            var fd = new FormData();
+            var gambar = document.getElementById("profil1");
+            if (gambar.name == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Admin/uploadFile');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                }
+            }
+            document.getElementById("gambar").src = "/Content/Temp/" + gambar.files[0].name;
+        });
+        $("#btnSubmit").click(function () {
+            var fd = new FormData();
+            var gambar = document.getElementById("profil1");
+            if (gambar.name == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Admin/uploadFileFix');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                }
+            }
+        });
+    });
+    
+    
+</script>
