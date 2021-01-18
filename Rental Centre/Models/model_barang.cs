@@ -69,8 +69,10 @@ namespace Rental_Centre.Models
             barang.deskripsi_barang = new_msbarang.deskripsi_barang;
             barang.modiby = new_msbarang.modiby;
             barang.modidate = new_msbarang.modidate;
-            barang.link_gambar = new_msbarang.link_gambar;
-
+            if (!String.IsNullOrEmpty(new_msbarang.link_gambar))
+            {
+                barang.link_gambar = new_msbarang.link_gambar;
+            }            
             _DB.SaveChanges();
         }
         public void hapusData(int id)
@@ -93,6 +95,12 @@ namespace Rental_Centre.Models
                           select data);
             int jumlah = barang.ToList<msbarang>().Count();
             return jumlah;
+        }
+        public IEnumerable<msbarang> getAllData()
+        {
+            var msbarang = (from data in _DB.msbarang
+                            select data);
+            return msbarang;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Rental_Centre.Models.msjenisbarang>
+﻿@model PagedList.IPagedList<Rental_Centre.Models.msjenisbarang>
+@using PagedList.Mvc;
 
 @{
     ViewBag.Profile = ViewBag.logged_in.profil;
@@ -9,138 +10,159 @@
 
 
 <h2>Data Jenis Barang</h2>
-
+<br />
 
 <div id="view">
     <div class="row">
-        <div class="col-2">
-            <p>
-                <a class="btn btn-primary" href="add_jenisbarang">Tambah Data</a>
-            </p>
-        </div>
         <div class="col">
-            @*<select class="form-control" id="ddlkelompokjenis" onchange="ubah(@ViewBag.jumlahkelompok)">
-                <option id="0" value="0">SEMUA</option>
+            <a class="btn btn-primary" href="add_jenisbarang">Tambah Data</a>
+        </div>
+        @*<div class="col">
+            <select class="form-control" id="ddlKelompok" name="group">
+                <option value="-1">- Kelompokkan data -</option>
                 @foreach (var item in ViewBag.mskelompokjenis)
                 {
-                    <option id="@item.id_kelompokjenis" value="@item.id_kelompokjenis">@item.nama_kelompokjenis</option>
+                    <option value="item.id_kelompokjenis">@item.nama_kelompokjenis</option>
                 }
-            </select>*@
+            </select>
+        </div>*@
+        <div class="col">
+
+            @using (Html.BeginForm("page_jenisbarang", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+            {
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian..", @id = "lala" })
+                <input type="submit" value="Cari" class="btn btn-primary" />
+            }
         </div>
     </div>
+    <br />
     <div class="row">
         <div class="col">
-            @{ int i = 1;}
-            <div class="table-responsive">
-               <table class="table table-striped">
-            <tr>
-                <th>
-                    No.
-                </th>
-                <th>
-                    Nama Jenis
-                </th>
-                <th>
-                    Deskripsi
-                </th>
-                <th>
-                    Pembuat
-                </th>
-                <th>
-                    Tanggal Pembuatan
-                </th>
-                <th>
-                    Diperbarui
-                </th>
-                <th>
-                    Tanggal Pembaruan
-                </th>
-                <th>Aksi</th>
-            </tr>
+            @{ int i = ((Model.PageNumber - 1) * 10) + 1;}
+            <small>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    Nama Jenis
+                                </th>
+                                <th>
+                                    Pembuat
+                                </th>
+                                <th>
+                                    Tanggal Pembuatan
+                                </th>
+                                <th>
+                                    Diperbarui
+                                </th>
+                                <th>
+                                    Tanggal Pembaruan
+                                </th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
 
-            @foreach (var item in Model)
-            {
-                if (item.status == 1)
-                {
-            <tr id="d_@item.id_kelompokjenis">
-                <td>@i.</td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.nama_jenisbarang)
-                </td>
-                <td>
-                    @{ if (item.deskripsi == "")
+                        @foreach (var item in Model)
                         {
-                            <p>-</p>
-                        }
-                        else
-                        {
-                            @item.deskripsi
-                        }
-                    }
-                </td>
-                <td>
-                    @foreach (var admin in ViewBag.msadmin)
-                    {
-                        if (@item.creaby == @admin.id_admin)
-                        {
-                            @admin.nama_admin;
-                            break;
-                        }
-                    }
-                </td>
-                <td>
-                    @item.creadate.Value.ToString("dd/MMM/yyyy")
-                </td>
-                <td>
-                    @{ bool found = false;}
-                    @foreach (var admin in ViewBag.msadmin)
-                    {
-                        if (@item.modiby == @admin.id_admin)
-                        {
-                            @admin.nama_admin;
-                            found = true;
-                            break;
-                        }
-                    }
-                    @{ if (found == false)
-                        {
-                            <p>-</p>
-                        }
-                    }
+                            if (item.status == 1)
+                            {
+                                <tr id="d_@item.id_kelompokjenis">
+                                    <td>@i.</td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.nama_jenisbarang)
+                                    </td>
+                                    <td>
+                                        @foreach (var admin in ViewBag.msadmin)
+                                        {
+                                            if (@item.creaby == @admin.id_admin)
+                                            {
+                                                @admin.nama_admin;
+                                                break;
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @item.creadate.Value.ToString("dd/MMM/yyyy")
+                                    </td>
+                                    <td>
+                                        @{ bool found = false;}
+                                        @foreach (var admin in ViewBag.msadmin)
+                                        {
+                                            if (@item.modiby == @admin.id_admin)
+                                            {
+                                                @admin.nama_admin;
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                        @{ if (found == false)
+                                            {
+                                                <p>-</p>
+                                            }
+                                        }
 
-                </td>
-                <td>
-                    @{if (item.modidate != null)
-                        {
-                            @item.modidate.Value.ToString("dd/MM/yyyy")
-                        }
-                        else
-                        {
-                            <p>-</p>
-                        }
-                    }
-                </td>
-                <td>
-                    <div class="row">
-                        <div class="col">
-                            <a href="edit_jenisbarang?id=@item.id_jenisbarang"><span class="fa fa-edit"></span></a> |
-                            <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_jenisbarang','@item.deskripsi')"><span class="fa fa-info"></span></a> |
-                            <a onclick="return confirm('Yakin akan menghapus jenis ?')"
-                               href="hapus_jenisbarang?id=@item.id_jenisbarang"><span class="fa fa-trash"></span></a>
-                        </div>
-                    </div>
+                                    </td>
+                                    <td>
+                                        @{if (item.modidate != null)
+                                            {
+                                                @item.modidate.Value.ToString("dd/MM/yyyy")
+                                            }
+                                            else
+                                            {
+                                                <p>-</p>
+                                            }
+                                        }
+                                    </td>
+                                    @{ string kelompokjenis = "";}
+                                    @foreach (var a in ViewBag.mskelompokjenis)
+                                    {
+                                        if (a.id_kelompokjenis == item.id_kelompokjenis)
+                                        {
+                                            kelompokjenis = a.nama_kelompokjenis;
+                                            break;
+                                        }
+                                    }
+                                    <td>
+                                        <div class="row">
+                                            <div class="col">
+                                                <a href="edit_jenisbarang?id=@item.id_jenisbarang"><span class="fa fa-edit" title="Edit"></span></a> |
+                                                <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_jenisbarang','@item.deskripsi','@kelompokjenis')"><span class="fa fa-info" title="Details"></span></a> |
+                                                <a onclick="return confirm('Yakin akan menghapus jenis ?')"
+                                                   href="hapus_jenisbarang?id=@item.id_jenisbarang"><span class="fa fa-trash" title="Hapus"></span></a>
+                                            </div>
+                                        </div>
 
-                </td>
-            </tr>
-                    i++;
-                }
-            }
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
 
-        </table>
-    </div>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            @if (Model.PageNumber != 1)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("page_jenisbarang",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                            }
+
+                            <li class="page-item"><a class="page-link" href="@Url.Action("page_jenisbarang",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                            @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("page_jenisbarang",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                            }
+
+                        </ul>
+                    </nav>
+                </div>
+            </small>
         </div>
     </div>
-    
+
 </div>
 
 <!-- Modal -->
@@ -164,16 +186,17 @@
     </div>
 </div>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    function setDetail(a,b) {
+    function setDetail(a, b,c) {
         var header = a;
         var body = b;
+        var kel = c;
 
         document.getElementById("detail_header").innerHTML = "";
         document.getElementById("detail_body").innerHTML = "";
 
-        document.getElementById("detail_header").innerHTML = header;
+        document.getElementById("detail_header").innerHTML = header + " ("+kel+")";
         document.getElementById("detail_body").innerHTML = body;
 
 
@@ -200,6 +223,11 @@
                 x[g].hidden = false;
             }
         }
-        
     }
+
+    $(document).ready(function () {
+        $('#ddlKelompok').on('change', function () {
+            document.forms["page_jenisbarang"].submit();
+        });
+    });
 </script>

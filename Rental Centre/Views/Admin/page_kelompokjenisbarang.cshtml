@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Rental_Centre.Models.mskelompokjenis>
+﻿@model PagedList.IPagedList<Rental_Centre.Models.mskelompokjenis>
+@using PagedList.Mvc;
 
 @{
     ViewBag.Profile = ViewBag.logged_in.profil;
@@ -9,148 +10,160 @@
 
 
 <h2>Data Kelompok Jenis</h2>
-
-
+<br />
 <div id="view">
-    <p>
-        <a class="btn btn-primary" href="add_kelompokjenisbarang">Tambah Data</a>
-    </p>
-    @{ int i = 1;}
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <tr>
-                <th>
-                    No.
-                </th>
-                <th>
-                    Nama Kelompok
-                </th>
-                <th>
-                    Deskripsi
-                </th>
-                <th>
-                    Pembuat
-                </th>
-                <th>
-                    Tanggal Pembuatan
-                </th>
-                <th>
-                    Diperbarui
-                </th>
-                <th>
-                    Tanggal Pembaruan
-                </th>
-                <th>Aksi</th>
-                <th></th>
-            </tr>
 
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary" href="add_kelompokjenisbarang">Tambah Data</a>
+        </div>
+        <div class="col">
+            
+            @using (Html.BeginForm("page_kelompokjenisbarang", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+            {
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class="form-control", @placeholder="Pencarian.."})
+                <input type="submit" value="Cari" class="btn btn-primary"/>
+            }
+        </div>
+    </div>
+    <br />
+    @{ int i = ((Model.PageNumber-1)*5)+1;}
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        No.
+                    </th>
+                    <th>
+                        Nama Kelompok
+                    </th>
+                    <th>
+                        Pembuat
+                    </th>
+                    <th>
+                        Tanggal Pembuatan
+                    </th>
+                    <th>
+                        Diperbarui
+                    </th>
+                    <th>
+                        Tanggal Pembaruan
+                    </th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
             @foreach (var item in Model)
             {
-                if(item.status == 1)
+                if (item.status == 1)
                 {
                     <tr>
-                    <td>@i.</td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.nama_kelompokjenis)
-                    </td>
-                    <td>
-                        @{ if (item.deskripsi == "")
+                        <td>@i.</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nama_kelompokjenis)
+                        </td>
+                        <td>
+                            @foreach (var admin in ViewBag.msadmin)
                             {
-                                <p>-</p>
+                                if (@item.creaby == @admin.id_admin)
+                                {
+                                    @admin.nama_admin;
+                                    break;
+                                }
                             }
-                            else
+                        </td>
+                        <td>
+                            @item.creadate.Value.ToString("dd/MMM/yyyy")
+                        </td>
+                        <td>
+                            @{ bool found = false;}
+                            @foreach (var admin in ViewBag.msadmin)
                             {
-                                @item.deskripsi
+                                if (@item.modiby == @admin.id_admin)
+                                {
+                                    @admin.nama_admin;
+                                    found = true;
+                                    break;
+                                }
                             }
-                        }
-                    </td>
-                    <td>
-                        @foreach (var admin in ViewBag.msadmin)
-                        {
-                            if (@item.creaby == @admin.id_admin)
-                            {
-                                @admin.nama_admin;
-                                break;
+                            @{ if (found == false)
+                                {
+                                    <p>-</p>
+                                }
                             }
-                        }
-                    </td>
-                    <td>
-                        @item.creadate.Value.ToString("dd/MMM/yyyy")
-                    </td>
-                    <td>
-                        @{ bool found = false;}
-                        @foreach (var admin in ViewBag.msadmin)
-                        {
-                            if (@item.modiby == @admin.id_admin)
-                            {
-                                @admin.nama_admin;
-                                found = true;
-                                break;
-                            }
-                        }
-                        @{ if (found == false)
-                            {
-                                <p>-</p>
-                            }
-                        }
 
-                    </td>
-                    <td>
-                        @{if (item.modidate != null)
-                            {
-                                @item.modidate.Value.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @{if (item.modidate != null)
+                                {
+                                    @item.modidate.Value.ToString("dd/MM/yyyy")
+                                }
+                                else
+                                {
+                                    <p>-</p>
+                                }
                             }
-                            else
-                            {
-                                <p>-</p>
-                            }
-                        }
-                    </td>
-                    <td>
-                        <div class="row">
-                            <div class="col">
-                                <a href="edit_kelompokjenisbarang?id=@item.id_kelompokjenis"><span class="fa fa-edit"></span></a> |
-                                <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_kelompokjenis','@item.deskripsi')"><span class="fa fa-info"></span></a> |
-                                <a onclick="return confirm('Yakin akan menghapus kelompok ?')"
-                                   href="hapus_kelompokjenisbarang?id=@item.id_kelompokjenis"><span class="fa fa-trash"></span></a>
+                        </td>
+                        <td>
+                            <div class="row">
+                                <div class="col">
+                                    <a href="edit_kelompokjenisbarang?id=@item.id_kelompokjenis"><span class="fa fa-edit" title="Edit"></span></a> |
+                                    <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_kelompokjenis','@item.deskripsi')"><span title="Details" class="fa fa-info"></span></a> |
+                                    <a onclick="return confirm('Yakin akan menghapus kelompok ?')"
+                                       href="hapus_kelompokjenisbarang?id=@item.id_kelompokjenis"><span class="fa fa-trash" title="Hapus"></span></a>
+                                </div>
                             </div>
-                        </div>
 
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
                     i++;
+                                        
                 }
             }
-
         </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                @if (Model.PageNumber != 1)
+                {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                }
+
+                <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                }
+
+            </ul>
+        </nav>
     </div>
 
 </div>
 
 <!-- Modal -->
 
-    <div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="detail_body"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
 
 
 <script>
-    function setDetail(a,b) {
+    function setDetail(a, b) {
         var header = a;
         var body = b;
 
@@ -160,7 +173,7 @@
         document.getElementById("detail_header").innerHTML = header;
         document.getElementById("detail_body").innerHTML = body;
 
-        
+
     }
 
 </script>

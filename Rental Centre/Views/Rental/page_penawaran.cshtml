@@ -1,4 +1,6 @@
-﻿
+﻿@model PagedList.IPagedList<Rental_Centre.Models.msbarang>
+@using PagedList.Mvc;
+
 @{
 
     ViewBag.Title = "Page 2";
@@ -8,7 +10,7 @@
 
     ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
     ViewBag.msjenisbarang = ViewBag.msjenisbarang;
-    ViewBag.msbarang = ViewBag.msbarang;
+    
 
 
     Layout = "~/Views/Shared/_RentalTemplate.cshtml";
@@ -56,12 +58,22 @@
         }
     </div>
     <div class="row">
-        <div class="col-xl-12 col-md-6 mb-4">
-            <form action="~/Rental/ajukan_penawaran">
-                <button class="btn btn-primary float-right"><span class="fa fa-plus-circle"></span> Ajukan produk sewa baru</button>
+        <div class="col">
+            <form action="ajukan_penawaran">
+                <button class="btn btn-primary"><span class="fa fa-plus-circle"></span> Ajukan produk sewa baru</button>
             </form>
         </div>
+        <div class="col">
+
+            @using (Html.BeginForm("page_penawaran", "Rental", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+            {
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian.." })
+                <input type="hidden" name="id" value="@ViewBag.currentId" />
+                <input type="submit" value="Cari" class="btn btn-primary" />
+            }
+        </div>
     </div>
+    <br />
     <!-- CARD PENAWARAN-->
     <div class="row" hidden>
         <!-- Dropdown Card Example -->
@@ -125,69 +137,70 @@
         </div>
     </div>
 
-    @foreach (var data in ViewBag.msbarang)
+    @foreach (var data in Model)
     {
         if (data.status == 1)
         {
-        <div class="row" id="jenisbarang_@data.id_jenisbarang">
-            <div class="col">
-                <!-- Dropdown Card Example -->
-                <div class="card shadow mb-4">
-                    <!-- Card Body -->
-                    <div class="card-body">
-                        <div class="dropdown no-arrow float-right">
-                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                 aria-labelledby="dropdownMenuLink">
-                                <div class="dropdown-header">Kelola penawaran</div>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="edit_penawaran?id=@data.id_barang">Perbarui</a>    
-                                <a class="dropdown-item" href="hapus_penawaran?id=@data.id_barang" onclick="return confirm('Yakin akan menghapus produk?')">Hapus</a>
+            <div class="row" id="jenisbarang_@data.id_jenisbarang">
+                <div class="col">
+                    <!-- Dropdown Card Example -->
+                    <div class="card shadow mb-4">
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <div class="dropdown no-arrow float-right">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                     aria-labelledby="dropdownMenuLink">
+                                    <div class="dropdown-header">Kelola penawaran</div>
+                                    <div class="dropdown-divider"></div>
+
+                                    <a class="dropdown-item" href="@Url.Action("edit_penawaran", "Rental",new { id= @data.id_barang} )">Perbarui</a>
+                                    <a class="dropdown-item" href="@Url.Action("hapus_penawaran", "Rental",new { id= @data.id_barang} )" onclick="return confirm('Yakin akan menghapus produk?')">Hapus</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <img src="~/Content/RoleAdmin/img/@data.link_gambar" class="card-img-top" alt="...">
+                                </div>
+                                <div class="col">
+
+                                    <h5 style="color:black"><b>@data.nama_barang</b></h5>
+                                    <p style=" color:black;line-height:1px">
+                                        <small>
+                                            @{
+                                                string harga = String.Format("{0:c}", data.harga_sewa);
+                                            }
+                                            Rp @harga.Replace("Rp", "")/hari
+                                        </small>
+                                    </p>
+                                    <p style="line-height:1px">
+                                        <small>
+                                            Stok Tersedia · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </p>
+                                    <p style="line-height:1px">
+                                        <small>
+                                            10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
+                                            ·
+                                            3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
+                                        </small>
+                                    </p>
+
+                                    <p>
+                                        <small>
+                                            @data.deskripsi_barang
+                                        </small>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-2">
-                                <img src="@data.link_gambar" class="card-img-top" alt="...">
-                            </div>
-                            <div class="col">
 
-                                <h5 style="color:black"><b>@data.nama_barang</b></h5>
-                                <p style=" color:black;line-height:1px">
-                                    <small>
-                                        @{
-                                            string harga = String.Format("{0:c}", data.harga_sewa);
-                                        }
-                                        Rp @harga.Replace("Rp","")/hari
-                                    </small>
-                                </p>
-                                <p style="line-height:1px">
-                                    <small>
-                                        Stok Tersedia · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
-                                    </small>
-                                </p>
-                                <p style="line-height:1px">
-                                    <small>
-                                        10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
-                                        ·
-                                        3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
-                                    </small>
-                                </p>
-
-                                <p>
-                                    <small>
-                                        @data.deskripsi_barang
-                                    </small>
-                                </p>
-                            </div>
-                        </div>
                     </div>
-
                 </div>
             </div>
-        </div>
         }
 
 
@@ -221,16 +234,16 @@
 </div>
 
 <!-- SCRIPT -->
-<script >
+<script>
     function changeDataKelompok(data) {
-        
+
         var totalbarang = @ViewBag.totalbarang;
         var totaljenis = @ViewBag.totaljenisbarang;
-        
+
         if (data == 0) {
             for (i = 1; i <= totaljenis; i++) {
                 x = document.querySelectorAll("#jenisbarang_" + i);
-                y = document.querySelectorAll("#headerjenisbarang_" + i);                
+                y = document.querySelectorAll("#headerjenisbarang_" + i);
                 for (g = 0; g < x.length; g++) {
                     x[g].style.display = "block";
                 }
@@ -259,7 +272,7 @@
                     }
                 }
 
-                
+
             }
         }
     }

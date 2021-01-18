@@ -82,3 +82,7 @@ D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\EntityFramewo
 D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\EntityFramework.SqlServer.dll
 D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\EntityFramework.xml
 D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\EntityFramework.SqlServer.xml
+D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\PagedList.dll
+D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\PagedList.Mvc.dll
+D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\PagedList.xml
+D:\Semester 3\PRG4\Project\Program\Rental Centre\Rental Centre\bin\PagedList.Mvc.xml

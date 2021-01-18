@@ -10,6 +10,13 @@ namespace Rental_Centre.Models
     {
         RCDB _DB = new RCDB();
 
+        public int count()
+        {
+            var mskodepos = (from data in _DB.mskodepos
+                             where data.provinsi == "DKI Jakarta"
+                             select data);
+            return mskodepos.ToList<mskodepos>().Count();
+        }
         public List<mskodepos> getAllKodePos()
         {
             var mskodepos = (from data in _DB.mskodepos

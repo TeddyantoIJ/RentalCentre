@@ -54,11 +54,14 @@
                             @{
                                   string[] link = (string.IsNullOrEmpty(Model.link_gambar)) ? new string[] { "" } : Model.link_gambar.Split('/');
                             }
-                            @Html.EditorFor(model => model.link_gambar, new { htmlAttributes = new { @onchange = "preview()", @required = "required", @type = "file", @class = "form-control-file"} })
-                            <label class="label label-info" >File sebelumnya :  @link[link.Length-1]</label>
+                            @Html.EditorFor(model => model.link_gambar, new { htmlAttributes = new { @onchange = "preview()",  @type = "file", @class = "form-control-file"} })
+                            <input type="hidden" name="tlink_gambar" id="tlink_gambar" value="@Model.link_gambar" />
                             <hr />
 
                             <div class="row">
+                                <script>
+                                    document.write('<a href="' + document.referrer + '" class="btn btn-secondary">Kembali</a>');
+                                </script>
                                 <div class="col">
                                     <button class="btn btn-primary float-right" id="btnSubmit" onclick="SubmitData()">Perbarui tawaran</button>
                                     @*<button class="btn btn-warning float-right" onblur="preview()">Preview Penawaran</button>*@
@@ -74,7 +77,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-2">
-                                <img id="nlink_gambar" src="@Model.link_gambar" class="card-img-top" alt="...">
+                                <img id="nlink_gambar" src="~/Content/RoleRental/Image/Barang/@Model.link_gambar" class="card-img-top" alt="...">
                             </div>
                             <div class="col">
 
@@ -88,7 +91,7 @@
                                 </p>
                                 <p style="line-height:1px">
                                     <small>
-                                        Stok Tersedia · Diperbarui @Model.modidate.Value.ToString("dd/MM/yyyy")
+                                        Stok Tersedia · Diperbarui @Model.modidate.ToString("dd/MM/yyyy")
                                     </small>
                                 </p>
                                 <p style="line-height:1px">
@@ -117,10 +120,9 @@
 </div>
 
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    function test() {
-        alert('aa');
-    }
+    
     function changeJenisBarang() {
         var id = document.getElementById("ddlKelompokJenis").value;
         var totalkelompok = @ViewBag.totalkelompokjenis;
@@ -201,13 +203,29 @@
         document.getElementById("nnama_barang").innerHTML = nama_barang;
         document.getElementById("nharga_sewa").innerHTML = harga_sewa;
         document.getElementById("ndeskripsi_barang").innerHTML = deskripsi_barang;
-        document.getElementById("nlink_gambar").setAttribute("src", "http://localhost:51457/Content/RoleAdmin/img/" + link_gambar[2]);
+        document.getElementById("nlink_gambar").setAttribute("src", "http://localhost:51457/Content/Temp/" + link_gambar[2]);
 
         //alert(document.getElementById("harga_sewa").value);
 
         //document.getElementById("btnSubmit").disabled = false;
     }
+    $("#link_gambar").change(function () {
+        var fd = new FormData();
+        var gambar = document.getElementById("link_gambar");
+        if (gambar.value == null) {
+            return;
+        }
+        fd.append(gambar.files[0].name, gambar.files[0]);
 
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Rental/uploadFile');
+        xhr.send(fd);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+            }
+        }
+    });
     function SubmitData() {
         var harga_sewa = document.getElementById("iharga_sewa").value;
         var deskripsi_barang = document.getElementById("ideskripsi_barang").value;
@@ -221,6 +239,26 @@
             rupiah = split[0].substr(0, sisa),
             ribuan = split[0].substr(sisa).match(/\d{3}/gi);
         document.getElementById("id_jenisbarang").value = document.getElementById("ddljenisbarang").value;
-        alert(document.getElementById("id_jenisbarang").value);
+        
+
+        //Upload gambar
+        var fd = new FormData();
+
+        var gambar = document.getElementById("link_gambar");
+        if (gambar.value == "") {
+            return;
+        }
+
+
+        fd.append(gambar.files[0].name, gambar.files[0]);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Rental/uploadFileFix');
+        xhr.send(fd);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+            }
+        }
     }
 </script>

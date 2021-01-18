@@ -1,0 +1,138 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.msadmin>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    ViewBag.Title = "page_admin";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+<h2>Data Admin</h2>
+<br />
+<div id="view">
+    <div id="viewAdmin">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-primary" href="add_admin">Tambah Data</a>
+            </div>
+            <div class="col">
+
+                @using (Html.BeginForm("page_admin", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+                {
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian.." })
+                    <input type="submit" value="Cari" class="btn btn-primary" />
+                }
+            </div>
+        </div>
+        <br />
+        <div class="table-responsive">
+            <small>
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>No.</th>
+                            <th>Username</th>
+                            <th>Nama pengguna</th>
+                            <th>Jenis kelamin</th>
+                            <th>Email</th>
+                            <th>Tempat lahir</th>
+                            <th>Tanggal lahir</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = ((Model.PageNumber - 1) * 5) + 1;}
+                        @foreach (var item in Model)
+                        {
+                            if (@item.status == 1)
+                            {
+
+                                <tr>
+                                    <td>@i.</td>
+                                    <td>@item.username</td>
+                                    <td>@item.nama_admin</td>
+                                    @{ if (item.jenis_kelamin == 1)
+                                        {
+                                            <td>Laki-laki</td>
+                                        }
+                                        else
+                                        {
+                                            <td>Perempuan</td>
+                                        }
+                                    }
+                                    <td>@item.email</td>
+                                    <td>@item.tempat_lahir</td>
+                                    <td>@item.tgl_lahir.ToString("dd/MMM/yyyy")</td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col">
+                                                <a href="edit_admin?id=@item.id_admin"><span class="fa fa-edit" title="Edit"></span></a> |
+                                                <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_admin','Tanggal Gabung : @item.creadate.ToString("dd/MM/yyy")')"><span class="fa fa-info" title="Details"></span></a> |
+                                                <a onclick="return confirm('Yakin akan menghapus ?')"
+                                                   href="hapus_admin?id=@item.id_admin"><span class="fa fa-trash" title="Hapus"></span></a>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </small>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageNumber != 1)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                    }
+
+                    <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                    @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDetail(a,b) {
+        var header = a;
+        var body = b;
+
+        document.getElementById("detail_header").innerHTML = "";
+        document.getElementById("detail_body").innerHTML = "";
+
+        document.getElementById("detail_header").innerHTML = header;
+        document.getElementById("detail_body").innerHTML = body;
+
+
+    }
+</script>

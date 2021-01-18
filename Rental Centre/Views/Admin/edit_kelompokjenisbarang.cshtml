@@ -12,15 +12,15 @@
     <div class="card">
         <div class="card-header">Edit Kelompok Jenis</div>
         <div class="card-body">
-            Nama Kelompok Jenis
+            Nama Kelompok Jenis<span style="color:red">*</span>
             <input type="text" name="nama_kelompokjenis" value="@Model.nama_kelompokjenis" id="nama_kelompokjenis" class="form-control" required/>
             <br />
             Deskripsi Kelompok Jenis
-            <textarea type="text" name="deskripsi" value="@Model.deskripsi" class="form-control" required>@Model.deskripsi</textarea>
+            <textarea type="text" name="deskripsi" value="@Model.deskripsi" class="form-control">@Model.deskripsi</textarea>
             <br />
             <input type="hidden" name="id_kelompokjenis" value="@Model.id_kelompokjenis" />
             <a href="page_kelompokjenisbarang" class="btn btn-secondary">Kembali</a>
-            <input type="submit" class="btn btn-warning float-right" value="Perbarui data" />
+            <input type="submit" class="btn btn-primary float-right" value="Perbarui data" />
         </div>
     </div>
 }

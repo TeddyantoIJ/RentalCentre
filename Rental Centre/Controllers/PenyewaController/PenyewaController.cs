@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 
@@ -42,7 +44,13 @@ namespace Rental_Centre.Controllers.PenyewaController
         }
         #endregion
         #region add
-        
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         [HttpPost]
         public ActionResult add_myAccount(mspenyewa mspenyewa)
         {
@@ -51,8 +59,48 @@ namespace Rental_Centre.Controllers.PenyewaController
             mspenyewa.status = 1;
             mspenyewa.saldo = 0;
             mspenyewa.nama_penyewa = mspenyewa.nama_penyewa;
+            mspenyewa.password = RandomString(10);
+             
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var senderEmail = new MailAddress("rentalcentreofficial@gmail.com","Rental Centre");
+                    var receiverEmail = new MailAddress(mspenyewa.email, "Receiver");
+                    var password = "@RentalCentre123";
+                    var sub = "Rental Centre Official, Verifikasi Password";
+                    var body = "<h2>Hello, " + mspenyewa.nama_penyewa +
+                            "</h2>Berkaitan dengan website Rental Centre, Berikut Terlampir detail informasi akun anda<br>"
+                            + "Username : <b>" + mspenyewa.username + "</b><br>Password   : <b>" + mspenyewa.password +
+                            "</b>Sekian info yang dapat kami sampaikan atas perhatiannya kami ucapkan terimakasih." +
+                            "<br><br>Sekretaris";
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(senderEmail.Address, password)
+                    };
+                    using (var mess = new MailMessage(senderEmail, receiverEmail)
+                    {
+                        Subject = sub,
+                        Body = body,
+                        IsBodyHtml = true
+                    })
+                    {
+                        smtp.Send(mess);
+                    }
+                    
+                    return View();
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Some Error"+ex.Message;
+            }
             this.mspenyewa.addPenyewa(mspenyewa);
-        
             return RedirectToAction("Index");
         }
         [HttpPost]

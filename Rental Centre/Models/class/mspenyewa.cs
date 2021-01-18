@@ -26,7 +26,6 @@ namespace Rental_Centre.Models
         public string no_telepon { get; set; }
         public int saldo { get; set; }
         public string NIK { get; set; }
-        public string SKCK { get; set; }
         public string berkas1 { get; set; }
         public string berkas2 { get; set; }
         public int status { get; set; }

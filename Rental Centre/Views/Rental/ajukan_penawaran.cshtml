@@ -63,7 +63,7 @@
                             <div class="row">
                                 <div class="col">
                                     
-                                    <a class="btn btn-primary" href="page_penawaran?id=1">Batal</a>
+                                    <a class="btn btn-secondary" href="page_penawaran">Batal</a>
                                     
                                     <button class="btn btn-primary float-right" id="btnSubmit" onclick="SubmitData()">Ajukan tawaran</button>
                                     @*<button class="btn btn-warning float-right" onblur="preview()">Preview Penawaran</button>*@
@@ -133,7 +133,7 @@
         $("#link_gambar").change(function () {
             var fd = new FormData();
             var gambar = document.getElementById("link_gambar");
-            alert(gambar);
+            
             if (gambar == null) {
                 return;
             }
@@ -143,11 +143,10 @@
             xhr.open('POST', '/Rental/uploadFile');
             xhr.send(fd);
             xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    alert(xhr.responseText);
+                if (xhr.readyState == 4 && xhr.status == 200) {                    
                 }
             }
-        });
+        });        
     });
 
     function changeJenisBarang(){
@@ -250,6 +249,26 @@
             rupiah = split[0].substr(0, sisa),
             ribuan = split[0].substr(sisa).match(/\d{3}/gi);
         document.getElementById("id_jenisbarang").value = document.getElementById("ddljenisbarang").value;
-        alert(document.getElementById("id_jenisbarang").value);
+
+        
+        //Upload gambar
+        var fd = new FormData();
+
+        var gambar = document.getElementById("link_gambar");        
+        if (gambar.value == "") {
+            return;
+        }
+
+        
+        fd.append(gambar.files[0].name, gambar.files[0]);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Rental/uploadFileFix');
+        xhr.send(fd);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+            }
+        }
     }
 </script>

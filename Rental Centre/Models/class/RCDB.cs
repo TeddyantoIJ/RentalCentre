@@ -16,5 +16,6 @@ namespace Rental_Centre.Models
         public DbSet<msprovinsi> msprovinsi { get; set; }
         public DbSet<mspenyewa> mspenyewa { get; set; }
         public DbSet<mskodepos> mskodepos { get; set; }
+        public DbSet<msrental> msrental { get; set; }
     }
 }

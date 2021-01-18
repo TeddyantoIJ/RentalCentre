@@ -1,0 +1,166 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.mspenyewa>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    ViewBag.Title = "page_penyewa";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+
+<h2>Data Penyewa</h2>
+<br />
+
+<div id="view">
+
+    <div class="row">
+        <div class="col">
+
+        </div>
+        <div class="col">
+
+            @using (Html.BeginForm("page_penyewa", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+            {
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian.." })
+                <input type="submit" value="Cari" class="btn btn-primary" />
+            }
+        </div>
+    </div>
+    <br />
+    @{ int i = ((Model.PageNumber - 1) * 5) + 1;}
+    <small>
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            No.
+                        </th>
+                        <th>
+                            Username
+                        </th>
+                        <th>
+                            Nama Penyewa
+                        </th>
+                        <th>
+                            Jenis Kelamin
+                        </th>
+                        <th>
+                            No Telepon
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                            Saldo
+                        </th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    if (item.status == 1)
+                    {
+                        <tr>
+                            <td>@i.</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.username)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.nama_penyewa)
+                            </td>
+                            @if (item.jenis_kelamin == 0)
+                            {
+                                <td>Laki - laki</td>
+                            }
+                            else
+                            {
+                                <td>Perempuan</td>
+                            }
+                            <td>
+                                @Html.DisplayFor(modelItem => item.no_telepon)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.email)
+                            </td>
+                            @{
+                                string harga = String.Format("{0:c}", item.saldo);
+                            }
+                            <td>Rp @harga.Replace("Rp", "")</td>
+                            
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        @*<a href="edit_kelompokjenisbarang?id=@item.id_penyewa"><span class="fa fa-edit" title="Edit"></span></a> |*@
+                                        <a href="#" data-toggle="modal" data-target="#detail" onclick="setDetail('@item.nama_penyewa','Tanggal Gabung : @item.creadate.ToString("dd/MM/yyyy")')"><span title="Details" class="fa fa-info"></span></a>
+                                        @*<a onclick="return confirm('Yakin akan menghapus kelompok ?')"
+                                           href="hapus_kelompokjenisbarang?id=@item.id_penyewa"><span class="fa fa-trash" title="Hapus"></span></a>*@
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                        i++;
+
+                    }
+                }
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageNumber != 1)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("page_penyewa",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                    }
+
+                    <li class="page-item"><a class="page-link" href="@Url.Action("page_penyewa",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                    @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("page_penyewa",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </small>
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><div id="detail_header"></div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detail_body"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function setDetail(a, b) {
+        var header = a;
+        var body = b;
+
+        document.getElementById("detail_header").innerHTML = "";
+        document.getElementById("detail_body").innerHTML = "";
+
+        document.getElementById("detail_header").innerHTML = header;
+        document.getElementById("detail_body").innerHTML = body;
+
+
+    }
+
+</script>
+
+

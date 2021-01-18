@@ -19,11 +19,15 @@
             <br />
             <div class="row">
                 <div class="col">
-                    Nama pengguna
+                    Nama pengguna<span style="color:red">*</span>
                     <input type="text" name="nama_penyewa" id="nama_penyewa" required />
                 </div>
                 <div class="col">
-                    Foto profil
+                    Username Akun<span style="color:red">*</span>
+                    <input type="text" name="username" id="username" required />
+                </div>
+                <div class="col">
+                    Foto profil<span style="color:red">*</span>
                     <input type="file" name="profil" id="profil" class="form-control" />
                 </div>
             </div>
@@ -39,11 +43,11 @@
                             </div>
                         </div>
                         <div class="col">
-                            Email
+                            Email<span style="color:red">*</span>
                             <input type="email" name="email" id="email" required />
                         </div>
                         <div class="col">
-                            No telepon
+                            No telepon<span style="color:red">*</span>
                             <input type="number" name="no_telepon" id="no_telepon" required />
                         </div>
                     </div>
@@ -59,23 +63,23 @@
                 <div class="col">
                     <div class="row">
                         <div class="col">
-                            Tempat lahir
+                            Tempat lahir<span style="color:red">*</span>
                             <input type="text" name="tempat_lahir" id="tempat_lahir" value="" required />
                         </div>
                         <div class="col">
-                            Tanggal lahir
+                            Tanggal lahir<span style="color:red">*</span>
                             <input type="date" name="tgl_lahir" id="tgl_lahir" value="1977-01-01" required />
                         </div>
                     </div>
                     <br />
                     <div class="row">
                         <div class="col">
-                            Alamat
+                            Alamat<span style="color:red">*</span>
                             <textarea rows="3"  id="isi_alamat" class="form-control" required></textarea>
                             <input type="hidden" name="alamat" id="alamat" />
                         </div>
                         <div class="col-4">
-                            Kodepos
+                            Kodepos<span style="color:red">*</span>
                             <select name="kodepos" id="kodepos" class="form-control" required>
                                 <option value="">- Pilih kodepos -</option>
                                 <option value="52363">52363</option>
@@ -88,46 +92,26 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col">
-                                    NIK
+                                    NIK<span style="color:red">*</span>
                                     <input type="number" name="NIK" id="NIK" required />
                                 </div>
                                 <div class="col">
-                                    Foto KTP
+                                    Foto KTP<span style="color:red">*</span>
                                     <input type="file" name="berkas1" id="berkas1" class="form-control" required />
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col">
-                                    SKCK
-                                    <input type="text" name="SKCK" id="SKCK" required />
+                                    
                                 </div>
                                 <div class="col">
-                                    Foto SKCK
+                                    Foto SIM/NPWP<span style="color:red">*</span>
                                     <input type="file" name="berkas2" id="berkas2" class="form-control" required />
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <hr />
-            <div class="footer-widget" style="width:100px">
-                <h4 style="color:black">Akun</h4>
-            </div>
-            <div class="row">
-                <div class="col">
-                    Username Akun
-                    <input type="text" name="username" id="username" required />
-                    
-                </div>
-                <div class="col">
-                    Password
-                    <input type="password" name="password" id="passsword" required />
-                </div>
-                <div class="col">
-                    Verifikasi Password
-                    <input type="password" name="ver_password" id="ver_passsword" required />
                 </div>
             </div>
             <hr />

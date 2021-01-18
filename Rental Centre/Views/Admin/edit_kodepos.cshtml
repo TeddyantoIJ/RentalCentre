@@ -16,23 +16,23 @@
                     <div class="card-body">
                         <div class="card-header">Ubah Data</div><br />
                         <input type="hidden" name="id_kodepos" value="@Model.id_kodepos" />
-                        Kode Pos
+                        Kode Pos<span style="color:red">*</span>
                         <input class="form-control" type="text" placeholder="Masukkan Kodepos" name="kodepos" value="@Model.kodepos" required />
                         <br />
-                        Kelurahan
+                        Kelurahan<span style="color:red">*</span>
                         <input class="form-control" type="text" placeholder="Masukkan kelurahan" name="kelurahan" value="@Model.kelurahan" required />
                         <br />
-                        Kecamatan
+                        Kecamatan<span style="color:red">*</span>
                         <input class="form-control" type="text" placeholder="Masukkan Kecamatan" name="kecamatan" value="@Model.kecamatan" required />
                         <br />
-                        Kota
+                        Kota<span style="color:red">*</span>
                         <input class="form-control" type="text" placeholder="Masukkan Kota" name="kota" value="@Model.kota" required />
                         <br />
-                        Provinsi
+                        Provinsi<span style="color:red">*</span>
                         <input class="form-control" type="text" placeholder="Masukkan Provinsi" name="provinsi" value="@Model.provinsi" required />
                         <br />
                         <a href="page_kodepos" class="btn btn-secondary">Kembali</a>
-                        <input class="btn btn-warning float-right" id="btnInsert" type="submit" name="btnSubmit" value="Perbarui Data" />
+                        <input class="btn btn-primary float-right" id="btnInsert" type="submit" name="btnSubmit" value="Perbarui Data" />
                     </div>
                 </div>
             </div>

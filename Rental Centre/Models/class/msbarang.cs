@@ -24,6 +24,6 @@ namespace Rental_Centre.Models
         public Nullable<int> creaby { get; set; }
         public Nullable<System.DateTime> creadate { get; set; }
         public Nullable<int> modiby { get; set; }
-        public Nullable<System.DateTime> modidate { get; set; }
+        public DateTime modidate { get; set; }
     }
 }

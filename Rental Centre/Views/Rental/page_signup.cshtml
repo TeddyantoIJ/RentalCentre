@@ -1,0 +1,155 @@
+﻿@model Rental_Centre.Models.msrental
+
+@{
+    ViewBag.Title = "page_signup";
+    Layout = "~/Views/Shared/_PenyewaAddTemplate.cshtml";
+}
+<style>
+    input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 3px solid blue;
+        width: inherit;
+    }
+</style>
+<form action="add_myAccount" method="post" id="add_myAction">
+    <div class="container">
+        <div class="footer-widget">
+            <h4 style="color:black">Registration</h4>
+            <br />
+            <div class="row">
+                <div class="col">
+                    Nama pengguna<span style="color:red">*</span>
+                    <input type="text" name="nama_penyewa" id="nama_penyewa" required />
+                </div>
+                <div class="col">
+                    Username Akun<span style="color:red">*</span>
+                    <input type="text" name="username" id="username" required />
+                </div>
+                <div class="col">
+                    Foto profil<span style="color:red">*</span>
+                    <input type="file" name="profil" id="profil" class="form-control" />
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-3">
+                            Jenis kelamin
+                            <div class="radio-inline ">
+                                <input type="radio" name="jenis_kelamin" value="0" class="radio" checked /> Laki-laki<br />
+                                <input type="radio" name="jenis_kelamin" value="1" class="radio" /> Perempuan
+                            </div>
+                        </div>
+                        <div class="col">
+                            Email<span style="color:red">*</span>
+                            <input type="email" name="email" id="email" required />
+                        </div>
+                        <div class="col">
+                            No telepon<span style="color:red">*</span>
+                            <input type="number" name="no_telepon" id="no_telepon" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card-img">
+                        <img id="gambar" src="#" alt="" class="card-img" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            Tempat lahir<span style="color:red">*</span>
+                            <input type="text" name="tempat_lahir" id="tempat_lahir" value="" required />
+                        </div>
+                        <div class="col">
+                            Tanggal lahir<span style="color:red">*</span>
+                            <input type="date" name="tgl_lahir" id="tgl_lahir" value="1977-01-01" required />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col">
+                            Alamat<span style="color:red">*</span>
+                            <textarea rows="3" id="isi_alamat" class="form-control" required></textarea>
+                            <input type="hidden" name="alamat" id="alamat" />
+                        </div>
+                        <div class="col-4">
+                            Kodepos<span style="color:red">*</span>
+                            <select name="kodepos" id="kodepos" class="form-control" required>
+                                <option value="">- Pilih kodepos -</option>
+                                <option value="52363">52363</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    NIK<span style="color:red">*</span>
+                                    <input type="number" name="NIK" id="NIK" required />
+                                </div>
+                                <div class="col">
+                                    Foto KTP<span style="color:red">*</span>
+                                    <input type="file" name="berkas1" id="berkas1" class="form-control" required />
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col">
+
+                                </div>
+                                <div class="col">
+                                    Foto SIM/NPWP<span style="color:red">*</span>
+                                    <input type="file" name="berkas2" id="berkas2" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="footer-widget">
+                <h4 style="color:black;width:200px">Informasi Toko</h4>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Nama toko<span style="color:red">*</span>
+                    <input type="text" name="nama_toko" value="" />
+                </div>
+                <div class="col">
+                    Alamat toko<span style="color:red">*</span>
+                    <textarea rows="3" id="isi_alamat_toko" class="form-control" required></textarea>
+                    <input type="hidden" name="alamat" id="alamat_toko" />
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    Nama bank<span style="color:red">*</span>
+                                    <input type="text" name="nama_bank" value="" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    No rek<span style="color:red">*</span>
+                                    <input type="text" name="no_rek" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="Index" class="btn btn-secondary" style="border-radius:0">Home</a>
+            <input type="submit" name="btnInsert" id="btnInsert" class="btn btn-primary" style="border-radius:0;" value="Daftar" />
+        </div>
+    </div>
+</form>

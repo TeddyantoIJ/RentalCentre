@@ -5,6 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.IO;
+using PagedList;
+using System.Net.Mail;
+using System.Net;
 
 namespace Rental_Centre.Controllers.AdminController
 {
@@ -21,7 +24,8 @@ namespace Rental_Centre.Controllers.AdminController
         model_msadmin msadmin = new model_msadmin();
         model_msprovinsi msprovinsi = new model_msprovinsi();
         model_mskodepos mskodepos = new model_mskodepos();
-
+        model_msrental msrental = new model_msrental();
+        model_mspenyewa mspenyewa = new model_mspenyewa();
         public ActionResult Index()
         {
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
@@ -41,7 +45,44 @@ namespace Rental_Centre.Controllers.AdminController
             ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
             var mskelompokjenis = this.mskelompokjenis.getAllData();
 
+            
+
+            
+
             return View(mskelompokjenis.ToList<mskelompokjenis>());
+        }
+        [HttpGet]
+        public ActionResult page_kelompokjenisbarang(string currentFilter, string searchString, int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag dibutuhkan
+            ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
+            var mskelompokjenis = this.mskelompokjenis.getAllData().Take(this.mskelompokjenis.count());
+
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                mskelompokjenis = mskelompokjenis.Where(s => s.nama_kelompokjenis.ToLower().Contains(searchString.ToLower()));
+            }
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            
+            return View(mskelompokjenis.ToPagedList(pageNumber,pageSize));
         }
         #endregion
         #region tambah
@@ -102,33 +143,7 @@ namespace Rental_Centre.Controllers.AdminController
         #endregion
         
         #region Jenis barang
-        #region upload file
-        //public ActionResult m()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //public ActionResult m(mHttpPostedFileBase file)
-        //{
-        //    if (file != null && file.ContentLength > 0)
-        //        try
-        //        {
-        //            string path = Path.Combine(Server.MapPath("~/Content/RoleUser/images"),
-        //                                       Path.GetFileName(file.FileName));
-        //            file.SaveAs(path);
-        //            ViewBag.Message = "File uploaded successfully";
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            ViewBag.Message = "ERROR:" + ex.Message.ToString();
-        //        }
-        //    else
-        //    {
-        //        ViewBag.Message = "You have not specified a file.";
-        //    }
-        //    return View();
-        //}
-        #endregion
+        
         #region view
         public ActionResult page_jenisbarang()
         {
@@ -140,6 +155,44 @@ namespace Rental_Centre.Controllers.AdminController
             ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
             ViewBag.jumlahkelompok = this.mskelompokjenis.count();
             return View(this.msjenisbarang.getAllData().ToList<msjenisbarang>());
+        }
+        [HttpGet]
+        public ActionResult page_jenisbarang(string currentFilter, string searchString, int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View Bag yang dibutuhkan
+            ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
+            ViewBag.jumlahkelompok = this.mskelompokjenis.count();
+
+            var msjenisbarang = this.msjenisbarang.getAllData()
+                        .Where(s => s.status == 1)
+                        .Take(this.msjenisbarang.count());
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+
+                msjenisbarang = msjenisbarang.Where(s => s.nama_jenisbarang.ToLower().Contains(searchString.ToLower()));
+            }
+            
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(msjenisbarang.ToPagedList(pageNumber, pageSize));
+            
         }
         #endregion
         #region Add
@@ -197,6 +250,44 @@ namespace Rental_Centre.Controllers.AdminController
         #endregion
         #endregion
 
+        #region barang
+        [HttpGet]
+        public ActionResult page_barang(string currentFilter, string searchString, int? page, string searchBy)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View Bag yang dibutuhkan
+            ViewBag.msrental = this.msrental.getAllData().ToList<msrental>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+            var msbarang = this.msbarang.getAllData().Take(this.msbarang.getAllData().ToList<msbarang>().Count());
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                msbarang = msbarang.Where(s => s.nama_barang.ToLower().Contains(searchString.ToLower()));
+            }
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(msbarang.ToPagedList(pageNumber, pageSize));
+
+        }
+        #endregion
+
         #region Provinsi
         #region View
         public ActionResult page_provinsi()
@@ -208,6 +299,37 @@ namespace Rental_Centre.Controllers.AdminController
             //View bag yang dibutuhkan / Data
             var msprovinsi = this.msprovinsi.getAllProvinsi();
             return View(msprovinsi.ToList<msprovinsi>());
+        }
+        [HttpGet]
+        public ActionResult page_provinsi(string currentFilter, string searchString, int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag yang dibutuhkan / Data
+            var msprovinsi = this.msprovinsi.getAllProvinsi().Take(this.msprovinsi.getAllProvinsi().ToList<msprovinsi>().Count());
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                msprovinsi = msprovinsi.Where(s => s.nama_provinsi.ToLower().Contains(searchString.ToLower()));
+            }
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(msprovinsi.ToPagedList(pageNumber, pageSize));
         }
         #endregion
         #region add
@@ -268,10 +390,9 @@ namespace Rental_Centre.Controllers.AdminController
             msadmin msadmin = this.msadmin.getAdmin(id);
             return View(msadmin);
         }
-        
 
-
-        public ActionResult page_pengguna()
+        #region admin
+        public ActionResult page_admin()
         {
             //View Bag Wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
@@ -282,8 +403,47 @@ namespace Rental_Centre.Controllers.AdminController
 
             return View();
         }
-        #region admin
+        [HttpGet]
+        public ActionResult page_admin(string currentFilter, string searchString, int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // ViewBag dibutuhkan
+            var msadmin = this.msadmin.getAllData().Take(this.msadmin.getAllData().ToList<msadmin>().Count());
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                msadmin = msadmin.Where(s => s.nama_admin.ToLower().Contains(searchString.ToLower()));
+            }
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(msadmin.ToPagedList(pageNumber, pageSize));
+        }
+
         #region add
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
         public ActionResult add_admin()
         {
             //View Bag Wajib ada untuk template
@@ -305,9 +465,53 @@ namespace Rental_Centre.Controllers.AdminController
             msadmin.creaby = logged_id;
             msadmin.creadate = DateTime.Now;
             msadmin.status = 1;
+
+            msadmin.password = RandomString(10);
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var senderEmail = new MailAddress("rentalcentreofficial@gmail.com", "Rental Centre");
+                    var receiverEmail = new MailAddress(msadmin.email, "Receiver");
+                    var password = "@RentalCentre123";
+                    var sub = "Rental Centre Official, Verifikasi Password";
+                    var body = "<h2>Hello, " + msadmin.nama_admin +
+                            "</h2>Berkaitan dengan website Rental Centre, Berikut Terlampir detail informasi akun anda<br>"
+                            + "Username : <b>" + msadmin.username + "</b><br>Password   : <b>" + msadmin.password +
+                            "</b><br>Sekian info yang dapat kami sampaikan atas perhatiannya kami ucapkan terimakasih." +
+                            "<br><br>Sekretaris";
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(senderEmail.Address, password)
+                    };
+                    using (var mess = new MailMessage(senderEmail, receiverEmail)
+                    {
+                        Subject = sub,
+                        Body = body,
+                        IsBodyHtml = true
+                    })
+                    {
+                        smtp.Send(mess);
+                    }
+                    //this.msadmin.addPenyewa(msadmin);
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Maaf email tidak ditemukan ";
+                return View();
+            }
+
+
             this.msadmin.addData(msadmin);
                 
-            return RedirectToAction("page_pengguna");
+            return RedirectToAction("page_admin");
         }
         [HttpPost]
         public void uploadFile()
@@ -391,6 +595,74 @@ namespace Rental_Centre.Controllers.AdminController
         }
         #endregion
         #endregion
+
+        #region rental
+        [HttpGet]
+        public ActionResult page_rental(string currentFilter, string searchString, int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View Bag yang dibutuhkan            
+            var msrental = this.msrental.getAllData().Take(this.msrental.getAllData().ToList<msrental>().Count());
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                msrental = msrental.Where(s => s.nama_rental.ToLower().Contains(searchString.ToLower()));
+            }
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(msrental.ToPagedList(pageNumber, pageSize));
+        }
+        #endregion
+
+        #region penyewa
+        [HttpGet]
+        public ActionResult page_penyewa(string currentFilter, string searchString, int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View Bag yang dibutuhkan            
+            var mspenyewa = this.mspenyewa.getAllData().Take(this.mspenyewa.getAllData().ToList<mspenyewa>().Count());
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                mspenyewa = mspenyewa.Where(s => s.nama_penyewa.ToLower().Contains(searchString.ToLower()));
+            }
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(mspenyewa.ToPagedList(pageNumber, pageSize));
+        }
+        #endregion
         #endregion
         #endregion
 
@@ -405,6 +677,58 @@ namespace Rental_Centre.Controllers.AdminController
             //view bag yang dibutuhkan / data
             List<mskodepos> mskodepos = this.mskodepos.getAllKodePos();
             return View(mskodepos);
+        }
+        [HttpGet]
+        public ActionResult page_kodepos(string currentFilter, string searchString, string searchBy, int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //view bag yang dibutuhkan / data
+            var mskodepos = this.mskodepos.getAllKodePos().Take(this.mskodepos.getAllKodePos().ToList<mskodepos>().Count());
+
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentGroup = searchBy;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                if (searchBy == "Kodepos")
+                {
+                    mskodepos = mskodepos.Where(s => s.kodepos.Contains(searchString));
+                }
+                if (searchBy == "Kelurahan")
+                {
+                    mskodepos = mskodepos.Where(s => s.kelurahan.ToLower().Contains(searchString.ToLower()));
+                }
+                if (searchBy == "Kecamatan")
+                {
+                    mskodepos = mskodepos.Where(s => s.kecamatan.ToLower().Contains(searchString.ToLower()));
+                }
+                if (searchBy == "Kota")
+                {
+                    mskodepos = mskodepos.Where(s => s.kota.ToLower().Contains(searchString.ToLower()));
+                }
+                if (searchBy == "Provinsi")
+                {
+                    mskodepos = mskodepos.Where(s => s.provinsi.ToLower().Contains(searchString.ToLower()));
+                }
+            }
+            
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(mskodepos.ToPagedList(pageNumber, pageSize));
+            
         }
         #endregion
         #region Tambah

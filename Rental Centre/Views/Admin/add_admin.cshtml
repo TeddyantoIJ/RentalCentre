@@ -20,16 +20,16 @@
                         <div class="col">
                             <div class="row">
                                 <div class="col">
-                                    Nama
+                                    Nama<span style="color:red">*</span>
                                     <input type="text" name="nama_admin" id="nama_admin" value="" class="form-control" required/>
                                 </div>
-                                <div class="col-4">
-                                    Username
+                                <div class="col">
+                                    Username<span style="color:red">*</span>
                                     <input type="text" name="username" id="username" value="" class="form-control" required/>
                                 </div>
                             </div>
                             <hr />
-                            <div class="row">
+                            @*<div class="row">
                                 <div class="col">
                                     Password
                                     <input type="password" name="password" id="password" value="" class="form-control" required/>
@@ -39,32 +39,32 @@
                                     <input type="password" name="Ver_password" id="Ver_password" value="" class="form-control" required/>
                                 </div>
                             </div>
-                            <hr />
+                            <hr />*@
                             <div class="row">
                                 <div class="col">
-                                    Email
+                                    Email<span style="color:red">*</span>
                                     <input type="email" name="email" id="email" value="" class="form-control" required/>
                                 </div>
                                 <div class="col">
-                                    Profil
+                                    Profil<span style="color:red">*</span>
                                     <input type="file" name="profil" id="profil1"/>
                                 </div>
                             </div>
                             <hr />
                             <div class="row">
                                 <div class="col">
-                                    Tempat Lahir
+                                    Tempat Lahir<span style="color:red">*</span>
                                     <input type="text" name="tempat_lahir" id="tempat_lahir" value="" class="form-control" required/>
                                 </div>
                                 <div class="col">
-                                    Tanggal Lahir
-                                    <input type="date" name="tgl_lahir" id="tgl_lahir" value="" class="form-control" required/>
+                                    Tanggal Lahir<span style="color:red">*</span>
+                                    <input type="date" name="tgl_lahir" id="tgl_lahir" value="1971-01-01" class="form-control" required/>
                                 </div>
                                 <div class="col-3">
-                                    Gender
-                                    <div class="form-control radio-inline">
-                                        <input type="radio" name="jenis_kelamin" value="0" checked/> L
-                                        <input type="radio" name="jenis_kelamin" value="1" /> P
+                                    Gender<span style="color:red">*</span>
+                                    <div class="radio-inline">
+                                        <input type="radio" name="jenis_kelamin" value="0" checked/> Laki - laki<br />
+                                        <input type="radio" name="jenis_kelamin" value="1" /> Perempuan
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +79,7 @@
                             <script>
                                 document.write('<a href="' + document.referrer + '" class="btn btn-secondary">Kembali</a>');
                             </script>
-                            <input type="submit" id="btnSubmit" name="btnSubmit" value="Tambah Data" class="btn btn-warning" />
+                            <input type="submit" id="btnSubmit" name="btnSubmit" value="Tambah Data" class="btn btn-primary" />
                         </div>
                     </div>
                 </div>

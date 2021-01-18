@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Rental_Centre.Models;
 using System.IO;
+using PagedList;
 
 namespace Rental_Centre.Controllers.RentalController
 {
@@ -33,27 +34,41 @@ namespace Rental_Centre.Controllers.RentalController
         #region page_penawaran
 
         #region view
-        public ActionResult page_penawaran(int id)
+        public ActionResult page_penawaran(int? id, string currentFilter, string searchString, int? page)
         {
-
+            int idi = id ?? 1;
+            
 
             //ViewBag
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.msjenisbarang = this.msjenisbarang.getDataByIdKelompok(id).ToList<msjenisbarang>();
-            ViewBag.msbarang = this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, id).ToList<msbarang>();
-
+            ViewBag.msjenisbarang = this.msjenisbarang.getDataByIdKelompok(idi).ToList<msjenisbarang>();
+            
             ViewBag.totalbarang = this.msbarang.count();
             ViewBag.totaljenisbarang = this.msjenisbarang.count();
 
-            //set ViewBag total barang per jenis
-            //int[] sumBarangPerJenis = null;
-            
-            //foreach(msjenisbarang i in ViewBag.msjenisbarang)
-            //{
-            //    sumBarangPerJenis[ = this.msbarang.getJumlahbarangperJenis(i.id_jenisbarang);
-            //}
+            var msbarang = this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).Take(this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).ToList<msbarang>().Count());
+            //Pagging
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
-            return View();
+            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentId = idi;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                msbarang = msbarang.Where(s => s.nama_barang.ToLower().Contains(searchString.ToLower()));
+            }
+
+            int pageSize = this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).ToList<msbarang>().Count() ;
+            int pageNumber = (page ?? 1);
+
+            return View(msbarang.ToPagedList(pageNumber, pageSize));
+            
         }
         #endregion
         
@@ -80,7 +95,7 @@ namespace Rental_Centre.Controllers.RentalController
             barang.harga_sewa = barang.harga_sewa;
             barang.stok_barang = barang.stok_barang;
             barang.deskripsi_barang = barang.deskripsi_barang;
-            barang.link_gambar = "/Content/RoleAdmin/img/"+barang.link_gambar;
+            barang.link_gambar = barang.link_gambar;
 
             barang.status = 1;
             barang.creaby = logged_id;
@@ -90,7 +105,7 @@ namespace Rental_Centre.Controllers.RentalController
             
             
             
-            this.msbarang.createData(barang);
+            //this.msbarang.createData(barang);
 
             return RedirectToAction("page_penawaran", "Rental", new { id = 1 });
 
@@ -114,6 +129,15 @@ namespace Rental_Centre.Controllers.RentalController
             file.SaveAs(path);
 
             //return RedirectToAction("page_penawaran");
+        }
+        [HttpPost]
+        public void uploadFileFix()
+        {
+            HttpPostedFileBase file = Request.Files[0]; //Uploaded file
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Barang"),
+                                               Path.GetFileName(file.FileName));
+
+            file.SaveAs(path);
         }
         #region  edit
         //-- Edit barang 
@@ -143,7 +167,7 @@ namespace Rental_Centre.Controllers.RentalController
             barang.harga_sewa = barang.harga_sewa;
             barang.stok_barang = barang.stok_barang;
             barang.deskripsi_barang = barang.deskripsi_barang;
-            barang.link_gambar = "/Content/RoleAdmin/img/" + barang.link_gambar;
+            barang.link_gambar = barang.link_gambar;
 
             barang.modiby = logged_id;
             barang.modidate = DateTime.Now;
@@ -165,6 +189,15 @@ namespace Rental_Centre.Controllers.RentalController
 
         #region uploadItem
 
+        #endregion
+        #endregion
+
+        #region Account
+        #region addAccount
+        public ActionResult page_signup()
+        {
+            return View();
+        }
         #endregion
         #endregion
     }

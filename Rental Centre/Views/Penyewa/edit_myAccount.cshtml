@@ -76,7 +76,7 @@
                         <div class="col">
                             Alamat
                             <textarea rows="3" id="isi_alamat" class="form-control" required>@Model.alamat</textarea>
-                            <input type="hidden" name="alamat" id="alamat" value="@Model.alamat"/>
+                            <input type="hidden" name="alamat" id="alamat" value="@Model.alamat" />
                         </div>
                         <div class="col-4">
                             Kodepos
@@ -105,8 +105,7 @@
                             <br />
                             <div class="row">
                                 <div class="col">
-                                    SKCK
-                                    <input type="text" name="SKCK" id="SKCK" required value="@Model.SKCK"/>
+                                    
                                 </div>
                                 <div class="col">
                                     Foto SKCK
@@ -126,7 +125,7 @@
             <div class="row">
                 <div class="col">
                     Username Akun
-                    <input type="text" name="username" id="username" class="form-control" required value="@Model.username" readonly/>
+                    <input type="text" name="username" id="username" class="form-control" required value="@Model.username" readonly />
 
                 </div>
                 <div class="col">
@@ -139,7 +138,9 @@
                 </div>
             </div>
             <hr />
-            <a href="Index" class="btn btn-secondary" style="border-radius:0">Home</a>
+            <script>
+                document.write('<a href="' + document.referrer + '" class="btn btn-secondary" style="border-radius:0"">Home</a>');
+            </script>
             <input type="submit" name="btnInsert" id="btnInsert" class="btn btn-primary" style="border-radius:0;" value="Perbarui data" />
         </div>
     </div>

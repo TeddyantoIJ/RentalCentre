@@ -29,7 +29,6 @@ namespace Rental_Centre.Models
             oldData.no_telepon = mspenyewa.no_telepon;
             oldData.saldo = mspenyewa.saldo;
             oldData.NIK = mspenyewa.NIK;
-            oldData.SKCK = mspenyewa.SKCK;
             oldData.berkas1 = mspenyewa.berkas1;
             oldData.berkas2 = mspenyewa.berkas2;
             oldData.modiby = mspenyewa.modiby;
@@ -55,5 +54,12 @@ namespace Rental_Centre.Models
             return (penyewa);
         }
         
+        public IEnumerable<mspenyewa> getAllData()
+        {
+            var mspenyewa = (from data in _DB.mspenyewa
+                              select data);
+
+            return mspenyewa;
+        }
     }
 }
