@@ -2197,7 +2197,6 @@
     <Content Include="Views\Rental\Index.cshtml" />
     <Content Include="Views\Rental\page_penawaran.cshtml" />
     <Content Include="Views\Rental\ajukan_penawaran.cshtml" />
-    <Content Include="Views\Rental\tempAdd.cshtml" />
     <Content Include="Views\Rental\edit_penawaran.cshtml" />
     <Content Include="Views\Rental\editTemp.cshtml" />
     <Content Include="Views\Admin\page_kelompokjenisbarang.cshtml" />

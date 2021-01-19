@@ -51,6 +51,10 @@ namespace Rental_Centre.Controllers.PenyewaController
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        public ActionResult add_myAccount()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult add_myAccount(mspenyewa mspenyewa)
         {

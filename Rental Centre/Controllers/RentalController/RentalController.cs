@@ -7,6 +7,8 @@ using System.Web.Mvc;
 using Rental_Centre.Models;
 using System.IO;
 using PagedList;
+using System.Net.Mail;
+using System.Net;
 
 namespace Rental_Centre.Controllers.RentalController
 {
@@ -14,14 +16,18 @@ namespace Rental_Centre.Controllers.RentalController
     {
         // GET: Rental
         RCDB _DB = new RCDB();
+        msrental logged_in = null;
         static int logged_id = 1;
 
         // MASTER
         model_jenisbarang msjenisbarang = new model_jenisbarang();
         model_kelompokjenis mskelompokjenis = new model_kelompokjenis();
         model_barang msbarang = new model_barang();
-
-
+        model_msrental msrental = new model_msrental();
+        public RentalController()
+        {
+            logged_in = (msrental)TempData["logged_in"];
+        }
         #region index
         public ActionResult Index()
         {
@@ -194,10 +200,98 @@ namespace Rental_Centre.Controllers.RentalController
 
         #region Account
         #region addAccount
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
         public ActionResult page_signup()
         {
             return View();
         }
+        [HttpPost]
+        public ActionResult page_signup(msrental msrental)
+        {
+            msrental.creadate = DateTime.Now;
+            msrental.password = RandomString(10);
+
+            msrental.jml_barang = 0;
+            msrental.status = 1;
+            msrental.saldo = 0;
+            msrental.rating = 0;        
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var senderEmail = new MailAddress("rentalcentreofficial@gmail.com", "Rental Centre");
+                    var receiverEmail = new MailAddress(msrental.email, "Receiver");
+                    var password = "@RentalCentre123";
+                    var sub = "Rental Centre Official, Verifikasi Password";
+                    var body = "<h2>Hello, " + msrental.nama_rental +
+                            "</h2>Berkaitan dengan website Rental Centre, Berikut Terlampir detail informasi akun anda<br>"
+                            + "Username : <b>" + msrental.username + "</b><br>Password   : <b>" + msrental.password +
+                            "</b>Sekian info yang dapat kami sampaikan atas perhatiannya kami ucapkan terimakasih." +
+                            "<br><br>Sekretaris";
+                    var smtp = new SmtpClient
+                    {
+                        Host = "smtp.gmail.com",
+                        Port = 587,
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        UseDefaultCredentials = false,
+                        Credentials = new NetworkCredential(senderEmail.Address, password)
+                    };
+                    using (var mess = new MailMessage(senderEmail, receiverEmail)
+                    {
+                        Subject = sub,
+                        Body = body,
+                        IsBodyHtml = true
+                    })
+                    {
+                        smtp.Send(mess);
+                    }
+                    this.msrental.addData(msrental);
+                    return View();
+                } 
+            }
+            catch (Exception ex)
+            {
+                ViewBag.error = "Alamat email tidak tepat";
+                return View();
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public void uploadFileAkun()
+        {
+            HttpPostedFileBase profil, berkas1, berkas2;
+            string path;
+
+
+            profil = Request.Files[0]; //Uploaded file
+            berkas1 = Request.Files[1]; //Uploaded file
+            berkas2 = Request.Files[2]; //Uploaded file
+
+            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Profil"),
+                                               Path.GetFileName(profil.FileName));
+            profil.SaveAs(path);
+
+            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas1"),
+                                               Path.GetFileName(berkas1.FileName));
+            berkas1.SaveAs(path);
+
+            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas2"),
+                                               Path.GetFileName(berkas2.FileName));
+            berkas2.SaveAs(path);
+
+        }
+        #endregion
+
+        #region edit Account        
         #endregion
         #endregion
     }

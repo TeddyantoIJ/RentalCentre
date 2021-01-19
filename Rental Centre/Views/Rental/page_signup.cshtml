@@ -13,7 +13,13 @@
         width: inherit;
     }
 </style>
-<form action="add_myAccount" method="post" id="add_myAction">
+<div class="row">
+    <div class="col">
+        @ViewBag.error
+    </div>
+</div>
+<form action="page_signup" method="post" id="add_myAction">
+
     <div class="container">
         <div class="footer-widget">
             <h4 style="color:black">Registration</h4>
@@ -21,7 +27,7 @@
             <div class="row">
                 <div class="col">
                     Nama pengguna<span style="color:red">*</span>
-                    <input type="text" name="nama_penyewa" id="nama_penyewa" required />
+                    <input type="text" name="nama_rental" id="nama_rental" required />
                 </div>
                 <div class="col">
                     Username Akun<span style="color:red">*</span>
@@ -49,13 +55,13 @@
                         </div>
                         <div class="col">
                             No telepon<span style="color:red">*</span>
-                            <input type="number" name="no_telepon" id="no_telepon" required />
+                            <input type="number" name="no_telp" id="no_telp" required />
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-4">
                     <div class="card-img">
-                        <img id="gambar" src="#" alt="" class="card-img" />
+                        <img id="gambar" src="/Content/Temp/hannah.jpg" alt="" class="card-img"/>
                     </div>
                 </div>
             </div>
@@ -127,7 +133,7 @@
                 <div class="col">
                     Alamat toko<span style="color:red">*</span>
                     <textarea rows="3" id="isi_alamat_toko" class="form-control" required></textarea>
-                    <input type="hidden" name="alamat" id="alamat_toko" />
+                    <input type="hidden" name="alamat_toko" id="alamat_toko" />
                 </div>
                 <div class="col">
                     <div class="card">
@@ -153,3 +159,60 @@
         </div>
     </div>
 </form>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#profil").on("input",function () {
+            var fd = new FormData();
+            var gambar = document.getElementById("profil");
+            if (gambar.value == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Rental/uploadFile');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("gambar").src = "/Content/Temp/" + gambar.files[0].name;
+                }
+            }
+        });        
+        $("#btnInsert").click(function () {
+            document.getElementById("alamat").value = document.getElementById("isi_alamat").value;
+            document.getElementById("alamat_toko").value = document.getElementById("isi_alamat_toko").value;
+
+            var fd = new FormData();
+
+            var gambar = document.getElementById("profil");
+            var berkas_1 = document.getElementById("berkas1");
+            var berkas_2 = document.getElementById("berkas2");
+
+            if (gambar.value == "" || berkas_1.value == "" || berkas_2.value == "") {
+                return;
+            }
+
+
+
+            fd.append(gambar.files[0].name, gambar.files[0]);
+            fd.append(berkas_1.files[0].name, berkas_1.files[0]);
+            fd.append(berkas_2.files[0].name, berkas_2.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Rental/uploadFileAkun');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                }
+            }
+        });
+    });
+
+
+</script>

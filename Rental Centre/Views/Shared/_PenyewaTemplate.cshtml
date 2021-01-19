@@ -75,30 +75,31 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     @*<div class="custom-select-box">
-                        <select id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
-                            <option>¥ JPY</option>
-                            <option>$ USD</option>
-                            <option>€ EUR</option>
-                        </select>
-                    </div>*@
+                            <select id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
+                                <option>¥ JPY</option>
+                                <option>$ USD</option>
+                                <option>€ EUR</option>
+                            </select>
+                        </div>*@
                     @*<div class="right-phone-box">
-                        <p>Call US :- <a href="#"> +11 900 800 100</a></p>
-                    </div>*@
+                            <p>Call US :- <a href="#"> +11 900 800 100</a></p>
+                        </div>*@
                     <div class="our-link">
                         <ul>
                             @*<li><a href="@Url.Action("page_myAccount", "Penyewa")">My Account</a></li>*@
                             @*<li><a href="#">Our location</a></li>
-        <li><a href="#">Contact Us</a></li>*@
+                                <li><a href="#">Contact Us</a></li>*@
 
 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle arrow" data-toggle="dropdown">Sign-up</a>
                                 <ul class="dropdown-menu" style="background-color:black">
-                                    <li><a href="@Url.Action("page_myAccount", "Penyewa")">Penyewa</a></li>
-                                    <li><a href="@Url.Action("page_myAccount", "Rental")">Rentaler</a></li><li></li>
+                                    <li><a href="@Url.Action("add_myAccount", "Penyewa")">Penyewa</a></li>
+                                    <li><a href="@Url.Action("page_signup", "Rental")">Rentaler</a></li>
+                                    <li></li>
                                 </ul>
                             </li>
-                            <li><a href="#">Sign-in</a></li>
+                            <li><a data-toggle="modal" data-target="#detail" href="#">Sign-in</a></li>
                         </ul>
                     </div>
                 </div>
@@ -226,9 +227,9 @@
         </div>
     </div>
     <!-- End Top Search -->
-    
+
     @RenderBody()
-    
+
     <!-- Start Footer  -->
     <footer>
         <div class="footer-main">
@@ -285,6 +286,48 @@
         </div>
     </footer>
     <!-- End Footer  -->
+    <!-- Modal -->
+
+    <div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width:400px;">
+            <div class="modal-content" style="background-color:whitesmoke">
+                <div class="modal-header">
+
+                    <h1 class="lead" style="color:black">LOGIN</h1>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/Home/Login" method="post">
+                        <div class="row">
+                            <div class="col-1"></div>
+                            <div class="col">
+                                <input type="text" name="username" value="" class="form-control text-center" placeholder="Username" />
+                                <input type="password" name="password" value="" class="form-control text-center" placeholder="Password" />
+
+                                <div class="custom-radio align-items-center">
+                                    <input type="radio" name="role" value="a" checked style="cursor:pointer" /> Admin
+                                    <input type="radio" name="role" value="p" style="cursor:pointer" /> Penyewa
+                                    <input type="radio" name="role" value="r" style="cursor:pointer" /> Rentaller
+                                </div>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="col">
+                                <input type="submit" name="btnSubmit" value="Masuk" class="btn btn-primary form-control" style="border-radius:0px" />
+                                <center><a href="#">Lupa password</a></center>
+                            </div>
+                            <div class="col-2"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Start copyright  -->
     @*<div class="footer-copyright">
             <p class="footer-company">
