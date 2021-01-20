@@ -10,12 +10,12 @@ using System.Net.Mail;
 using System.Net;
 
 namespace Rental_Centre.Controllers.AdminController
-{
+{   
     public class AdminController : Controller
     {
         // GET: Admin
         RCDB _DB = new RCDB();
-        static int logged_id = 1;
+        static int logged_id = -1;
 
         // MASTER
         model_jenisbarang msjenisbarang = new model_jenisbarang();
@@ -26,8 +26,18 @@ namespace Rental_Centre.Controllers.AdminController
         model_mskodepos mskodepos = new model_mskodepos();
         model_msrental msrental = new model_msrental();
         model_mspenyewa mspenyewa = new model_mspenyewa();
+
         public ActionResult Index()
         {
+            if (Session["id"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+            else
+            {
+                logged_id = Convert.ToInt32(Session["id"].ToString());
+            }
+
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
 
@@ -449,8 +459,8 @@ namespace Rental_Centre.Controllers.AdminController
             //View Bag Wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
-
-            return View();
+            msadmin msadmin = new msadmin();
+            return View(msadmin);
         }
         [HttpPost]
         public ActionResult add_admin(msadmin msadmin)
@@ -467,6 +477,16 @@ namespace Rental_Centre.Controllers.AdminController
             msadmin.status = 1;
 
             msadmin.password = RandomString(10);
+
+            if(this.msadmin.adaUsername(msadmin.username) || this.msrental.adaUsername(msadmin.username) || this.mspenyewa.adaUsername(msadmin.username))
+            {
+                ViewBag.error = "Username sudah digunakan";
+                //View Bag Wajib ada untuk template
+                ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+                ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+                return View(msadmin);
+            }
 
             try
             {
@@ -532,7 +552,7 @@ namespace Rental_Centre.Controllers.AdminController
             file.SaveAs(path);
         }
         #endregion
-        #region edit
+        #region edit        
         public ActionResult edit_admin(int id)
         {
             //View Bag Wajib ada untuk template
@@ -784,6 +804,14 @@ namespace Rental_Centre.Controllers.AdminController
             return RedirectToAction("page_kodepos");
         }
         #endregion
+        #endregion
+
+        #region Dan lain lain
+        public ActionResult logout()
+        {
+            logged_id = -1;
+            return RedirectToAction("Index", "Penyewa");
+        }
         #endregion
     }
 }

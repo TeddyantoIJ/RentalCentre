@@ -16,29 +16,45 @@ namespace Rental_Centre.Controllers.RentalController
     {
         // GET: Rental
         RCDB _DB = new RCDB();
-        msrental logged_in = null;
-        static int logged_id = 1;
+        
+        static int logged_id = -1;
 
         // MASTER
         model_jenisbarang msjenisbarang = new model_jenisbarang();
         model_kelompokjenis mskelompokjenis = new model_kelompokjenis();
         model_barang msbarang = new model_barang();
+        model_msadmin msadmin = new model_msadmin();
+        model_msprovinsi msprovinsi = new model_msprovinsi();
+        model_mskodepos mskodepos = new model_mskodepos();
         model_msrental msrental = new model_msrental();
+        model_mspenyewa mspenyewa = new model_mspenyewa();
         public RentalController()
-        {
-            logged_in = (msrental)TempData["logged_in"];
+        {            
+            
+            
         }
         #region index
         public ActionResult Index()
         {
+            
+            if(Session["id"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+            else
+            {
+                logged_id = Convert.ToInt32(Session["id"].ToString());
+            }                        
             //ViewBag
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
             return View();
         }
         #endregion
 
         #region page_penawaran
-
+        
         #region view
         public ActionResult page_penawaran(int? id, string currentFilter, string searchString, int? page)
         {
@@ -51,6 +67,7 @@ namespace Rental_Centre.Controllers.RentalController
             
             ViewBag.totalbarang = this.msbarang.count();
             ViewBag.totaljenisbarang = this.msjenisbarang.count();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
 
             var msbarang = this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).Take(this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).ToList<msbarang>().Count());
             //Pagging
@@ -73,6 +90,10 @@ namespace Rental_Centre.Controllers.RentalController
             int pageSize = this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).ToList<msbarang>().Count() ;
             int pageNumber = (page ?? 1);
 
+            if(pageSize == 0)
+            {
+                return View(msbarang.ToPagedList(pageNumber, 1));
+            }
             return View(msbarang.ToPagedList(pageNumber, pageSize));
             
         }
@@ -86,6 +107,7 @@ namespace Rental_Centre.Controllers.RentalController
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData();
 
             ViewBag.totalkelompokjenis = this.mskelompokjenis.count();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
 
             return View();
         }
@@ -154,6 +176,7 @@ namespace Rental_Centre.Controllers.RentalController
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData();
 
             ViewBag.totalkelompokjenis = this.mskelompokjenis.count();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
 
             //Define all data needed
             msbarang barang = this.msbarang.getBarang(id);
@@ -220,8 +243,14 @@ namespace Rental_Centre.Controllers.RentalController
             msrental.jml_barang = 0;
             msrental.status = 1;
             msrental.saldo = 0;
-            msrental.rating = 0;        
+            msrental.rating = 0;
 
+            if (this.msadmin.adaUsername(msrental.username) || this.msrental.adaUsername(msrental.username) || this.mspenyewa.adaUsername(msrental.username))
+            {
+                ViewBag.error = "Username sudah digunakan";
+                //View Bag Wajib ada untuk template
+                return View();
+            }
             try
             {
                 if (ModelState.IsValid)
@@ -290,9 +319,112 @@ namespace Rental_Centre.Controllers.RentalController
 
         }
         #endregion
+        #region profil
+        public ActionResult page_profil()
+        {
+            //ViewBag
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
 
-        #region edit Account        
+            msrental msrental = this.msrental.getRental(logged_id);
+
+            return View(msrental);
+        }
         #endregion
+        #region edit Account
+        public ActionResult edit_profil()
+        {
+            //ViewBag
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            msrental msrental = this.msrental.getRental(logged_id);
+
+            return View(msrental);
+        }
+        [HttpPost]
+        public ActionResult edit_profil(msrental msrental)
+        {
+            msrental.modidate = DateTime.Now;
+            this.msrental.editData(msrental);
+            return RedirectToAction("Index");
+        }
+        public void uploadProfil()
+        {
+            HttpPostedFileBase file = Request.Files[0]; //Uploaded file
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Profil"),
+                                               Path.GetFileName(file.FileName));
+            file.SaveAs(path);
+
+            //return RedirectToAction("page_penawaran");
+        }
+        public void uploadBerkas1()
+        {
+            HttpPostedFileBase file = Request.Files[0]; //Uploaded file
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas1"),
+                                               Path.GetFileName(file.FileName));
+            file.SaveAs(path);
+
+            //return RedirectToAction("page_penawaran");
+        }
+        public void uploadBerkas2()
+        {
+            HttpPostedFileBase file = Request.Files[0]; //Uploaded file
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas2"),
+                                               Path.GetFileName(file.FileName));
+            file.SaveAs(path);
+
+            //return RedirectToAction("page_penawaran");
+        }
+        #endregion
+        #region edit password
+        public ActionResult edit_password()
+        {
+            //ViewBag
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            msrental msrental = this.msrental.getRental(logged_id);
+
+            return View(msrental);
+        }
+        [HttpPost]
+        public ActionResult edit_password(msrental msrental)
+        {
+            msrental.modidate = DateTime.Now;
+            this.msrental.editPassword(msrental);
+            return RedirectToAction("Index");
+        }
+
+        #endregion
+
+        #region hapus akun
+        public ActionResult hapus_akun()
+        {
+            //ViewBag
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            msrental msrental = this.msrental.getRental(logged_id);
+
+            return View(msrental);
+        }
+        [HttpPost]
+        public ActionResult hapus_akun(msrental msrental)
+        {
+            this.msrental.hapusData(msrental.id_rental);
+            logged_id = -1;
+            return RedirectToAction("Index", "Penyewa", new { id = msrental.id_rental });
+        }
+        #endregion
+        #endregion
+
+        #region Dan lain lain
+        public ActionResult logout()
+        {
+            logged_id = -1;
+            return RedirectToAction("Index", "Penyewa");
+        }
         #endregion
     }
 }

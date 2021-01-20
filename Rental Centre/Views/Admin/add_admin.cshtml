@@ -7,29 +7,28 @@
 }
 
 
-<form method="post" action="add_admin">
+<form method="post" action="add_admin" autocomplete="off">    
     <div id="add">
-        @using (Html.BeginForm())
-        {
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-header">Tambah Admin</div>
-                    <br />
-                    <br />
-                    <div class="row">
-                        <div class="col">
-                            <div class="row">
-                                <div class="col">
-                                    Nama<span style="color:red">*</span>
-                                    <input type="text" name="nama_admin" id="nama_admin" value="" class="form-control" required/>
-                                </div>
-                                <div class="col">
-                                    Username<span style="color:red">*</span>
-                                    <input type="text" name="username" id="username" value="" class="form-control" required/>
-                                </div>
+        <div><center><p style="background-color:red;color:white">@ViewBag.error</p></center></div>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-header">Tambah Admin</div>
+                <br />
+                <br />
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                Nama<span style="color:red">*</span>
+                                <input type="text" name="nama_admin" id="nama_admin" value="@Model.nama_admin" class="form-control" required />
                             </div>
-                            <hr />
-                            @*<div class="row">
+                            <div class="col">
+                                Username<span style="color:red">*</span>
+                                <input type="text" name="username" id="username" value="@Model.username" class="form-control" required />
+                            </div>
+                        </div>
+                        <hr />
+                        @*<div class="row">
                                 <div class="col">
                                     Password
                                     <input type="password" name="password" id="password" value="" class="form-control" required/>
@@ -40,52 +39,52 @@
                                 </div>
                             </div>
                             <hr />*@
-                            <div class="row">
-                                <div class="col">
-                                    Email<span style="color:red">*</span>
-                                    <input type="email" name="email" id="email" value="" class="form-control" required/>
-                                </div>
-                                <div class="col">
-                                    Profil<span style="color:red">*</span>
-                                    <input type="file" name="profil" id="profil1"/>
-                                </div>
+                        <div class="row">
+                            <div class="col">
+                                Email<span style="color:red">*</span>
+                                <input type="email" name="email" id="email" value="@Model.email" class="form-control" required />
                             </div>
-                            <hr />
-                            <div class="row">
-                                <div class="col">
-                                    Tempat Lahir<span style="color:red">*</span>
-                                    <input type="text" name="tempat_lahir" id="tempat_lahir" value="" class="form-control" required/>
-                                </div>
-                                <div class="col">
-                                    Tanggal Lahir<span style="color:red">*</span>
-                                    <input type="date" name="tgl_lahir" id="tgl_lahir" value="1971-01-01" class="form-control" required/>
-                                </div>
-                                <div class="col-3">
-                                    Gender<span style="color:red">*</span>
-                                    <div class="radio-inline">
-                                        <input type="radio" name="jenis_kelamin" value="0" checked/> Laki - laki<br />
-                                        <input type="radio" name="jenis_kelamin" value="1" /> Perempuan
-                                    </div>
-                                </div>
+                            <div class="col">
+                                Profil<span style="color:red">*</span>
+                                <input type="file" name="profil" id="profil1" />
                             </div>
                         </div>
-                        <div class="col-5">
-                            <img src="~/Content/RoleAdmin/img/Canon_1.jpg" id="gambar" alt="Alternate Text" class="card-img" />
+                        <hr />
+                        <div class="row">
+                            <div class="col">
+                                Tempat Lahir<span style="color:red">*</span>
+                                <input type="text" name="tempat_lahir" id="tempat_lahir" value="@Model.tempat_lahir" class="form-control" required />
+                            </div>
+                            <div class="col">
+                                Tanggal Lahir<span style="color:red">*</span>
+                                <input type="date" name="tgl_lahir" id="tgl_lahir" value="@Model.tgl_lahir.ToString("yyyy-MM-dd")" class="form-control" required />
+                            </div>
+                            <div class="col-3">
+                                Gender<span style="color:red">*</span>
+                                <div class="radio-inline">
+                                    <input type="radio" name="jenis_kelamin" value="0" checked /> Laki - laki<br />
+                                    <input type="radio" name="jenis_kelamin" value="1" /> Perempuan
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-4">
-                            <script>
-                                document.write('<a href="' + document.referrer + '" class="btn btn-secondary">Kembali</a>');
-                            </script>
-                            <input type="submit" id="btnSubmit" name="btnSubmit" value="Tambah Data" class="btn btn-primary" />
-                        </div>
+                    <div class="col-5">
+                        <img src="~/Content/RoleAdmin/img/Canon_1.jpg" id="gambar" alt="Alternate Text" class="card-img" />
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-4">
+                        <script>
+                            document.write('<a href="' + document.referrer + '" class="btn btn-secondary">Kembali</a>');
+                        </script>
+                        <input type="submit" id="btnSubmit" name="btnSubmit" value="Tambah Data" class="btn btn-primary" />
                     </div>
                 </div>
             </div>
-        }
         </div>
+
+    </div>
 </form>
 
 
@@ -129,6 +128,6 @@
             }
         });
     });
-    
-    
+
+
 </script>

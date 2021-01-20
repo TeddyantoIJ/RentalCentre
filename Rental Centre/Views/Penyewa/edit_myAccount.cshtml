@@ -198,19 +198,19 @@
             var berkas_2 = document.getElementById("iberkas2");
             
             //check apakah ada yg diubah
-            if (gambar != null) {
+            if (gambar.value != "") {
                 document.getElementById("profil").value = gambar.files[0].name;
-                alert('jalan');
+                
                 uploadFoto();
             }
-            if (berkas_1 != null) {
+            if (berkas_1.value != "") {
                 document.getElementById("berkas1").value = berkas_1.files[0].name;
-                alert('jalan');
+                
                 uploadberkas1();
             }
-            if (berkas_2 != null) {
+            if (berkas_2.value != "") {
                 document.getElementById("berkas2").value = berkas_2.files[0].name;
-                alert('jalan');
+                
                 uploadberkas2();
             }
         });

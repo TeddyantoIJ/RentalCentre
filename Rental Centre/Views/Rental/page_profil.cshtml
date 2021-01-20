@@ -1,0 +1,155 @@
+﻿@model Rental_Centre.Models.msrental
+@{
+    ViewBag.Title = "page_profil";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
+    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
+    ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <img src="~/Content/RoleRental/Image/Profil/@Model.profil" alt="Alternate Text" class="card-img" />
+                </div>
+                <div class="col-8">
+                    <h3><b>Data Profil</b></h3>
+                    <hr />
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Nama</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.nama_rental</p>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Jenis kelamin</p>
+                        </div>
+                        <div class="col">
+                            @{
+                                if (Model.jenis_kelamin == 0)
+                                {
+                                    <p>: Laki-laki </p>
+                                }
+                                else
+                                {
+                                    <p>: Perempuan</p>
+                                }
+                            }                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>NIK</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.NIK</p>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Email</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.email</p>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>No telepon</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.no_telp</p>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Tempat lahir</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.tempat_lahir</p>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Tanggal lahir</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.tgl_lahir.ToString("dd/MM/yyyy")</p>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <p>Alamat</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.alamat</p>                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">                            
+                            <p>Kodepos</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.kodepos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <p>Nama toko</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.nama_toko</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p>Alamat toko</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.alamat_toko</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p>Nama bank</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.nama_bank</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p>No rek</p>
+                        </div>
+                        <div class="col">
+                            <p>: @Model.no_rek</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <b>Berkas 1</b>
+                            <img src="~/Content/RoleRental/Image/Berkas1/@Model.berkas1" alt="" class="card-img"/>
+                        </div>
+                        <div class="col">
+                            <b>Berkas 2</b>
+                            <img src="~/Content/RoleRental/Image/Berkas2/@Model.berkas2" alt="" class="card-img" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

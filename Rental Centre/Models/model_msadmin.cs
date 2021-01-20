@@ -9,6 +9,7 @@ namespace Rental_Centre.Models
     {
         RCDB _DB = new RCDB();
 
+
         public void addData(msadmin msadmin)
         {
             _DB.msadmin.Add(msadmin);
@@ -50,6 +51,15 @@ namespace Rental_Centre.Models
             var msadmin = (from data in _DB.msadmin select data);
 
             return msadmin;
+        }
+        public bool adaUsername(string username)
+        {
+            msadmin msadmin = _DB.msadmin.SingleOrDefault(s => s.username == username);
+            if(msadmin == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -9,6 +9,11 @@ namespace Rental_Centre.Models
     public class model_msrental
     {
         RCDB _DB = new RCDB();
+        public msrental getRental(int id)
+        {
+            msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id);
+            return msrental;
+        }
         public IEnumerable<msrental> getAllData()
         {
             var msrental = (from data in _DB.msrental
@@ -44,15 +49,15 @@ namespace Rental_Centre.Models
             oldData.nama_bank = msrental.nama_bank;
             oldData.no_rek = msrental.no_rek;            
             oldData.modidate = msrental.modidate;
-            if(msrental.profil != "")
+            if(msrental.profil != null)
             {
                 oldData.profil = msrental.profil;
             }
-            if(msrental.berkas1 != "")
+            if(msrental.berkas1 != null)
             {
                 oldData.berkas1 = msrental.berkas1;
             }
-            if(msrental.berkas2 != "")
+            if(msrental.berkas2 != null)
             {
                 oldData.berkas2 = msrental.berkas2;
             }                        
@@ -62,8 +67,18 @@ namespace Rental_Centre.Models
         public void hapusData(int id)
         {
             msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id);
+            msrental.modidate = DateTime.Now;
             msrental.status = 0;
             _DB.SaveChanges();
+        }
+        public bool adaUsername(string username)
+        {
+            msrental msrental = _DB.msrental.SingleOrDefault(s => s.username == username);
+            if (msrental == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

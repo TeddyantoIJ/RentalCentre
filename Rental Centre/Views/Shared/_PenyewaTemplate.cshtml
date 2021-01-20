@@ -36,7 +36,7 @@
 </head>
 
 <body>
-
+    @ViewBag.error
     <!-- Start Main Top -->
     <div class="main-top">
         <div class="container-fluid">
@@ -85,21 +85,36 @@
                             <p>Call US :- <a href="#"> +11 900 800 100</a></p>
                         </div>*@
                     <div class="our-link">
-                        <ul>
-                            @*<li><a href="@Url.Action("page_myAccount", "Penyewa")">My Account</a></li>*@
-                            @*<li><a href="#">Our location</a></li>
-                                <li><a href="#">Contact Us</a></li>*@
-
-
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle arrow" data-toggle="dropdown">Sign-up</a>
-                                <ul class="dropdown-menu" style="background-color:black">
-                                    <li><a href="@Url.Action("add_myAccount", "Penyewa")">Penyewa</a></li>
-                                    <li><a href="@Url.Action("page_signup", "Rental")">Rentaler</a></li>
-                                    <li></li>
-                                </ul>
-                            </li>
-                            <li><a data-toggle="modal" data-target="#detail" href="#">Sign-in</a></li>
+                        <ul>            
+                            @{ string hidden = "hidden";
+                                if(ViewBag.logged_in == "hidden")
+                                {
+                                    hidden = "";
+                                }
+                                else
+                                {
+                                    hidden = "hidden";
+                                }
+                            }
+                            <div @hidden>
+                                <li class="dropdown">
+                                    <a href="#" data-target="#detail" data-toggle="card" >Profile</a>
+                                    <div class="menu"></div>
+                                    
+                                    
+                                </li>                                
+                            </div>
+                            <div @ViewBag.logged_in>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle arrow" data-toggle="dropdown">Sign-up</a>
+                                    <ul class="dropdown-menu" style="background-color:black">
+                                        <li><a href="@Url.Action("add_myAccount", "Penyewa")">Penyewa</a></li>
+                                        <li><a href="@Url.Action("page_signup", "Rental")">Rentaler</a></li>
+                                        <li></li>
+                                    </ul>
+                                </li>
+                                <li><a data-toggle="modal" data-target="#detail" href="#">Sign-in</a></li>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -299,18 +314,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/Home/Login" method="post">
+                    <form action="/Home/Login" method="post" autocomplete="off">
                         <div class="row">
                             <div class="col-1"></div>
                             <div class="col">
-                                <input type="text" name="username" value="" class="form-control text-center" placeholder="Username" />
-                                <input type="password" name="password" value="" class="form-control text-center" placeholder="Password" />
-
-                                <div class="custom-radio align-items-center">
-                                    <input type="radio" name="role" value="a" checked style="cursor:pointer" /> Admin
-                                    <input type="radio" name="role" value="p" style="cursor:pointer" /> Penyewa
-                                    <input type="radio" name="role" value="r" style="cursor:pointer" /> Rentaller
-                                </div>
+                                <input type="text" name="username" value="" class="form-control text-center" placeholder="Username" required/>
+                                <input type="password" name="password" value="" class="form-control text-center" placeholder="Password" required/>
                             </div>
                             <div class="col-1"></div>
                         </div>

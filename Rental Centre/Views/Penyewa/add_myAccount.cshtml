@@ -12,7 +12,8 @@
         width: inherit;
     }
 </style>
-<form action="add_myAccount" method="post" id="add_myAction">
+<form action="add_myAccount" method="post" id="add_myAction" autocomplete="off">
+    <div><center><p style="background-color:red;color:white">@ViewBag.error</p></center></div>
     <div class="container">
         <div class="footer-widget">
             <h4 style="color:black">Registration</h4>
@@ -75,7 +76,7 @@
                     <div class="row">
                         <div class="col">
                             Alamat<span style="color:red">*</span>
-                            <textarea rows="3"  id="isi_alamat" class="form-control" required></textarea>
+                            <textarea rows="3" id="isi_alamat" class="form-control" required></textarea>
                             <input type="hidden" name="alamat" id="alamat" />
                         </div>
                         <div class="col-4">
@@ -97,17 +98,17 @@
                                 </div>
                                 <div class="col">
                                     Foto KTP<span style="color:red">*</span>
-                                    <input type="file" name="berkas1" id="berkas1" class="form-control" required />
+                                    <input type="file" name="berkas1" id="berkas1" class="form-control"  />
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col">
-                                    
+
                                 </div>
                                 <div class="col">
                                     Foto SIM/NPWP<span style="color:red">*</span>
-                                    <input type="file" name="berkas2" id="berkas2" class="form-control" required />
+                                    <input type="file" name="berkas2" id="berkas2" class="form-control"  />
                                 </div>
                             </div>
                         </div>

@@ -61,5 +61,14 @@ namespace Rental_Centre.Models
 
             return mspenyewa;
         }
+        public bool adaUsername(string username)
+        {
+            mspenyewa mspenyewa = _DB.mspenyewa.SingleOrDefault(s => s.username == username);
+            if (mspenyewa == null)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

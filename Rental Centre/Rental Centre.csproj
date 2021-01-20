@@ -2226,6 +2226,10 @@
     <Content Include="Views\Admin\page_barang.cshtml" />
     <Content Include="Views\Admin\page_rental.cshtml" />
     <Content Include="Views\Admin\page_penyewa.cshtml" />
+    <Content Include="Views\Rental\edit_profil.cshtml" />
+    <Content Include="Views\Rental\edit_password.cshtml" />
+    <Content Include="Views\Rental\hapus_akun.cshtml" />
+    <Content Include="Views\Rental\page_profil.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -14,7 +14,7 @@ namespace Rental_Centre.Controllers.PenyewaController
     {
         // GET: Penyewa
         RCDB _DB = new RCDB();
-        static int logged_id = 1;
+        static int logged_id = -1;
 
         // MASTER
         model_jenisbarang msjenisbarang = new model_jenisbarang();
@@ -22,16 +22,26 @@ namespace Rental_Centre.Controllers.PenyewaController
         model_barang msbarang = new model_barang();
         model_msadmin msadmin = new model_msadmin();
         model_msprovinsi msprovinsi = new model_msprovinsi();
+        model_mskodepos mskodepos = new model_mskodepos();
+        model_msrental msrental = new model_msrental();
         model_mspenyewa mspenyewa = new model_mspenyewa();
 
         public ActionResult Index()
         {
+            
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
+            if(Session["id"] != null)
+            {
+                logged_id = Convert.ToInt32(Session["id"].ToString());
+                ViewBag.logged_in = "hidden";                
+            }
             return View();
+            
         }
+        
         #region MyAccount
         #region View / sudah login
         public ActionResult page_myAccount()
@@ -64,7 +74,15 @@ namespace Rental_Centre.Controllers.PenyewaController
             mspenyewa.saldo = 0;
             mspenyewa.nama_penyewa = mspenyewa.nama_penyewa;
             mspenyewa.password = RandomString(10);
-             
+
+            if (this.msadmin.adaUsername(mspenyewa.username) || this.msrental.adaUsername(mspenyewa.username) || this.mspenyewa.adaUsername(mspenyewa.username))
+            {
+                ViewBag.error = "Username sudah digunakan";
+                //View Bag Wajib ada untuk template
+                
+
+                return View();
+            }
             try
             {
                 if (ModelState.IsValid)

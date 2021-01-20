@@ -2,9 +2,9 @@
 
 @{
     ViewBag.Title = "kelola_barang";
-    ViewBag.Profile = "undraw_profile_2.svg";
-    ViewBag.Nama_user = "Rental 1";
-    ViewBag.Toko_user = "Toko 1";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
+    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
 
     ViewBag.msjenisbarang = ViewBag.msjenisbarang;
     Layout = "~/Views/Shared/_RentalTemplate.cshtml";

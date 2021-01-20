@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace Rental_Centre.Controllers
 {
@@ -20,47 +21,27 @@ namespace Rental_Centre.Controllers
         model_mspenyewa mspenyewa = new model_mspenyewa();
 
 
-        public ActionResult Login(string role, string username, string password)
-        {
-            if(role == "a")
+        public ActionResult Login(string username, string password)
+        {            
+            msadmin msadmin = this.msadmin.getAllData().SingleOrDefault<msadmin>(s => s.username == username && s.password == password);
+            mspenyewa mspenyewa = this.mspenyewa.getAllData().SingleOrDefault<mspenyewa>(s => s.username == username && s.password == password);
+            msrental msrental = this.msrental.getAllData().SingleOrDefault<msrental>(s => s.username == username && s.password == password);
+            if (msadmin != null && msadmin.status == 1)
             {
-                msadmin msadmin = this.msadmin.getAllData().Single<msadmin>(s => s.username == username && s.password == password);
-                if(msadmin != null)
-                {
-                    Session["logged_in"] = msadmin;
-
-                    ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-                    ViewBag.logged_in = this.msadmin.getAdmin(msadmin.id_admin);
-
-                    return View("~/Views/Admin/Index.cshtml");
-                }
-            }
-            if (role == "p")
+                Session["id"] = msadmin.id_admin;
+                return RedirectToAction("Index", "Admin");
+            }                        
+            if (mspenyewa != null && mspenyewa.status == 1)
             {
-                mspenyewa mspenyewa = this.mspenyewa.getAllData().Single<mspenyewa>(s => s.username == username && s.password == password);
-                if (mspenyewa != null)
-                {
-                    Session["logged_in"] = mspenyewa;
-
-                    ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-                    ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
-
-                    return View("~/Views/Penyewa/Index.cshtml");
-                }
-            }
-            if (role == "r")
+                Session["id"] = mspenyewa.id_penyewa;
+                return RedirectToAction("Index", "Penyewa");
+            }                        
+            if (msrental != null && msrental.status == 1)
             {
-                msrental msrental = this.msrental.getAllData().Single<msrental>(s => s.username == username && s.password == password);
-                if (msrental != null)
-                {
-                    
-                    TempData["logged_in"] = msrental;
-                    ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-                    ViewBag.logged_in = msrental;
-                    return View("~/Views/Rental/Index.cshtml");
-                }
+                Session["id"] = msrental.id_rental;
+                return RedirectToAction("Index", "Rental");
             }
-            return View();
+            return RedirectToAction("Index", "Penyewa");
         }        
     }
 }

@@ -1,0 +1,36 @@
+﻿@model Rental_Centre.Models.msrental
+@{
+    ViewBag.Title = "hapus_akun";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
+    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
+    ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<form action="hapus_akun" method="post" autocomplete="off">
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <center>
+                            <b style="color:red">PERINGATAN!</b>
+                            <input type="hidden" name="id_rental" value="@Model.id_rental" />
+                            <p>Dengan menghapus akun, anda tidak dapat menggunakan akun ini lagi untuk sementara</p>
+                            <p>Anda bisa menggunakannya lagi setelah diaktifkan kembali</p>
+                            Mohon masukkan kata / kaliman "hapus @Model.nama_rental"<br />
+                            <input type="text" name="konfirmasi" class="form-control text-center" required />
+                            <input type="checkbox" name="check" value="Saya mengerti" class="checkbox checkbox-inline" required /> Saya paham dengan <span style="color:red;font-size:17px">risiko</span> saya<br />
+                            <br />                            
+                            <input type="submit" name="btnSubmit" value="Nonaktifkan" class=" btn btn-danger float-right" style="border-radius:0" />
+                        </center>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</form>
+
