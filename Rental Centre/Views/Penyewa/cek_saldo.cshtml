@@ -1,0 +1,40 @@
+﻿@model Rental_Centre.Models.mspenyewa
+
+@{
+    ViewBag.Title = "cek_saldo";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <div class="card text-center">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="cek_saldo">Cek saldo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="top_up">Top up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="transfer">Transfer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="lihat_mutasi">Mutasi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <p style="font-size:30px">SALDO PADA AKUN ANDA</p>
+                    @{
+                        string saldo = String.Format("{0:c}", Model.saldo);
+                    }                    
+                    <p style="font-size:100px">@saldo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />

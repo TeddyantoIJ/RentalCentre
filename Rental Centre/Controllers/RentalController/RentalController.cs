@@ -20,14 +20,20 @@ namespace Rental_Centre.Controllers.RentalController
         static int logged_id = -1;
 
         // MASTER
-        model_jenisbarang msjenisbarang = new model_jenisbarang();
-        model_kelompokjenis mskelompokjenis = new model_kelompokjenis();
-        model_barang msbarang = new model_barang();
+        model_msjenisbarang msjenisbarang = new model_msjenisbarang();
+        model_mskelompokjenis mskelompokjenis = new model_mskelompokjenis();
+        model_msbarang msbarang = new model_msbarang();
         model_msadmin msadmin = new model_msadmin();
         model_msprovinsi msprovinsi = new model_msprovinsi();
         model_mskodepos mskodepos = new model_mskodepos();
         model_msrental msrental = new model_msrental();
         model_mspenyewa mspenyewa = new model_mspenyewa();
+
+        //TRANSAKSI
+        model_trpembayaran trpembayaran = new model_trpembayaran();
+        model_trtopup trtopup = new model_trtopup();
+        model_dtmutasisaldo dtmutasisaldo = new model_dtmutasisaldo();
+
         public RentalController()
         {            
             
@@ -419,10 +425,64 @@ namespace Rental_Centre.Controllers.RentalController
         #endregion
         #endregion
 
+        #region DANA
+        public ActionResult cek_saldo()
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            msrental msrental = this.msrental.getRental(logged_id);
+            return View(msrental);
+
+        }
+
+        #region TOP UP
+        public ActionResult top_up()
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult top_up(FormCollection data)
+        {
+            trtopup trtopup = new trtopup();
+            trtopup.jml_topup = Convert.ToInt32(data["jml_dibayar"]);
+            trtopup.bukti_topup = data["bukti_pembayaran"];
+            trtopup.creadate = DateTime.Now;
+            trtopup.validate = 0;
+            trtopup.id_rental = logged_id;
+            trtopup.status = 1;
+
+            this.trtopup.addData(trtopup);
+
+            return RedirectToAction("cek_saldo");
+        }
+        #endregion
+
+        public ActionResult lihat_mutasi(int? page)
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            //Viewbag dibutuhkan            
+            var dtmutasisaldo = this.dtmutasisaldo.getAllRental(logged_id).Take(this.dtmutasisaldo.getAllRental(logged_id).ToList<dtmutasisaldo>().Count());
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+
+            return View(dtmutasisaldo.ToPagedList(pageNumber, pageSize));
+        }
+        #endregion
         #region Dan lain lain
         public ActionResult logout()
         {
             logged_id = -1;
+            Session["id"] = null;
             return RedirectToAction("Index", "Penyewa");
         }
         #endregion

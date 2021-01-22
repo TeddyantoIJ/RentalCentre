@@ -11,9 +11,9 @@ namespace Rental_Centre.Controllers
     public class HomeController : Controller
     {
         RCDB _DB = new RCDB();
-        model_jenisbarang msjenisbarang = new model_jenisbarang();
-        model_kelompokjenis mskelompokjenis = new model_kelompokjenis();
-        model_barang msbarang = new model_barang();
+        model_msjenisbarang msjenisbarang = new model_msjenisbarang();
+        model_mskelompokjenis mskelompokjenis = new model_mskelompokjenis();
+        model_msbarang msbarang = new model_msbarang();
         model_msadmin msadmin = new model_msadmin();
         model_msprovinsi msprovinsi = new model_msprovinsi();
         model_mskodepos mskodepos = new model_mskodepos();

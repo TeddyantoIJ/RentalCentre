@@ -1,0 +1,26 @@
+﻿@model Rental_Centre.Models.msrental
+
+@{
+    ViewBag.Title = "cek_saldo";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
+    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
+    ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col">
+                    <p style="font-size:30px">SALDO PADA AKUN ANDA</p>
+                    @{
+                        string saldo = String.Format("{0:c}", Model.saldo);
+                    }
+                    <p style="font-size:100px">@saldo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -6,7 +6,7 @@ using System.Data.Entity;
 
 namespace Rental_Centre.Models
 {
-    public class model_barang
+    public class model_msbarang
     {
         RCDB _DB = new RCDB();
         public int count()

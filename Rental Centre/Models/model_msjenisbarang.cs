@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Rental_Centre.Models
 {
-    public class model_jenisbarang
+    public class model_msjenisbarang
     {
         RCDB _DB = new RCDB();
 

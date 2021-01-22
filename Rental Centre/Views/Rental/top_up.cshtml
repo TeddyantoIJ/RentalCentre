@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "top_up";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
+    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
+    ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <form action="top_up" method="post" autocomplete="off" id="forminput">
+        <div class="card text-center">            
+            <div class="card-body">
+                <br />
+                <div class="row">
+                    <div class="col-3 border">
+                        <div class="row">
+                            <div class="col">
+                                <p class="float-left">Jumlah top up</p>
+                                <input type="text" id="jml_dibayar" name="jml_dibayar" value="" placeholder="Rp 1.000.000" onkeyup="this.value = formatCurrency(this.value,'')" required class="form-control" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <p class="float-left">Bukti transfer / top up</p>
+                                <input type="file" id="bukti_pembayaran" name="bukti_pembayaran" value="" class="form-control-file" required />
+                                <input type="hidden" name="ibukti_pembayaran" value="" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <input type="submit" class="btn btn-primary form-control" value="Kirim" onclick="ubah()">
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="col align-items-center">
+                        <img src="#" alt="" class="float-left" id="gambar" style="border:3px dashed black" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#bukti_pembayaran").on("input", function () {
+            var fd = new FormData();
+            var gambar = document.getElementById("bukti_pembayaran");
+            if (gambar.value == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Rental/uploadFile');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("gambar").src = "/Content/Temp/" + gambar.files[0].name;
+                }
+            }
+        });
+
+        $("#forminput").submit(function (event) {
+            var fd = new FormData();
+            var gambar = document.getElementById("bukti_pembayaran");
+            if (gambar.value == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Penyewa/uploadBukti');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    
+                }
+            }
+        });
+    });
+
+    function formatCurrency(value, prefix) {
+
+        var number_string = value.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+
+    function ubah() {
+
+        var harga = document.getElementById("jml_dibayar").value;
+
+        document.getElementById("jml_dibayar").value = harga.replace(/[^,\d]/g, '').toString(),
+        split = harga.split(','),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    }
+</script>
+

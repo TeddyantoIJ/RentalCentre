@@ -1,0 +1,100 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.dtmutasisaldo>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "mutasi";
+    ViewBag.Profile = ViewBag.Logged_in.profil;
+    ViewBag.Nama_user = ViewBag.Logged_in.nama_admin;
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<div class="container">
+    <div class="card text-center">
+        <div class="card-header"></div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <td>No.</td>                        
+                        <td>Deskripsi</td>
+                        <td>Bersangkutan</td>
+                        <td>Waktu transaksi</td>
+                        <td>Masuk</td>
+                        <td>Keluar</td>
+                        <td>Dana Website</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int no = 1;
+                        int jumlah_page = ViewBag.jumlah;
+                        int jumlah = ViewBag.jumlah;
+                    }
+                    @foreach (var item in Model)
+                    {
+
+                        string uang = String.Format("{0:c}", item.jumlah_transaksi);
+                        string nama = "";
+                        if(item.id_penyewa != null)
+                        {
+                            foreach (var a in ViewBag.mspenyewa)
+                            {
+                                if (a.id_penyewa == item.id_penyewa)
+                                {
+                                    nama = a.nama_penyewa;
+                                }
+                            }
+                        }
+                        if (item.id_rental != null)
+                        {
+                            foreach (var a in ViewBag.msrental)
+                            {
+                                if (a.id_rental == item.id_rental)
+                                {
+                                    nama = a.nama_rental;
+                                }
+                            }
+                        }
+                    <tr>
+                        <td>@no.</td>
+                        <td>@item.jenis_transaksi</td>
+                        <td>@nama</td>
+                        <td>@item.creadate.ToString("dd/MM/yyyy HH:mm")</td>
+                        @{
+                            if (item.jenis_transaksi == "TOP UP")
+                            {
+                                <td>-</td>
+                                <td class="text-right">@uang</td>
+                                jumlah += item.jumlah_transaksi;
+                            }
+                            else
+                            {
+                                <td class="text-right">@uang</td>
+                                <td class="text-right">@uang</td>
+                            }
+                        }
+                        <td class="text-right">@String.Format("{0:c}", jumlah)</td>
+                    </tr>
+                        no++;
+                    }
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageNumber != 1)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber-1, jumlah = jumlah_page})">Previous</a></li>
+                    }
+
+                    <li class="page-item"><a class="page-link">@Model.PageNumber/@Model.PageCount</a></li>
+                    @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber+1, jumlah = jumlah})">Next</a></li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+

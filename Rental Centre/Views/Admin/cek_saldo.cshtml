@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "cek_saldo";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<div class="container">
+    <div class="card text-center">
+        <div class="card-header">
+            
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <p style="font-size:30px">PERPUTARAN UANG PADA WEBSITE SAAT INI</p>
+                    @{
+                        string saldo = String.Format("{0:c}", ViewBag.saldo);
+                    }
+                    <p style="font-size:100px">@saldo</p>
+                    <p style="color:Highlight">*Catatan : ini adalah jumlah dari saldo pada akun yang terdaftar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

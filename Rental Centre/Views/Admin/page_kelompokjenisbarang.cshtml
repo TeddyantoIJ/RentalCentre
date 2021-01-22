@@ -125,13 +125,13 @@
             <ul class="pagination">
                 @if (Model.PageNumber != 1)
                 {
-                    <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="@Url.Action("page_kelopokjenisbarang",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
                 }
 
-                <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                <li class="page-item"><a class="page-link" href="@Url.Action("page_kelopokjenisbarang",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
                 @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
                 {
-                    <li class="page-item"><a class="page-link" href="@Url.Action("page_provinsi",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="@Url.Action("page_kelopokjenisbarang",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
                 }
 
             </ul>

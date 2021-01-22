@@ -103,15 +103,15 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#rekening"
                    aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Rekening</span>
+                    <span>Keuangan</span>
                 </a>
                 <div id="rekening" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">rekening</h6>
-                        <a class="collapse-item" href="#">Cek Saldo</a>
-                        <a class="collapse-item" href="#">Mutasi Rekening</a>
-                        <a class="collapse-item" href="#">Transfer Saldo</a>
-                        <a class="collapse-item" href="#">Top Up</a>
+                        <h6 class="collapse-header">keuangan</h6>
+                        <a class="collapse-item" href="@Url.Action("cek_saldo","Admin")">Cek Saldo Website</a>
+                        <a class="collapse-item" href="@Url.Action("mutasi","Admin")">Mutasi Website</a>
+                        <a class="collapse-item" href="#">Transfer</a>
+                        <a class="collapse-item" href="@Url.Action("user_top_up","Admin")">User Top Up</a>
                     </div>
                 </div>
             </li>
@@ -275,7 +275,7 @@
                         <i class="fa fa-bars"></i>
                     </button>
                     <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                    @*<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
                                    aria-label="Search" aria-describedby="basic-addon2">
@@ -285,7 +285,7 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form>*@
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Nav Item - Search Dropdown (Visible Only XS) -->

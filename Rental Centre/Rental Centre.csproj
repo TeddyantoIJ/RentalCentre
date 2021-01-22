@@ -147,21 +147,41 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\class\dtchat.cs" />
     <Compile Include="Models\class\mskodepos.cs" />
     <Compile Include="Models\class\msrental.cs" />
+    <Compile Include="Models\class\dtdetailpenyewaan.cs" />
+    <Compile Include="Models\class\dtkomentar.cs" />
+    <Compile Include="Models\class\dtmutasisaldo.cs" />
+    <Compile Include="Models\class\dttracking.cs" />
+    <Compile Include="Models\class\trtopup.cs" />
+    <Compile Include="Models\model_dtchat.cs" />
+    <Compile Include="Models\model_dtdetailpenyewaan.cs" />
+    <Compile Include="Models\model_dtkomentar.cs" />
+    <Compile Include="Models\model_dtmutasisaldo.cs" />
+    <Compile Include="Models\model_dttracking.cs" />
     <Compile Include="Models\model_mskodepos.cs" />
     <Compile Include="Models\class\msadmin.cs" />
     <Compile Include="Models\class\msbarang.cs" />
     <Compile Include="Models\class\msjenisbarang.cs" />
     <Compile Include="Models\class\mspenyewa.cs" />
     <Compile Include="Models\class\msprovinsi.cs" />
-    <Compile Include="Models\model_barang.cs" />
-    <Compile Include="Models\model_jenisbarang.cs" />
-    <Compile Include="Models\model_kelompokjenis.cs" />
+    <Compile Include="Models\model_msbarang.cs" />
+    <Compile Include="Models\model_msjenisbarang.cs" />
+    <Compile Include="Models\model_mskelompokjenis.cs" />
     <Compile Include="Models\model_msadmin.cs" />
     <Compile Include="Models\model_msprovinsi.cs" />
     <Compile Include="Models\model_mspenyewa.cs" />
     <Compile Include="Models\model_msrental.cs" />
+    <Compile Include="Models\model_trkeranjang.cs" />
+    <Compile Include="Models\model_trkomentar.cs" />
+    <Compile Include="Models\model_trkritiksaran.cs" />
+    <Compile Include="Models\model_trnotifikasi.cs" />
+    <Compile Include="Models\model_trpembayaran.cs" />
+    <Compile Include="Models\model_trpenyewaan.cs" />
+    <Compile Include="Models\model_trtopup.cs" />
+    <Compile Include="Models\model_trtransaksi.cs" />
+    <Compile Include="Models\model_trwishlist.cs" />
     <Compile Include="Models\RentalModel\msbarang.cs">
       <DependentUpon>RCDB.tt</DependentUpon>
     </Compile>
@@ -191,6 +211,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RCDB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\class\trkeranjang.cs" />
+    <Compile Include="Models\class\trkomentar.cs" />
+    <Compile Include="Models\class\trkritiksaran.cs" />
+    <Compile Include="Models\class\trnotifikasi.cs" />
+    <Compile Include="Models\class\trpembayaran.cs" />
+    <Compile Include="Models\class\trpenyewaan.cs" />
+    <Compile Include="Models\class\trwishlist.cs" />
+    <Compile Include="Models\class\trtransfer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2198,7 +2226,6 @@
     <Content Include="Views\Rental\page_penawaran.cshtml" />
     <Content Include="Views\Rental\ajukan_penawaran.cshtml" />
     <Content Include="Views\Rental\edit_penawaran.cshtml" />
-    <Content Include="Views\Rental\editTemp.cshtml" />
     <Content Include="Views\Admin\page_kelompokjenisbarang.cshtml" />
     <Content Include="Views\Admin\edit_kelompokjenisbarang.cshtml" />
     <Content Include="Views\Admin\add_kelompokjenisbarang.cshtml" />
@@ -2230,6 +2257,17 @@
     <Content Include="Views\Rental\edit_password.cshtml" />
     <Content Include="Views\Rental\hapus_akun.cshtml" />
     <Content Include="Views\Rental\page_profil.cshtml" />
+    <Content Include="Views\Penyewa\edit_password.cshtml" />
+    <Content Include="Views\Penyewa\cek_saldo.cshtml" />
+    <Content Include="Views\Penyewa\top_up.cshtml" />
+    <Content Include="Views\Penyewa\lihat_mutasi.cshtml" />
+    <Content Include="Views\Admin\user_top_up.cshtml" />
+    <Content Include="Views\Rental\cek_saldo.cshtml" />
+    <Content Include="Views\Rental\top_up.cshtml" />
+    <Content Include="Views\Rental\lihat_mutasi.cshtml" />
+    <Content Include="Views\Admin\cek_saldo.cshtml" />
+    <Content Include="Views\Admin\mutasi.cshtml" />
+    <Content Include="Views\Penyewa\transfer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

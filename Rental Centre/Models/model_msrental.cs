@@ -9,9 +9,16 @@ namespace Rental_Centre.Models
     public class model_msrental
     {
         RCDB _DB = new RCDB();
+        model_dtmutasisaldo dtmutasisaldo = new model_dtmutasisaldo();
+
         public msrental getRental(int id)
         {
             msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id);
+            return msrental;
+        }
+        public msrental getRentalUsername(string username)
+        {
+            msrental msrental = _DB.msrental.SingleOrDefault<msrental>(s => s.username == username);
             return msrental;
         }
         public IEnumerable<msrental> getAllData()
@@ -79,6 +86,29 @@ namespace Rental_Centre.Models
                 return false;
             }
             return true;
+        }
+        public void topup(int jumlah_uang, int? id_rental)
+        {
+            msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
+            msrental.saldo = msrental.saldo + jumlah_uang;
+            _DB.SaveChanges();
+            this.dtmutasisaldo.rental_mutasi(id_rental, jumlah_uang, "TOP UP");
+        }
+        public void saldo_tambah(int uang, int id_rental)
+        {
+            msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
+            msrental.saldo = msrental.saldo + uang;
+            _DB.SaveChanges();
+
+            this.dtmutasisaldo.penyewa_mutasi(id_rental, uang, "TERIMA TRANSFER");
+        }
+        public void saldo_kurang(int uang, int id_rental)
+        {
+            msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
+            msrental.saldo = msrental.saldo - uang;
+            _DB.SaveChanges();
+                
+            this.dtmutasisaldo.penyewa_mutasi(id_rental, uang, "TERIMA TRANSFER");
         }
     }
 }

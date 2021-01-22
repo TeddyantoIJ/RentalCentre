@@ -84,15 +84,15 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#rekening"
                    aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Rekening</span>
+                    <span>Dana</span>
                 </a>
                 <div id="rekening" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">rekening</h6>
-                        <a class="collapse-item" href="#">Cek Saldo</a>
-                        <a class="collapse-item" href="#">Mutasi Rekening</a>
-                        <a class="collapse-item" href="#">Transfer Saldo</a>
-                        <a class="collapse-item" href="#">Top Up</a>
+                        <a class="collapse-item" href="@Url.Action("cek_saldo","Rental")">Cek Saldo</a>
+                        <a class="collapse-item" href="@Url.Action("transfer","Rental")">Transfer</a>
+                        <a class="collapse-item" href="@Url.Action("top_up","Rental")">Top Up</a>
+                        <a class="collapse-item" href="@Url.Action("lihat_mutasi","Rental")">Lihat Mutasi</a>
                     </div>
                 </div>
             </li>

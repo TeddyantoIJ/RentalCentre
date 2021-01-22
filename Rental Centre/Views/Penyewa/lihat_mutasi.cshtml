@@ -1,0 +1,95 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.dtmutasisaldo>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "lihat_mutasi";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <div class="card text-center">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="cek_saldo">Cek saldo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="top_up">Top up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="transfer">Transfer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="lihat_mutasi">Mutasi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body" style="height:500px">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <td>No.</td>
+                        <td>Deskripsi</td>
+                        <td>Waktu transaksi</td>
+                        <td>Masuk</td>
+                        <td>Keluar</td>
+                        <td>Total</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int no = 1;
+                        int jumlah = 0;
+                    }
+                    @foreach (var item in Model)
+                    {
+
+                        string uang = String.Format("{0:c}", item.jumlah_transaksi);
+
+                    <tr>
+                        <td>@no.</td>
+                        <td>@item.jenis_transaksi</td>
+                        <td>@item.creadate.ToString("dd/MM/yyyy HH:mm")</td>
+                        @{
+                            if (item.jenis_transaksi == "TOP UP" || item.jenis_transaksi == "TERIMA TRANSFER")
+                            {
+                                <td class="text-right">@uang</td>
+                                <td class="text-right">-</td>
+                                jumlah += item.jumlah_transaksi;
+                            }
+                            else
+                            {
+                                <td class="text-right">-</td>
+                                <td class="text-right">@uang</td>
+                                jumlah -= item.jumlah_transaksi;
+                            }
+                        }
+                        
+                        <td class="text-right">@String.Format("{0:c}", jumlah)</td>
+                    </tr>
+                        no++;
+                    }
+                </tbody>
+            </table>
+            
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageNumber != 1)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("lihat_mutasi",new { page = Model.PageNumber-1})">Previous</a></li>
+                    }
+
+                    <li class="page-item"><a class="page-link" href="@Url.Action("lihat_mutasi",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
+                    @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("lihat_mutasi",new { page = Model.PageNumber+1})">Next</a></li>
+                    }
+
+                </ul>
+            </nav>
+            
+        </div>
+    </div>
+</div>
+<br />

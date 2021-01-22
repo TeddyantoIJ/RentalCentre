@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Site Metas -->
-    <title>ThewayShop - Ecommerce Bootstrap 4 HTML Template</title>
+    <title>Rental Centre - Experienced & Trusted</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -35,7 +35,7 @@
 
 </head>
 
-<body>
+<body style="background-color:ghostwhite">
     @ViewBag.error
     <!-- Start Main Top -->
     <div class="main-top">
@@ -85,9 +85,9 @@
                             <p>Call US :- <a href="#"> +11 900 800 100</a></p>
                         </div>*@
                     <div class="our-link">
-                        <ul>            
+                        <ul>
                             @{ string hidden = "hidden";
-                                if(ViewBag.logged_in == "hidden")
+                                if (ViewBag.logged_in == "hidden")
                                 {
                                     hidden = "";
                                 }
@@ -97,26 +97,60 @@
                                 }
                             }
                             <div @hidden>
-                                <li class="dropdown">
-                                    <a href="#" data-target="#detail" data-toggle="card" >Profile</a>
-                                    <div class="menu"></div>
-                                    
-                                    
-                                </li>                                
+                                <li>
+                                    <div class="dropdown show">
+                                        <a class="dropdown-item" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Profile
+                                        </a>
+
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="#" style="color:black"><small>Lihat profile</small></a>
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("edit_myAccount", "Penyewa")" style="color:black"><small>Edit Profile</small></a>
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("edit_password", "Penyewa")" style="color:black"><small>Ubah Password</small></a>
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("hapus_myAccount", "Penyewa")" style="color:black"><small>Nonaktifkan akun</small></a>
+                                        </div>
+                                    </div>
+                                    <!-- SCRIPT -->
+                                    <script>
+                                        function coloring(a) {
+                                            a.style.color = "lightblue";
+                                        }
+                                        function colored(a) {
+                                            a.style.color = "black";
+                                        }
+                                    </script>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" style="color:red">
+                                        Logout
+                                    </a>
+
+                                </li>
                             </div>
                             <div @ViewBag.logged_in>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle arrow" data-toggle="dropdown">Sign-up</a>
-                                    <ul class="dropdown-menu" style="background-color:black">
-                                        <li><a href="@Url.Action("add_myAccount", "Penyewa")">Penyewa</a></li>
-                                        <li><a href="@Url.Action("page_signup", "Rental")">Rentaler</a></li>
-                                        <li></li>
-                                    </ul>
-                                </li>
                                 <li><a data-toggle="modal" data-target="#detail" href="#">Sign-in</a></li>
                             </div>
                         </ul>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Yakin ingin keluar?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Tekan tombol <span style="color:red">"Logout"</span> di bawah ketika kamu yakin ingin keluar.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" href="@Url.Action("logout", "Penyewa")">Logout</a>
                 </div>
             </div>
         </div>
@@ -132,16 +166,16 @@
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbars-rs-food" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="fa fa-bars"></i>
                     </button>
-                    <a class="navbar-brand" href="index.html"><img src="~/Content/RoleUser/images/logo.png" class="logo" alt=""></a>
+                    <a class="navbar-brand" href="@Url.Action("Index", "Penyewa")"><img src="~/Content/RoleUser/images/logo.png" class="logo-display" Height="50" alt=""></a>
                 </div>
                 <!-- End Header Navigation -->
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="navbar-menu">
                     <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
-                        <li class="nav-item active"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item active"><a class="nav-link" href="@Url.Action("Index", "Penyewa")">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
                         <li class="dropdown megamenu-fw">
-                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">Product</a>
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Product</a>
                             <ul class="dropdown-menu megamenu-content" role="menu">
                                 <li>
                                     <div class="row">
@@ -171,17 +205,30 @@
                             </ul>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">SHOP</a>
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">SHOP</a>
                             <ul class="dropdown-menu">
                                 <li><a href="#">Cart</a></li>
                                 <li><a href="#">Checkout</a></li>
-                                <li><a href="page_myAccount">My Account</a></li>
                                 <li><a href="#">Wishlist</a></li>
                                 <li><a href="#">Shop Detail</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="service.html">Our Service</a></li>
-                        <li class="nav-item"><a class="nav-link" href="contact-us.html">Contact Us</a></li>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Our Service</a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown">
+                                    <a class="nav-link" href="#" data-toggle="dropdown">Dana akun</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="@Url.Action("cek_saldo","Penyewa")">Cek saldo</a></li>
+                                        <li><a href="@Url.Action("top_up","Penyewa")">Top up</a></li>
+                                        <li><a href="@Url.Action("transfer","Penyewa")">Transfer</a></li>
+                                        <li><a href="@Url.Action("lihat_mutasi","Penyewa")">Lihat mutasi</a></li>
+                                    </ul>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="">Contact Us</a></li>
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->
@@ -318,8 +365,8 @@
                         <div class="row">
                             <div class="col-1"></div>
                             <div class="col">
-                                <input type="text" name="username" value="" class="form-control text-center" placeholder="Username" required/>
-                                <input type="password" name="password" value="" class="form-control text-center" placeholder="Password" required/>
+                                <input type="text" name="username" value="" class="form-control text-center" placeholder="Username" required />
+                                <input type="password" name="password" value="" class="form-control text-center" placeholder="Password" required />
                             </div>
                             <div class="col-1"></div>
                         </div>
@@ -327,12 +374,23 @@
                         <div class="row">
                             <div class="col-2"></div>
                             <div class="col">
-                                <input type="submit" name="btnSubmit" value="Masuk" class="btn btn-primary form-control" style="border-radius:0px" />
+                                <input type="submit" name="btnSubmit" value="Masuk" class="btn btn-success form-control" style="border-radius:0px" />
                                 <center><a href="#">Lupa password</a></center>
                             </div>
                             <div class="col-2"></div>
                         </div>
                     </form>
+                    <br />
+                    <div class="row">
+                        <div class="col">
+                            <p>Belum memiliki akun ?</p>
+                            <p>Buat akun <a href="@Url.Action("add_myAccount", "Penyewa")" style="color:blue">Penyewa</a> atau <a href="@Url.Action("page_signup", "Rental")" style="color:blue">Rentaller</a> </p>
+                        </div>
+                    </div>
+
+
+
+
                 </div>
             </div>
         </div>

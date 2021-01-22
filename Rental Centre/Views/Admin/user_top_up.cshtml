@@ -1,0 +1,207 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.trtopup>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "user_top_up";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_admin;
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+<style>
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (Image) */
+.modal-content {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+}
+
+/* Caption of Modal Image (Image Text) - Same Width as the Image */
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+.modal-content, #caption {
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+/* The Close Button */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<div class="container-fluid">
+    <h5>User Top up</h5>
+    <p>Perlu dikonfirmasi oleh admin terkait <span style="color:red">perhatikan</span> bukti transfer dengan benar</p>
+    <br />
+    @foreach (var data in Model)
+    {
+        <div class="card shadow mb-4">
+            <div class="card-body">                
+                @{ string nama = "";}
+                @if (data.id_rental != null)
+                {
+                    foreach (var msrental in ViewBag.msrental)
+                    {
+                        if (msrental.id_rental == data.id_rental)
+                        {
+                            <div class="card-header">Username : @msrental.username</div>
+                            nama = msrental.nama_rental;
+                        }
+                    }
+
+                }
+                @if (data.id_penyewa != null)
+                {
+                    foreach (var mspenyewa in ViewBag.mspenyewa)
+                    {
+                        if (mspenyewa.id_penyewa == data.id_penyewa)
+                        {
+                            <div class="card-header">Username : @mspenyewa.username</div>
+                            nama = mspenyewa.nama_penyewa;
+                        }
+                    }
+                }
+                @{
+                    string topup = String.Format("{0:c}", data.jml_topup);
+                }
+                <br />
+                <div class="row">
+                    <div class="col-3">
+                        <img src="~/Content/RoleAdmin/img/bukti_transfer/@data.bukti_topup" title="Tekan nama file untuk melihat" class="card-img"  />
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-3">
+                                Nama akun
+                            </div>
+                            <div class="col">
+                                : @nama
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                Jumlah top up
+                            </div>
+                            <div class="col">
+                                : <span style="color:blue">@topup</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                Tanggal input
+                            </div>
+                            <div class="col">
+                                : @data.creadate.ToString("dd MMM yyyy")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                Waktu
+                            </div>
+                            <div class="col">
+                                : @data.creadate.ToString("HH:mm WIB")
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3">
+                                Bukti transfer 
+                            </div>
+                            <div class="col">
+                                : <a href="#" onclick="modal('@data.bukti_topup')" title="Periksa bukti">@data.bukti_topup</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2">                        
+                        <div class="row">
+                            <div class="col">
+                                <form action="topup_valid" method="post">
+                                    <input type="hidden" name="id_topup" value="@data.id_topup" />
+                                    <input type="submit" class="btn btn-success form-control" title="Tekan jika data benar" value="Valid">
+                                </form>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <form action="topup_invalid" method="post">
+                                    <input type="hidden" name="id_topup" value="@data.id_topup" />
+                                    <input type="submit" class="btn btn-danger form-control" title="Tekan jika data tidak benar" value="Tidak valid">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @if (Model.PageNumber != 1)
+            {
+                <li class="page-item"><a class="page-link" href="@Url.Action("user_top_up",new { page = Model.PageNumber-1})">Previous</a></li>
+            }
+
+            <li class="page-item"><a class="page-link" href="@Url.Action("user_top_up",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
+            @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+            {
+                <li class="page-item"><a class="page-link" href="@Url.Action("user_top_up",new { page = Model.PageNumber+1})">Next</a></li>
+            }
+
+        </ul>
+    </nav>
+</div>
+<div id="myModal" class="modal"  onclick="tutup()">
+    <span class="close" onclick="tutup()">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+</div>
+<script>
+    // Function to increase image size     
+    function modal(img) {
+        document.getElementById("myModal").style.display = "block";
+        document.getElementById("img01").src = "../../../Content/RoleAdmin/img/bukti_transfer/"+img;
+        document.getElementById("caption").innerHTML = img;
+    }
+    function tutup() {
+        document.getElementById("myModal").style.display = "none";
+    }
+</script> 

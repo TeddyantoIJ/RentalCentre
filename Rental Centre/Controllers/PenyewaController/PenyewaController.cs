@@ -1,4 +1,5 @@
-﻿using Rental_Centre.Models;
+﻿using PagedList;
+using Rental_Centre.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,14 +18,20 @@ namespace Rental_Centre.Controllers.PenyewaController
         static int logged_id = -1;
 
         // MASTER
-        model_jenisbarang msjenisbarang = new model_jenisbarang();
-        model_kelompokjenis mskelompokjenis = new model_kelompokjenis();
-        model_barang msbarang = new model_barang();
+        model_msjenisbarang msjenisbarang = new model_msjenisbarang();
+        model_mskelompokjenis mskelompokjenis = new model_mskelompokjenis();
+        model_msbarang msbarang = new model_msbarang();
         model_msadmin msadmin = new model_msadmin();
         model_msprovinsi msprovinsi = new model_msprovinsi();
         model_mskodepos mskodepos = new model_mskodepos();
         model_msrental msrental = new model_msrental();
         model_mspenyewa mspenyewa = new model_mspenyewa();
+
+        //Transaksi
+        model_trpembayaran trpembayaran = new model_trpembayaran();
+        model_trtopup trtopup = new model_trtopup();
+        model_dtmutasisaldo dtmutasisaldo = new model_dtmutasisaldo();
+        model_trtransaksi trtransaksi = new model_trtransaksi();
 
         public ActionResult Index()
         {
@@ -36,7 +43,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             if(Session["id"] != null)
             {
                 logged_id = Convert.ToInt32(Session["id"].ToString());
-                ViewBag.logged_in = "hidden";                
+                ViewBag.logged_in = "hidden";
             }
             return View();
             
@@ -46,9 +53,9 @@ namespace Rental_Centre.Controllers.PenyewaController
         #region View / sudah login
         public ActionResult page_myAccount()
         {
-            if(logged_id.ToString() == "")
+            if(logged_id != -1)
             {
-                return View("add_myAccount");
+                return RedirectToAction("Index");
             }
             return View("add_myAccount");
         }
@@ -163,9 +170,9 @@ namespace Rental_Centre.Controllers.PenyewaController
         #region edit
         public ActionResult edit_myAccount()
         {
-            if (logged_id.ToString() == "")
+            if (logged_id == -1)
             {
-                return View("add_myAccount");
+                return RedirectToAction("Index");
             }
             mspenyewa mspenyewa = this.mspenyewa.getPenyewa(logged_id);
             return View(mspenyewa);
@@ -217,13 +224,33 @@ namespace Rental_Centre.Controllers.PenyewaController
             berkas.SaveAs(path);
         }
         #endregion
-
-        #region hapus
-        public ActionResult hapus_myAccount(int id)
+        #region ubah Password
+        public ActionResult edit_password()
         {
-            if (logged_id.ToString() == "")
+            if (logged_id == -1)
             {
-                return View("add_myAccount");
+                return RedirectToAction("Index");
+            }
+            mspenyewa mspenyewa = this.mspenyewa.getPenyewa(logged_id);
+            return View(mspenyewa);
+        }
+        [HttpPost]
+        public ActionResult edit_password(mspenyewa mspenyewa)
+        {
+            string emaillogin = "login@gmail.com";
+            mspenyewa.modiby = emaillogin;
+            mspenyewa.modidate = DateTime.Now;
+            this.mspenyewa.ubahPass(mspenyewa);
+
+            return RedirectToAction("Index");
+        }
+        #endregion
+        #region hapus
+        public ActionResult hapus_myAccount()
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
             }
             mspenyewa mspenyewa = this.mspenyewa.getPenyewa(logged_id);
             return View(mspenyewa);
@@ -236,6 +263,148 @@ namespace Rental_Centre.Controllers.PenyewaController
             return RedirectToAction("Index");
         }
         #endregion
+        #endregion
+
+        #region Saldo
+        public ActionResult cek_saldo()
+        {
+            if(logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            ViewBag.logged_in = "hidden";
+            mspenyewa mspenyewa = this.mspenyewa.getPenyewa(logged_id);
+
+            return View(mspenyewa);
+        }
+        
+        #region Top up
+        public ActionResult top_up()
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            ViewBag.logged_in = "hidden";
+
+            mspenyewa mspenyewa = this.mspenyewa.getPenyewa(logged_id);
+
+            return View(mspenyewa);
+        }
+        [HttpPost]
+        public ActionResult top_up(FormCollection data)
+        {
+            trtopup trtopup = new trtopup();
+            trtopup.jml_topup = Convert.ToInt32(data["jml_dibayar"]);
+            trtopup.bukti_topup = data["bukti_pembayaran"];            
+            trtopup.creadate = DateTime.Now;
+            trtopup.validate = 0;
+            trtopup.id_penyewa = logged_id;
+            trtopup.status = 1;
+
+            this.trtopup.addData(trtopup);            
+
+            return RedirectToAction("cek_saldo");
+        }
+        public void uploadBukti()
+        {
+            HttpPostedFileBase file = Request.Files[0]; //Uploaded file
+            string path = Path.Combine(Server.MapPath("~/Content/RoleAdmin/img/bukti_transfer"),
+                                               Path.GetFileName(file.FileName));
+
+            file.SaveAs(path);
+        }
+        #endregion
+
+        public ActionResult lihat_mutasi(int? page)
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            ViewBag.logged_in = "hidden";
+
+            //Viewbag dibutuhkan            
+            var dtmutasisaldo = this.dtmutasisaldo.getAllPenyewa(logged_id).Take(this.dtmutasisaldo.getAllPenyewa(logged_id).ToList<dtmutasisaldo>().Count());
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+
+            return View(dtmutasisaldo.ToPagedList(pageNumber, pageSize));
+        }
+
+        public ActionResult transfer()
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            ViewBag.logged_in = "hidden";
+
+            //Viewbag dibutuhkan
+            mspenyewa a = this.mspenyewa.getPenyewa(logged_id);
+            ViewBag.saldo = a.saldo;
+            ViewBag.password = a.password;
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult transfer(FormCollection data)
+        {
+            string username_tujuan = data["username_tujuan"];
+            mspenyewa penyewa = this.mspenyewa.getPenyewaUsername(username_tujuan);
+            msrental rental = this.msrental.getRentalUsername(username_tujuan);
+
+            trtransfer trtransfer = new trtransfer();
+            
+            trtransfer.id_pengirim = logged_id;
+            if(penyewa != null)
+            {
+                trtransfer.id_penerima = penyewa.id_penyewa;
+                trtransfer.jenis_transfer = 1;
+            }
+            if(rental != null)
+            {
+                trtransfer.id_penerima = rental.id_rental;
+                trtransfer.jenis_transfer = 2;
+            }
+            if(rental == null && penyewa == null)
+            {
+                
+                return RedirectToAction("transfer");
+            }
+            
+
+            trtransfer.jml_transfer = Convert.ToInt32(data["jml_transfer"]);            
+            trtransfer.deskripsi = data["deskripsi"];
+            trtransfer.creadate = DateTime.Now;
+
+            this.trtransaksi.addData(trtransfer);
+            
+            return RedirectToAction("transfer");
+        }
+        #endregion
+
+        #region Dan lain lain
+        public ActionResult logout()
+        {
+            logged_id = -1;
+            Session["id"] = null;
+            return RedirectToAction("Index");
+        }        
         #endregion
     }
 }

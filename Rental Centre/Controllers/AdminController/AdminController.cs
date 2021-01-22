@@ -18,14 +18,18 @@ namespace Rental_Centre.Controllers.AdminController
         static int logged_id = -1;
 
         // MASTER
-        model_jenisbarang msjenisbarang = new model_jenisbarang();
-        model_kelompokjenis mskelompokjenis = new model_kelompokjenis();
-        model_barang msbarang = new model_barang();
+        model_msjenisbarang msjenisbarang = new model_msjenisbarang();
+        model_mskelompokjenis mskelompokjenis = new model_mskelompokjenis();
+        model_msbarang msbarang = new model_msbarang();
         model_msadmin msadmin = new model_msadmin();
         model_msprovinsi msprovinsi = new model_msprovinsi();
         model_mskodepos mskodepos = new model_mskodepos();
         model_msrental msrental = new model_msrental();
         model_mspenyewa mspenyewa = new model_mspenyewa();
+
+        //TRANSAKSI
+        model_trtopup trtopup = new model_trtopup();
+        model_dtmutasisaldo dtmutasisaldo = new model_dtmutasisaldo();
 
         public ActionResult Index()
         {
@@ -43,6 +47,9 @@ namespace Rental_Centre.Controllers.AdminController
 
             return View();
         }
+
+        #region MASTER
+       
         #region Kelompok jenis barang
         #region view
         public ActionResult page_kelompokjenisbarang()
@@ -93,7 +100,7 @@ namespace Rental_Centre.Controllers.AdminController
             int pageNumber = (page ?? 1);
             
             return View(mskelompokjenis.ToPagedList(pageNumber,pageSize));
-        }
+        }        
         #endregion
         #region tambah
         public ActionResult add_kelompokjenisbarang()
@@ -806,10 +813,92 @@ namespace Rental_Centre.Controllers.AdminController
         #endregion
         #endregion
 
+        #endregion
+
+        #region TRANSAKSI
+
+        #region REKENING
+
+        #region user top up        
+        public ActionResult user_top_up(int? page)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.msrental = this.msrental.getAllData().ToList<msrental>();
+
+            var trtopup = this.trtopup.getAll().Take(this.trtopup.getAll().ToList<trtopup>().Count());
+
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            return View(trtopup.ToPagedList<trtopup>(pageNumber,pageSize));
+        }
+        public ActionResult topup_valid(FormCollection data)
+        {
+            int id_topup = Convert.ToInt32(data["id_topup"]);
+            this.trtopup.valid(id_topup, logged_id);
+            return RedirectToAction("user_top_up");
+        }
+        public ActionResult topup_invalid(FormCollection data)
+        {
+            int id_topup = Convert.ToInt32(data["id_topup"]);
+            this.trtopup.valid(id_topup, logged_id);
+            return RedirectToAction("user_top_up");
+        }
+        #endregion
+
+        public ActionResult cek_saldo()
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            var mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            var msrental = this.msrental.getAllData().ToList<msrental>();
+
+            int saldo = 0;
+            foreach (var item in mspenyewa)
+            {
+                saldo += item.saldo;
+            }
+            foreach (var item in msrental)
+            {
+                saldo += item.saldo;
+            }
+            ViewBag.saldo = saldo;
+            return View();
+        }
+
+        public ActionResult mutasi(int? page, int? jumlah)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.msrental = this.msrental.getAllData().ToList<msrental>();
+
+            var dtmutasisaldo = this.dtmutasisaldo.getAll().Take(this.dtmutasisaldo.getAll().Count());
+
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            ViewBag.jumlah = (jumlah ?? 0);
+            return View(dtmutasisaldo.ToPagedList<dtmutasisaldo>(pageNumber, pageSize));
+        }
+        #endregion
+
+        #endregion
         #region Dan lain lain
         public ActionResult logout()
         {
             logged_id = -1;
+            Session["id"] = null;
             return RedirectToAction("Index", "Penyewa");
         }
         #endregion
