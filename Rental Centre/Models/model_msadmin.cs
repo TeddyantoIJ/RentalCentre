@@ -60,6 +60,6 @@ namespace Rental_Centre.Models
                 return false;
             }
             return true;
-        }
+        }        
     }
 }

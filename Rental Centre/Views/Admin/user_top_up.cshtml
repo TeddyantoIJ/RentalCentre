@@ -69,13 +69,14 @@
 }
 </style>
 <div class="container-fluid">
-    <h5>User Top up</h5>
+    <a>Keuangan</a> / <a href="">User Top Up</a>
+    
     <p>Perlu dikonfirmasi oleh admin terkait <span style="color:red">perhatikan</span> bukti transfer dengan benar</p>
     <br />
     @foreach (var data in Model)
-    {
+    {        
         <div class="card shadow mb-4">
-            <div class="card-body">                
+            <div class="card-body">
                 @{ string nama = "";}
                 @if (data.id_rental != null)
                 {
@@ -106,7 +107,7 @@
                 <br />
                 <div class="row">
                     <div class="col-3">
-                        <img src="~/Content/RoleAdmin/img/bukti_transfer/@data.bukti_topup" title="Tekan nama file untuk melihat" class="card-img"  />
+                        <img src="~/Content/RoleAdmin/img/bukti_transfer/@data.bukti_topup" title="Tekan nama file untuk melihat" class="card-img" />
                     </div>
                     <div class="col">
                         <div class="row">
@@ -143,14 +144,14 @@
                         </div>
                         <div class="row">
                             <div class="col-3">
-                                Bukti transfer 
+                                Bukti transfer
                             </div>
                             <div class="col">
                                 : <a href="#" onclick="modal('@data.bukti_topup')" title="Periksa bukti">@data.bukti_topup</a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-2">                        
+                    <div class="col-2">
                         <div class="row">
                             <div class="col">
                                 <form action="topup_valid" method="post">

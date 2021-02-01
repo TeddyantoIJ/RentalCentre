@@ -16,6 +16,7 @@ namespace Rental_Centre.Models
         public int id_barang { get; set; }
         public int jml_barang { get; set; }
         public int harga_total { get; set; }
+        public string status_barang { get; set; }
         public DateTime creadate { get; set; }
     }
 }

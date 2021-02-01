@@ -49,16 +49,15 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#multimedia"
                    aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Tawaran sewa</span>
+                    <span>Penyewaan</span>
                 </a>
                 <div id="multimedia" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">semua tawaran</h6>
-                        @foreach (var data in ViewBag.mskelompokjenis)
-                        {
-                            string str = data.nama_kelompokjenis.ToLower();
-                            <a class="collapse-item" href="~/Rental/page_penawaran?id=@data.id_kelompokjenis">@char.ToUpper(str[0])@str.Substring(1)</a>
-                        }
+                        <h6 class="collapse-header">Proses penyewaan</h6>
+                        <a class="collapse-item" href="@Url.Action("Pemesanan","Admin")">Pemesanan</a>
+                        <a class="collapse-item" href="@Url.Action("Diproses","Admin")">Diproses</a>
+                        <a class="collapse-item" href="#">Berjalan</a>
+                        <a class="collapse-item" href="#">Selesai</a>
                     </div>
                 </div>
             </li>
@@ -74,7 +73,7 @@
                         <h6 class="collapse-header">aktivitas</h6>
                         <a class="collapse-item" href="#">Seluruh aktivitas</a>
                         <a class="collapse-item" href="#">User baru</a>
-                        <a class="collapse-item" href="#">Kritik dan saran</a>
+                        <a class="collapse-item" href="@Url.Action("kritik_saran","Admin")">Kritik dan saran</a>
                     </div>
                 </div>
             </li>

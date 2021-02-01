@@ -1,5 +1,4 @@
-﻿using Rental_Centre.Models.RentalModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -33,6 +32,11 @@ namespace Rental_Centre.Controllers.RentalController
         model_trpembayaran trpembayaran = new model_trpembayaran();
         model_trtopup trtopup = new model_trtopup();
         model_dtmutasisaldo dtmutasisaldo = new model_dtmutasisaldo();
+        model_trtransfer trtransfer = new model_trtransfer();
+        model_trpenyewaan trpenyewaan = new model_trpenyewaan();
+        model_dtdetailpenyewaan dtdetailpenyewaan = new model_dtdetailpenyewaan();
+        model_trkritiksaran trkritiksaran = new model_trkritiksaran();
+
 
         public RentalController()
         {            
@@ -463,6 +467,60 @@ namespace Rental_Centre.Controllers.RentalController
         }
         #endregion
 
+        #region Transfer
+        public ActionResult transfer()
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            //Viewbag dibutuhkan
+            msrental a = this.msrental.getRental(logged_id);            
+            ViewBag.password = a.password;
+            ViewBag.saldp = a.saldo;
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult transfer(FormCollection data)
+        {
+            string username_tujuan = data["username_tujuan"];
+            mspenyewa penyewa = this.mspenyewa.getPenyewaUsername(username_tujuan);
+            msrental rental = this.msrental.getRentalUsername(username_tujuan);
+
+            trtransfer trtransfer = new trtransfer();
+
+            trtransfer.id_pengirim = logged_id;
+            if (penyewa != null)
+            {
+                trtransfer.id_penerima = penyewa.id_penyewa;
+                trtransfer.jenis_transfer = 21;
+            }
+            if (rental != null)
+            {
+                trtransfer.id_penerima = rental.id_rental;
+                trtransfer.jenis_transfer = 22;
+            }
+            if (rental == null && penyewa == null)
+            {
+
+                return RedirectToAction("transfer");
+            }
+
+            trtransfer.jml_transfer = Convert.ToInt32(data["jml_transfer"]);
+            trtransfer.deskripsi = data["deskripsi"];
+            trtransfer.creadate = DateTime.Now;
+
+            this.trtransfer.addData(trtransfer);
+
+            return RedirectToAction("transfer");
+        }
+        #endregion
+
         public ActionResult lihat_mutasi(int? page)
         {
             //ViewBag WAJIB ADA
@@ -478,6 +536,108 @@ namespace Rental_Centre.Controllers.RentalController
             return View(dtmutasisaldo.ToPagedList(pageNumber, pageSize));
         }
         #endregion
+
+        #region PENYEWAAN
+
+        #region Pengajuan sewa
+        public ActionResult Pengajuan_sewa(int? page)
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            //View bag dibutuhkan
+            var trpenyewaan = this.trpenyewaan.getAllDataRental(logged_id).Take(this.trpenyewaan.getAllDataRental(logged_id).ToList<trpenyewaan>().Count());
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+            ViewBag.trpembayaran = this.trpembayaran.getAll();
+
+            int pageNumber = page ?? 1;
+            int pageSize = 10;
+
+            return View(trpenyewaan.ToPagedList(pageNumber, pageSize));
+        }
+        [HttpPost]
+        public ActionResult Pengemasan(FormCollection data)
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            //UPDATE DATA DIKEMAS
+            if(data["selesai"] != null)
+            {
+                int id_penyewaan = Convert.ToInt32(data["selesai"]);
+                var detail = this.dtdetailpenyewaan.getAllData(id_penyewaan);
+                bool doneall = true;
+                foreach (var item in detail)
+                {
+                    if(item.status_barang == "DIPROSES")
+                    {
+                        doneall = false;
+                        break;
+                    }
+                }
+                if (doneall)
+                {
+                    this.trpenyewaan.ubahSiap(id_penyewaan);
+                }
+                return RedirectToAction("Pengajuan_sewa");
+            }
+            else
+            {
+                if (data["id_barang"] != null)
+                {
+                    dtdetailpenyewaan detail = new dtdetailpenyewaan();
+                    detail.id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
+                    detail.id_barang = Convert.ToInt32(data["id_barang"]);
+                    this.dtdetailpenyewaan.dikemas(detail);
+                }
+
+
+
+                int id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
+                var dtdetailpenyewaan = this.dtdetailpenyewaan.getAllData(id_penyewaan).ToList<dtdetailpenyewaan>();
+                ViewBag.msbarang = this.msbarang.getAllData();
+                ViewBag.trpenyewaan = this.trpenyewaan.getPenyewaan(id_penyewaan);
+                ViewBag.mspenyewa = this.mspenyewa.getPenyewa(this.trpenyewaan.getPenyewaan(id_penyewaan).id_penyewa);
+                if (this.trpenyewaan.getPenyewaan(id_penyewaan).jenis_sewa == 0)
+                {
+                    ViewBag.jenis_sewa = "DIKIRIM KE ALAMAT";
+                }
+                else
+                {
+                    ViewBag.jenis_sewa = "DIAMBIL DI TOKO";
+                }
+                return View(dtdetailpenyewaan);
+            }            
+        }
+        #endregion
+
+        #endregion
+
+        #region Kritik Saran
+        #region add KritikSaran
+        public ActionResult kritik_saran()
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(logged_id);
+
+            return View();
+
+        }
+        [HttpPost]
+        public ActionResult kritik_saran(trkritiksaran trkritiksaran)
+        {
+            trkritiksaran.id_rental = logged_id;
+            trkritiksaran.creadate = DateTime.Now;
+            this.trkritiksaran.addData(trkritiksaran);
+
+            return RedirectToAction("kritik_saran");
+        }
+        #endregion
+        #endregion
+
         #region Dan lain lain
         public ActionResult logout()
         {

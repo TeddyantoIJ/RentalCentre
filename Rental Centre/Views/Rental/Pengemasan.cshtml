@@ -1,0 +1,94 @@
+﻿@model IEnumerable<Rental_Centre.Models.dtdetailpenyewaan>
+
+@{
+    ViewBag.Title = "Pengemasan";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
+    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
+
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<div class="container-fluid">
+    <label>Aktivitas / <a href="@Url.Action("Pengajuan_sewa","Rental")"> Pengajuan sewa </a>/ Pengemasan</label><br />
+    <div class="card">
+        <div class="card-body">
+            <label>RINGKASAN PENYEWAAN</label><br />
+            <div class="row">
+                <div class="col">
+                    <label>Nama penyewa : @ViewBag.mspenyewa.nama_penyewa</label><br />
+                    <label>No telepon : @ViewBag.mspenyewa.no_telepon</label>
+                </div>
+                <div class="col">                    
+                    <label>Tanggal sewa : @ViewBag.trpenyewaan.tgl_penyewaan.ToString("dd-MM-yyyy")</label><br />
+                    <label>Tanggal selesai : @ViewBag.trpenyewaan.tgl_pengembalian.ToString("dd-MM-yyyy")</label><br />
+                    <label>Lama sewa : @ViewBag.trpenyewaan.tgl_pengembalian.Subtract(ViewBag.trpenyewaan.tgl_penyewaan).Days.ToString() hari</label>
+                </div>
+                <div class="col">
+                    <label>Jenis sewa : @ViewBag.jenis_sewa</label><br />
+                    <label>Alamat tujuan : @ViewBag.trpenyewaan.alamat_tujuan</label><br />
+                    <label>Kodepos : @ViewBag.trpenyewaan.kodepos</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            var barang = new Rental_Centre.Models.msbarang();
+            foreach (var b in ViewBag.msbarang)
+            {
+
+                if (b.id_barang == item.id_barang && ViewBag.logged_in.id_rental == b.id_rental)
+                {
+                    barang = b;
+                    <div class="col-3">
+                        <div class="card shadow" style="height:450px">
+                            <div class="card-header">
+                                <img src="~/Content/RoleRental/Image/Barang/@barang.link_gambar" alt="Alternate Text" class="card-img-top" height="140"/>
+                            </div>
+                            <div class="card-body">
+                                <label><b>@barang.nama_barang</b></label>
+                                <p>
+                                    Harga : @String.Format("{0:c}", barang.harga_sewa)<br />
+                                    Jumlah : @item.jml_barang<br />
+                                    Total : @String.Format("{0:c}", item.harga_total)
+                                </p>
+                            </div>
+                            <div class="card-footer">
+                                <form action="Pengemasan" method="post">
+                                    <input type="hidden" name="id_penyewaan" value="@ViewBag.trpenyewaan.id_penyewaan" />
+                                    <input type="hidden" name="id_barang" value="@barang.id_barang" />
+                                    @if (item.status_barang == "DIPROSES")
+                                    {
+                                        <input type="submit" name="submit" value="Kemas" class="btn btn-success form-control" />
+                                    }
+                                    else
+                                    {
+                                        <input disabled type="submit" name="submit" value="Dikemas" class="btn btn-danger form-control" />
+                                    }
+                                </form>
+                            </div>
+                        </div>
+                    </div>                    
+                    break;
+                }
+            }
+        }
+    </div>
+    <br />
+    
+    <div class="card shadow">
+        <div class="card-body">            
+            <form action="Pengemasan" method="post">
+                <input type="hidden" name="selesai" value="@ViewBag.trpenyewaan.id_penyewaan" />
+                <input type="submit" name="submit" value="SELESAI PENGEMASAN" class="btn btn-primary form-control" />
+            </form>
+        </div>
+    </div>
+    
+    <br />
+</div>
+

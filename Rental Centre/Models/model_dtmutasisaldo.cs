@@ -15,6 +15,7 @@ namespace Rental_Centre.Models
                                  select data);
             return dtmutasisaldo;
         }
+        
         public IEnumerable<dtmutasisaldo> getAllPenyewa(int id_penyewa)
         {
             var dtmutasisaldo = (from data in _DB.dtmutasisaldo
@@ -31,24 +32,26 @@ namespace Rental_Centre.Models
         }
 
 
-        public void penyewa_mutasi(int? id_penyewa, int uang, string jenis)
+        public void penyewa_mutasi(int? id_penyewa, int uang, string jenis, int total)
         {
             dtmutasisaldo mutasi = new dtmutasisaldo();
             mutasi.creadate = DateTime.Now;
             mutasi.id_penyewa = id_penyewa;
             mutasi.jenis_transaksi = jenis;
             mutasi.jumlah_transaksi = uang;
+            mutasi.jumlah_saldo = total;
 
             _DB.dtmutasisaldo.Add(mutasi);
             _DB.SaveChanges();
         }
-        public void rental_mutasi(int? id_rental, int uang, string jenis)
+        public void rental_mutasi(int? id_rental, int uang, string jenis, int total)
         {
             dtmutasisaldo mutasi = new dtmutasisaldo();
             mutasi.creadate = DateTime.Now;
             mutasi.id_rental = id_rental;
             mutasi.jenis_transaksi = jenis;
             mutasi.jumlah_transaksi = uang;
+            mutasi.jumlah_saldo = total;
 
             _DB.dtmutasisaldo.Add(mutasi);
             _DB.SaveChanges();

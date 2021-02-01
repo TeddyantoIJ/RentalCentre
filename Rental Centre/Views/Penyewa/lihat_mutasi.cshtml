@@ -39,8 +39,7 @@
                 </thead>
                 <tbody>
                     @{
-                        int no = 1;
-                        int jumlah = 0;
+                        int no = 1;                        
                     }
                     @foreach (var item in Model)
                     {
@@ -55,18 +54,16 @@
                             if (item.jenis_transaksi == "TOP UP" || item.jenis_transaksi == "TERIMA TRANSFER")
                             {
                                 <td class="text-right">@uang</td>
-                                <td class="text-right">-</td>
-                                jumlah += item.jumlah_transaksi;
+                                <td class="text-right">-</td>                                
                             }
                             else
                             {
                                 <td class="text-right">-</td>
-                                <td class="text-right">@uang</td>
-                                jumlah -= item.jumlah_transaksi;
+                                <td class="text-right">@uang</td>                                
                             }
                         }
                         
-                        <td class="text-right">@String.Format("{0:c}", jumlah)</td>
+                        <td class="text-right">@String.Format("{0:c}", item.jumlah_saldo)</td>
                     </tr>
                         no++;
                     }

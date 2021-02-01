@@ -50,7 +50,7 @@ namespace Rental_Centre.Models
         }
         public void ubahPass(mspenyewa mspenyewa)
         {
-            mspenyewa oldData = _DB.mspenyewa.Single<mspenyewa>(data => data.id_penyewa == mspenyewa.id_penyewa);
+            mspenyewa oldData = _DB.mspenyewa.SingleOrDefault<mspenyewa>(data => data.id_penyewa == mspenyewa.id_penyewa);
             oldData.modiby = mspenyewa.modiby;
             oldData.modidate = DateTime.Now;
             oldData.password = mspenyewa.password;
@@ -58,12 +58,12 @@ namespace Rental_Centre.Models
         }
         public mspenyewa getPenyewaUsername(string username)
         {
-            mspenyewa penyewa = _DB.mspenyewa.Single<mspenyewa>(data => data.username == username);
+            mspenyewa penyewa = _DB.mspenyewa.SingleOrDefault<mspenyewa>(data => data.username == username);
             return (penyewa);
         }
-        public mspenyewa getPenyewa(int id)
+        public mspenyewa getPenyewa(int id_penyewa)
         {
-            mspenyewa penyewa = _DB.mspenyewa.Single<mspenyewa>(data => data.id_penyewa == id);
+            mspenyewa penyewa = _DB.mspenyewa.SingleOrDefault<mspenyewa>(data => data.id_penyewa == id_penyewa);
             return (penyewa);
         }
 
@@ -89,23 +89,31 @@ namespace Rental_Centre.Models
             mspenyewa.saldo = mspenyewa.saldo + uang;
             _DB.SaveChanges();
 
-            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "TOP UP");
+            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "TOP UP", mspenyewa.saldo);
         }
-        public void saldo_tambah(int uang, int id_penyewa)
+        public void saldo_tambah(int uang, int id_penyewa, string penerima)
         {
             mspenyewa mspenyewa = _DB.mspenyewa.Single<mspenyewa>(s => s.id_penyewa == id_penyewa);
             mspenyewa.saldo = mspenyewa.saldo + uang;
             _DB.SaveChanges();
 
-            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "TERIMA TRANSFER");
+            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "TERIMA TRANSFER DARI "+penerima.ToUpper(), mspenyewa.saldo);
         }
-        public void saldo_kurang(int uang, int id_penyewa)
+        public void saldo_kurang(int uang, int id_penyewa, string penerima)
         {
             mspenyewa mspenyewa = _DB.mspenyewa.Single<mspenyewa>(s => s.id_penyewa == id_penyewa);
             mspenyewa.saldo = mspenyewa.saldo - uang;
             _DB.SaveChanges();
 
-            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "KIRIM TRANSFER");
+            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "KIRIM TRANSFER KE "+penerima.ToUpper(),mspenyewa.saldo);
+        }
+        public void bayar_dp(int uang, int id_penyewa)
+        {
+            mspenyewa mspenyewa = _DB.mspenyewa.Single<mspenyewa>(s => s.id_penyewa == id_penyewa);
+            mspenyewa.saldo = mspenyewa.saldo - uang;
+            _DB.SaveChanges();
+
+            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "DP PENYEWAAN", mspenyewa.saldo);
         }
     }
 }

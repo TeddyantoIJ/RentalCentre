@@ -16,16 +16,7 @@
     <div class="row">
         <div class="col">
             <a class="btn btn-primary" href="add_jenisbarang">Tambah Data</a>
-        </div>
-        @*<div class="col">
-            <select class="form-control" id="ddlKelompok" name="group">
-                <option value="-1">- Kelompokkan data -</option>
-                @foreach (var item in ViewBag.mskelompokjenis)
-                {
-                    <option value="item.id_kelompokjenis">@item.nama_kelompokjenis</option>
-                }
-            </select>
-        </div>*@
+        </div>        
         <div class="col">
 
             @using (Html.BeginForm("page_jenisbarang", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))

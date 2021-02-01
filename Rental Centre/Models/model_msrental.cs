@@ -92,23 +92,23 @@ namespace Rental_Centre.Models
             msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
             msrental.saldo = msrental.saldo + jumlah_uang;
             _DB.SaveChanges();
-            this.dtmutasisaldo.rental_mutasi(id_rental, jumlah_uang, "TOP UP");
+            this.dtmutasisaldo.rental_mutasi(id_rental, jumlah_uang, "TOP UP",msrental.saldo);
         }
-        public void saldo_tambah(int uang, int id_rental)
+        public void saldo_tambah(int uang, int id_rental, string pengirim)
         {
             msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
             msrental.saldo = msrental.saldo + uang;
             _DB.SaveChanges();
 
-            this.dtmutasisaldo.penyewa_mutasi(id_rental, uang, "TERIMA TRANSFER");
+            this.dtmutasisaldo.rental_mutasi(id_rental, uang, "TERIMA TRANSFER "+pengirim.ToUpper(), msrental.saldo);
         }
-        public void saldo_kurang(int uang, int id_rental)
+        public void saldo_kurang(int uang, int id_rental, string pengirim)
         {
             msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
             msrental.saldo = msrental.saldo - uang;
             _DB.SaveChanges();
                 
-            this.dtmutasisaldo.penyewa_mutasi(id_rental, uang, "TERIMA TRANSFER");
+            this.dtmutasisaldo.rental_mutasi(id_rental, uang, "KIRIM TRANSFER KE "+pengirim.ToUpper(),msrental.saldo);
         }
     }
 }

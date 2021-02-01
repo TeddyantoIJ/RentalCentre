@@ -17,6 +17,7 @@ namespace Rental_Centre.Models
         public Nullable<int> id_rental { get; set; }
         public Nullable<int> id_admin { get; set; }
         public int jumlah_transaksi { get; set; }
+        public int jumlah_saldo { get; set; }
         public string jenis_transaksi { get; set; }
         public DateTime creadate { get; set; }
     }

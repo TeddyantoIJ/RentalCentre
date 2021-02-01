@@ -11,7 +11,7 @@ namespace Rental_Centre.Models
     public class trkeranjang
     {
         [Key]
-        public int id_keranjang { get; set; }
+        public string id_keranjang { get; set; }
         public int id_penyewa { get; set; }        
         public int id_barang { get; set; }
     }

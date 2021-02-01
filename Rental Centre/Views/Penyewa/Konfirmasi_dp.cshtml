@@ -1,0 +1,183 @@
+﻿@model Rental_Centre.Models.trpenyewaan
+@{
+    ViewBag.Title = "Konfirmasi_dp";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <label><a href="@Url.Action("Index")">Home </a> > Checkout</label>    
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col"><center><label style="background-color:dodgerblue;color:white"> &nbsp;&nbsp;&nbsp;&nbsp; PILIH METODE PEMBAYARAN &nbsp;&nbsp;&nbsp;&nbsp; </label></center></div>
+        <div class="col-2"></div>
+    </div>
+    <div class="row">        
+        <div class="col-2"></div>
+        <div class="col">
+            <div class="card">
+                <form action="Konfirmasi_dp" method="post">
+                    <div class="card-body" style="height:300px">
+
+                        <label class="radio-inline"> <input type="checkbox" name="pilihan_bayar" id="radiodana" value="1" checked onclick="ubahmetode('1')"> DANA AKUN</label><br />
+
+                        <label>BIAYA DP : <b style="color:black">@String.Format("{0:c}", Model.total_dp)</b></label>
+                        <label>SALDO AKUN : <b style="color:black">@String.Format("{0:c}", ViewBag.dana)</b></label>
+                        <label><div class="d-inline" id="status"></div></label>
+                        <input type="hidden" id="danaku" name="danaku" value="@ViewBag.dana" />
+                        <input type="hidden" id="dp" name="total_dp" value="@Model.total_dp" />
+
+                    </div>
+                    <div class="card-footer">
+                        <input type="hidden" name="id_penyewaan" value="@Model.id_penyewaan" />
+                        <input type="submit" onclick="return confirm('yakin?')" id="bayar_dana" name="bayar_dana" value="BAYAR DENGAN DANA AKUN" class="btn form-control btn-primary" style="border-radius:0" />
+                    </div>
+                </form>
+            </div>            
+        </div>
+        
+        <div class="col">
+            <div class="card">
+                <form action="Konfirmasi_dp" method="post" id="forminput">
+                    <div class="card-body" style="height:300px">
+                        <label class="radio-inline"> <input type="checkbox" name="pilihan_bayar" id="radiotransfer" onclick="ubahmetode('2')" value="2"> TRANSFER</label><br />
+
+                        <label>BIAYA DP : <b style="color:black">@String.Format("{0:c}", Model.total_dp)</b></label>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <select id="bank" class="form-control text-center" onchange="pilihbank(this.value)">
+                                        <option value="">- BANK -</option>
+                                        <option value="98887183726">BRI</option>
+                                        <option value="18930847164">BCA</option>
+                                        <option value="99183726472">BNI</option>
+                                        <option value="99182746134">MANDIRI</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label class="label-info">REK : <b><div class="d-inline" id="no_rek"></div></b></label>
+                                </div>
+                            </div>
+                            
+                        </div>                        
+                        <div class="form-group">
+                            <label for="bukti_pembayaran">Bukti pembayaran</label>
+                            <input type="file" id="bukti_pembayaran" name="bukti_pembayaran" value="" class="form-control-file" required/>
+                            @*<img src="#" id="gambar" class="card-img" height="100" alt="Alternate Text" />*@
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        @* KEBUTUHAN DATA *@
+                        <input type="hidden" name="total_dp" value="@Model.total_dp" />
+                        <input type="hidden" name="id_penyewaan" value="@Model.id_penyewaan" />
+                        <input type="submit" disabled onclick="return confirm('yakin?')" id="bayar_transfer" name="bayar_transfer" value="KIRIM BUKTI TRANSFER" class="btn form-control btn-primary" style="border-radius:0" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    <br />
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    document.onload = cekdana();    
+    function cekdana()
+    {        
+        var dana = parseInt(document.getElementById("danaku").value);        
+        var dp = parseInt(document.getElementById("dp").value);        
+        if (dana < dp) {
+            document.getElementById("status").innerHTML = "SALDO TIDAK MENCUKUPI !";
+            document.getElementById("status").style.color = "Red";
+            document.getElementById("bayar_dana").disabled = true;
+        } else {
+            document.getElementById("status").innerHTML = "SALDO MENCUKUPI !";
+            document.getElementById("status").style.color = "Green";
+            document.getElementById("bayar_dana").disabled = false;
+        }
+    }
+    function ubahmetode(i)
+    {
+        if (i == 1)
+        {
+            if (document.getElementById("radiodana").checked = true) {
+                if (document.getElementById("radiotransfer").checked == true) {
+                    document.getElementById("radiotransfer").checked = false;
+                } else {
+                    document.getElementById("radiotransfer").checked = true;
+                    document.getElementById("radiodana").checked = false;
+                }
+            } else {
+                if (document.getElementById("radiotransfer").checked == false) {
+                    document.getElementById("radiotransfer").checked = true;
+                    document.getElementById("radiodana").checked = false;
+                } else {
+                    document.getElementById("radiotransfer").checked = false;
+                }
+            }
+        }
+        if (i == 2) {
+            if (document.getElementById("radiotransfer").checked = true) {
+                if (document.getElementById("radiodana").checked == true) {
+                    document.getElementById("radiodana").checked = false;
+                } else {
+                    document.getElementById("radiodana").checked = true;
+                    document.getElementById("radiotransfer").checked = false;
+                }
+            } else {
+                if (document.getElementById("radiodana").checked == false) {
+                    document.getElementById("radiodana").checked = true;
+                    document.getElementById("radiotransfer").checked = false;
+                } else {
+                    document.getElementById("radiodana").checked = false;
+                }
+            }
+        }        
+
+        if (document.getElementById("radiotransfer").checked == true) {
+            document.getElementById("bayar_transfer").disabled = false;
+        } else {
+            document.getElementById("bayar_transfer").disabled = true;
+        }
+    }
+    function pilihbank(no)
+    {
+        document.getElementById("no_rek").innerHTML = no;
+    }
+    $(document).ready(function () {
+        /*$("#bukti_pembayaran").on("input", function () {
+            var fd = new FormData();
+            var gambar = document.getElementById("bukti_pembayaran");
+            if (gambar.value == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Rental/uploadFile');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("gambar").src = "/Content/Temp/" + gambar.files[0].name;
+                }
+            }
+        });*/
+        $("#forminput").submit(function (event) {
+            var fd = new FormData();
+            var gambar = document.getElementById("bukti_pembayaran");
+            if (gambar.value == null) {
+                return;
+            }
+            fd.append(gambar.files[0].name, gambar.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Penyewa/uploadBukti');
+            xhr.send(fd);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                }
+            }
+        });
+    });
+</script>

@@ -11,6 +11,7 @@
     <Property Name="creadate" Type="DateTime" Precision="3" />
     <Property Name="modiby" Type="Int32" />
     <Property Name="modidate" Type="DateTime" Precision="3" />
+    <Property Name="deskripsi" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="mskodepos">
     <Key>
@@ -35,6 +36,7 @@
     <EntitySet Name="mskodepos" EntityType="Self.mskodepos" />
     <EntitySet Name="msprovinsis" EntityType="Self.msprovinsi" />
     <EntitySet Name="msbarangs" EntityType="RCDBModel.msbarang" />
+    <EntitySet Name="dtmutasisaldoes" EntityType="RCDBModel.dtmutasisaldo" />
   </EntityContainer>
   <EntityType Name="msbarang">
     <Key>
@@ -53,5 +55,18 @@
     <Property Name="creadate" Type="DateTime" Precision="3" />
     <Property Name="modiby" Type="Int32" />
     <Property Name="modidate" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="dtmutasisaldo">
+    <Key>
+      <PropertyRef Name="id_mutasisaldo" />
+    </Key>
+    <Property Name="id_mutasisaldo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="id_penyewa" Type="Int32" />
+    <Property Name="id_rental" Type="Int32" />
+    <Property Name="id_admin" Type="Int32" />
+    <Property Name="jumlah_transaksi" Type="Int32" />
+    <Property Name="jumlah_saldo" Type="Int32" />
+    <Property Name="jenis_transaksi" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="creadate" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>

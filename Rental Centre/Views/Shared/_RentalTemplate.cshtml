@@ -22,7 +22,7 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="Index">
                 <div class="sidebar-brand-icon rotate-n-15">
@@ -73,8 +73,9 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">aktivitas</h6>
                         <a class="collapse-item" href="#">Seluruh aktivitas</a>
-                        <a class="collapse-item" href="#">Pengajuan sewa</a>
-                        <a class="collapse-item" href="#">Keterlambatan sewa</a>
+                        <a class="collapse-item" href="@Url.Action("Pengajuan_sewa","Rental")">Pengajuan sewa</a>
+                        <a class="collapse-item" href="#">Sedang berjalan</a>
+                        <a class="collapse-item" href="#">Riwayat penyewaan</a>
                         <a class="collapse-item" href="#">Ulasan sewa</a>
                     </div>
                 </div>
@@ -125,10 +126,10 @@
                 <div id="profil" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">profil</h6>
-                        <a class="collapse-item" href="@Url.Action("page_profil", "Rental")">Profile saya</a>
-                        <a class="collapse-item" href="@Url.Action("edit_profil", "Rental")">Ubah profile   </a>
-                        <a class="collapse-item" href="@Url.Action("edit_password", "Rental")">Ubah password</a>
-                        <a class="collapse-item" href="@Url.Action("hapus_akun", "Rental")">Hapus akun</a>
+                        <a class="collapse-item" href="@Url.Action("page_profil", "Rental")">Profile Saya</a>
+                        <a class="collapse-item" href="@Url.Action("edit_profil", "Rental")">Ubah Profile   </a>
+                        <a class="collapse-item" href="@Url.Action("edit_password", "Rental")">Ubah Password</a>
+                        <a class="collapse-item" href="@Url.Action("hapus_akun", "Rental")">Nontaktifkan Akun</a>
                     </div>
                 </div>
             </li>
@@ -139,7 +140,7 @@
             </div>
             <!-- KELOLA DATA Kritik dan Saran -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="@Url.Action("kritik_saran","Rental")">
                     <i class="fas fa-fw fa-address-card"></i>
                     <span>Kritik dan Saran</span>
                 </a>

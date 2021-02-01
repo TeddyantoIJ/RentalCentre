@@ -9,39 +9,70 @@
 }
 
 <div class="container">
-    <div class="card text-center">
+    <a>Keuangan</a> / <a href="">Mutasi Website</a>
+    <div class="card">
         <div class="card-header"></div>
         <div class="card-body">
-            <table class="table table-hover">
+            <h5 class="lead text-center">MUTASI</h5>
+            <br />
+            <form action="@Url.Action("mutasi","Admin", new { page = Model.PageNumber })" method="post">
+                <div class="row">
+
+                    <div class="col">
+                        <label for="awal">Dari : @ViewBag.awal</label>
+                        <input type="date" name="awal" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")" class="form-control" />
+                    </div>
+                    <div class="col">
+                        <label for="akhir">Sampai:  @ViewBag.akhir</label>
+                        <input type="date" name="akhir" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
+                    </div>
+                    <div class="col">
+                        <label for="kelompok">Kelompok Berdasarkan : @ViewBag.kelompok</label>
+                        <select name="kelompok" class="form-control">
+                            <option value="A">SEMUA</option>
+                            <option value="TR">TRANSFER</option>
+                            <option value="TU">TOP UP</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="btn">FILTER</label>
+                        <input type="submit" name="btn" class="btn btn-primary" value="Set Mutasi" />
+                    </div>
+
+                </div>
+            </form>
+            <br />
+            <table class="table table-hover  text-center">
                 <thead class="thead-dark">
                     <tr>
-                        <td>No.</td>                        
+                        <td>No.</td>
                         <td>Deskripsi</td>
                         <td>Bersangkutan</td>
                         <td>Waktu transaksi</td>
+                        <!--
                         <td>Masuk</td>
                         <td>Keluar</td>
                         <td>Dana Website</td>
+                            -->
+                        <td>Jumlah Transaksi</td>
                     </tr>
                 </thead>
                 <tbody>
                     @{
                         int no = 1;
-                        int jumlah_page = ViewBag.jumlah;
-                        int jumlah = ViewBag.jumlah;
                     }
                     @foreach (var item in Model)
                     {
 
                         string uang = String.Format("{0:c}", item.jumlah_transaksi);
                         string nama = "";
-                        if(item.id_penyewa != null)
+                        if (item.id_penyewa != null)
                         {
                             foreach (var a in ViewBag.mspenyewa)
                             {
                                 if (a.id_penyewa == item.id_penyewa)
                                 {
-                                    nama = a.nama_penyewa;
+                                    nama = a.username.ToUpper();
                                 }
                             }
                         }
@@ -51,30 +82,30 @@
                             {
                                 if (a.id_rental == item.id_rental)
                                 {
-                                    nama = a.nama_rental;
+                                    nama = a.username.ToUpper();
                                 }
                             }
                         }
-                    <tr>
-                        <td>@no.</td>
-                        <td>@item.jenis_transaksi</td>
-                        <td>@nama</td>
-                        <td>@item.creadate.ToString("dd/MM/yyyy HH:mm")</td>
-                        @{
-                            if (item.jenis_transaksi == "TOP UP")
-                            {
-                                <td>-</td>
-                                <td class="text-right">@uang</td>
-                                jumlah += item.jumlah_transaksi;
-                            }
-                            else
-                            {
-                                <td class="text-right">@uang</td>
-                                <td class="text-right">@uang</td>
-                            }
-                        }
-                        <td class="text-right">@String.Format("{0:c}", jumlah)</td>
-                    </tr>
+                        <tr>
+                            <td>@no.</td>
+                            <td>@item.jenis_transaksi</td>
+                            <td>@nama</td>
+                            <td>@item.creadate.ToString("dd/MM/yyyy HH:mm")</td>
+                            @*@{
+                                if (item.jenis_transaksi == "TOP UP")
+                                {
+                                    <td>-</td>
+                                    <td class="text-right">@uang</td>
+                                }
+                                else
+                                {
+                                    <td class="text-right">@uang</td>
+                                    <td class="text-right">@uang</td>
+                                }
+                            }*@
+                            @*<td class="text-right">@String.Format("{0:c}", item.jumlah_saldo)</td>*@
+                            <td class="text-right">@uang</td>
+                        </tr>
                         no++;
                     }
                 </tbody>
@@ -83,13 +114,13 @@
                 <ul class="pagination">
                     @if (Model.PageNumber != 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber-1, jumlah = jumlah_page})">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber-1})">Previous</a></li>
                     }
 
                     <li class="page-item"><a class="page-link">@Model.PageNumber/@Model.PageCount</a></li>
                     @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber+1, jumlah = jumlah})">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber+1})">Next</a></li>
                     }
 
                 </ul>

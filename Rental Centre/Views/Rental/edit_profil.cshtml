@@ -24,22 +24,22 @@
     </div>
 </div>
 <form action="edit_profil" method="post" id="add_myAction" autocomplete="off">
-
     <div class="container">
+        <a>Profile</a> / <a href="">Ubah Profile</a>
         <div class="card">
             <div class="card-body">
                 <div class="footer-widget">
-                    <h4 style="color:black">Registration</h4>
+                    <h4 style="color:black">Edi Profile</h4>
                     <br />
                     <div class="row">
                         <div class="col">
                             Nama pengguna<span style="color:red">*</span>
-                            <input type="text" name="nama_rental" id="nama_rental" required value="@Model.nama_rental"/>
+                            <input type="text" name="nama_rental" id="nama_rental" required value="@Model.nama_rental" />
                             <input type="hidden" name="id_rental" value="@Model.id_rental" />
                         </div>
                         <div class="col">
                             Username Akun<span style="color:red">*</span>
-                            <input type="text" name="username" id="username" required value="@Model.username" readonly class="form-control"/>
+                            <input type="text" name="username" id="username" required value="@Model.username" readonly class="form-control" />
                         </div>
                         <div class="col">
                             Foto profil<span style="color:red">*</span>
@@ -62,7 +62,7 @@
                                             else
                                             {
                                                 <label><input type="radio" name="jenis_kelamin" value="0" class="radio" /> Laki-lak<br /></label>
-                                                <label><input type="radio" name="jenis_kelamin" value="1" class="radio" checked/> Perempuan</label>
+                                                <label><input type="radio" name="jenis_kelamin" value="1" class="radio" checked /> Perempuan</label>
                                             }
 
                                         }
@@ -71,11 +71,11 @@
                                 </div>
                                 <div class="col">
                                     Email<span style="color:red">*</span>
-                                    <input type="email" name="email" id="email" required value="@Model.email"/>
+                                    <input type="email" name="email" id="email" required value="@Model.email" />
                                 </div>
                                 <div class="col">
                                     No telepon<span style="color:red">*</span>
-                                    <input type="number" name="no_telp" id="no_telp" required value="@Model.no_telp"/>
+                                    <input type="number" name="no_telp" id="no_telp" required value="@Model.no_telp" />
                                 </div>
                             </div>
                         </div>
@@ -120,11 +120,11 @@
                                     <div class="row">
                                         <div class="col">
                                             NIK<span style="color:red">*</span>
-                                            <input type="number" name="NIK" id="NIK" required value="@Model.NIK"/>
+                                            <input type="number" name="NIK" id="NIK" required value="@Model.NIK" />
                                         </div>
                                         <div class="col">
                                             Foto KTP<span style="color:red">*</span>
-                                            <input type="file" name="berkas1" id="berkas1s" class="form-control" />
+                                            <input type="file" name="berkas1" id="berkas1s" class="form-control-file" />
                                         </div>
                                     </div>
                                     <br />
@@ -134,7 +134,7 @@
                                         </div>
                                         <div class="col">
                                             Foto SIM/NPWP<span style="color:red">*</span>
-                                            <input type="file" name="berkas2" id="berkas2s" class="form-control" />
+                                            <input type="file" name="berkas2" id="berkas2s" class="form-control-file" />
                                         </div>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@
                     <div class="row">
                         <div class="col">
                             Nama toko<span style="color:red">*</span>
-                            <input type="text" name="nama_toko" value="@Model.nama_toko" required/>
+                            <input type="text" name="nama_toko" value="@Model.nama_toko" required />
                         </div>
                         <div class="col">
                             Alamat toko<span style="color:red">*</span>
@@ -173,8 +173,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <a href="Index" class="btn btn-secondary" style="border-radius:0">Home</a>
+                    </div>                    
                     <input type="submit" name="btnInsert" id="btnInsert" class="btn btn-primary" style="border-radius:0;" value="Perbarui" />
                 </div>
             </div>

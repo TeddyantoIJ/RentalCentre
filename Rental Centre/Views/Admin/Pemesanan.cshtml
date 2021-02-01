@@ -1,0 +1,252 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.trpenyewaan>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Profile = ViewBag.Logged_in.profil;
+    ViewBag.Nama_user = ViewBag.Logged_in.nama_admin;
+    ViewBag.Title = "Pemesanan";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+<style>
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
+
+    /* Modal Content (Image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    /* Caption of Modal Image (Image Text) - Same Width as the Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation - Zoom in the Modal */
+    .modal-content, #caption {
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    /* The Close Button */
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+<br />
+<div id="div_view">
+    <div class="row">
+        <div class="col">
+            <label>Penyewaan / <a href="">Pemesanan</a></label>
+        </div>
+        <div class="col">
+            @using (Html.BeginForm("Pemesanan", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+            {
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian..", @id = "lala" })
+                <input type="submit" value="Cari" class="btn btn-primary" />
+            }
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col">
+            @{ int i = ((Model.PageNumber - 1) * 10) + 1;}
+            <small>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    Penyewa
+                                </th>
+                                <th>
+                                    Pengajuan
+                                </th>
+                                <th>
+                                    Tanggal penyewaan
+                                </th>
+                                <th>
+                                    Tanggal pengembalian
+                                </th>
+                                <th>
+                                    Biaya DP
+                                </th>
+                                <th>
+                                    Biaya total
+                                </th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+                                <td>@i.</td>
+
+                                @foreach (var penyewa in ViewBag.mspenyewa)
+                                {
+                                    if (penyewa.id_penyewa == item.id_penyewa)
+                                    {
+                                        <td>@penyewa.username (@penyewa.nama_penyewa)</td>
+                                    }
+                                }
+                                <td class="text-center">
+                                    @item.creadate.ToString("dd-MM-yyyy")
+                                </td>
+                                <td class="text-center">
+                                    @item.tgl_penyewaan.ToString("dd-MM-yyyy")
+                                </td>
+                                <td class="text-center">
+                                    @item.tgl_pengembalian.ToString("dd-MM-yyyy")
+                                </td>
+                                <td class="text-right">
+                                    @String.Format("{0:c}", item.total_dp)
+                                </td>
+                                <td class="text-right">
+                                    @String.Format("{0:c}", item.total_harga)
+                                </td>
+                                @{
+                                    string foto = "";
+                                    foreach (var pembayaran in ViewBag.trpembayaran)
+                                    {
+                                        if (pembayaran.id_penyewaan == item.id_penyewaan)
+                                        {
+                                            foto = pembayaran.bukti_pembayaran;
+                                        }
+                                    }
+                                }
+                                <td>                                    
+                                    <a href="#" onclick="detail('@String.Format("{0:c}", item.total_dp)','@foto',@item.id_penyewaan)"><span class="fa fa-check" title="Konfirmasi DP"></span></a> |
+                                    <form action="Pemesanan_details" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                        <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
+                                    </form>                                    
+                                </td>
+                            </tr>
+                            i++;
+
+                        }
+
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            @if (Model.PageNumber != 1)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Pemesanan",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                            }
+
+                            <li class="page-item"><a class="page-link" href="@Url.Action("Pemesanan",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                            @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Pemesanan",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                            }
+
+                        </ul>
+                    </nav>
+                </div>
+            </small>
+        </div>
+    </div>
+</div>
+
+<div id="div_konfirmasi" hidden>
+    
+    <label>Penyewaan / <a href="#" onclick="batal()">Pemesanan</a> / <a>Konfirmasi DP</a></label>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <a href="" class="float-right"><span class="fa fa-window-close" onclick="batal()"></span></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <img src="" alt="" id="img" title="Tekan foto untuk melihat" onclick="modal(this.src)" />
+                </div>
+                <div class="col text-center" style="border-left:1px solid">
+                    <label>Jumlah yang dibayar : <b><div class="d-inline" id="jumlah"></div></b></label>
+                    <label>Mohon periksa dengan <b style="color:red">SEKSAMA</b> agar tidak terjadi kesalahan</label>
+                    <br />
+                    <form action="Pemesanan" method="post" class="d-inline">
+                        <input type="hidden" id="id_pemesanan1" name="id_penyewaan" value="" />
+                        <input type="submit" name="submit" value="VALID" class="btn btn-success" title="Tekan jika data benar"/>
+                    </form>
+                    <form action="Pemesanan" method="post" class="d-inline">
+                        <input type="submit" name="submit" value="INVALID" class="btn btn-danger" title="Tekan jika data tidak benar" />
+                        <input type="hidden" id="id_pemesanan2" name="id_penyewaan" value="" />
+                    </form>
+                </div>
+            </div>
+            <br />
+        </div>
+    </div>
+    
+</div>
+<div id="myModal" class="modal" onclick="tutup()">
+    <span class="close" onclick="tutup()">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+</div>
+<script>
+    // Function to increase image size
+    function detail(jumlah, foto,id) {
+        document.getElementById("img").src = "../../../Content/RoleAdmin/img/bukti_transfer/" + foto;
+        document.getElementById("jumlah").innerHTML = jumlah;
+        document.getElementById("id_pemesanan1").value = id;
+        document.getElementById("id_pemesanan2").value = id;
+        document.getElementById("div_konfirmasi").hidden = false;
+        document.getElementById("div_view").hidden = true;
+    }
+    function batal()
+    {
+        document.getElementById("div_konfirmasi").hidden = true;
+        document.getElementById("div_view").hidden = false;
+    }
+    function modal(img) {
+        document.getElementById("myModal").style.display = "block";
+        document.getElementById("img01").src = img;
+        document.getElementById("caption").innerHTML = "BUKTI TRANSFER";
+    }
+    function tutup() {
+        document.getElementById("myModal").style.display = "none";
+    }
+</script> 

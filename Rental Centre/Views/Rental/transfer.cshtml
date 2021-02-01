@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "transfer";
+    ViewBag.Profile = ViewBag.logged_in.profil;
+    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
+    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
+    ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+
+<div class="container">
+    <a>Dana</a> / <a href="#">Transfer</a>
+    <div class="card">
+        <form action="transfer" method="post" autocomplete="off" onsubmit="ubah()">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3">
+                        <input type="hidden" name="saldo_saya" value="@ViewBag.saldo" />
+                        <input type="hidden" name="true_password" id="true_password" value="@ViewBag.password" />
+                        <input type="hidden" name="true_password" id="mySaldo" value="@ViewBag.saldo" />
+                        <h6 class="card-header text-center">Pastikan <span style="color:red">saldo</span> anda cukup untuk melakukan transaksi ini</h6>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <p style="color:Highlight">Username Tujuan<span style="color:red">*</span></p>
+                                <input class="form-control" type="text" name="username_tujuan" id="username_tujuan" value="" placeholder="Ketik di sini" required onkeyup="inputted()" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p style="color:Highlight">Jumlah uang<span style="color:red">*</span></p>
+                                <input class="form-control" type="text" name="jml_transfer" id="jml_transfer" value="" placeholder="Rp 0" required onkeyup="this.value = formatCurrency(this.value,''),inputted()" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p style="color:Highlight">Deskripsi</p>
+                                <input class="form-control" type="text" name="deskripsi" id="deskripsi" value="" placeholder="Ketik di sini" onkeyup="inputted()" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p style="color:Highlight">Password<span style="color:red">*</span></p>
+                                <input class="form-control" type="password" name="password" id="password" value="" placeholder="Verifikasi pengguna" required onkeyup="inputted()" />
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col">
+                                <input disabled type="submit" name="btnSubmit" id="btnSubmit" value="Kirim" class="btn btn-primary form-control" style="border-radius:0" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" id="Preview">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <div class="card-header"></div>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <p>RESUME TRANSAKSI TRANSFER</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <p>Username tujuan</p>
+                                                </div>
+                                                <div class="col">
+                                                    <div id="iusername"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <p>Jumlah uang</p>
+                                                </div>
+                                                <div class="col">
+                                                    <div id="ijml_transfer"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <p>Deskripsi</p>
+                                                </div>
+                                                <div class="col">
+                                                    <div id="ideskripsi"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+
+<script>
+    function ubah() {
+        var jml_transfer = document.getElementById("jml_transfer").value;
+        document.getElementById("jml_transfer").value = jml_transfer.replace(/[^,\d]/g, '').toString();
+    }
+    function inputted() {
+        var username = document.getElementById("username_tujuan").value;
+        var jml_transfer = document.getElementById("jml_transfer").value;
+        var deskripsi = document.getElementById("deskripsi").value;
+        var password = document.getElementById("password").value;
+        var true_pass = document.getElementById("true_password").value;
+        var mySaldo = document.getElementById("mySaldo").value;
+
+
+        document.getElementById("iusername").innerHTML = '<p>: ' + username + '</p>';
+        document.getElementById("ijml_transfer").innerHTML = '<p>: ' + jml_transfer + '</p>';
+        document.getElementById("ideskripsi").innerHTML = '<p>: ' + deskripsi + '</p>';
+
+        if (password == true_pass) {
+            document.getElementById("btnSubmit").disabled = false;
+        } else {
+            document.getElementById("btnSubmit").disabled = true;
+        }
+    }
+    function formatCurrency(value, prefix) {
+
+        var number_string = value.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+</script>
+

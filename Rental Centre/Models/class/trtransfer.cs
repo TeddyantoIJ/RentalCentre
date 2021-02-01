@@ -16,10 +16,15 @@ namespace Rental_Centre.Models
         public int id_penerima { get; set; }
         
         /*
-        1 = Penyewa -> Penyewa
-        2 = Penyewa -> Rental
-        3 = Rental -> Rental
-        4 = Rental -> Penyewa
+        11 = Penyewa -> Penyewa
+        12 = Penyewa -> Rental
+        13 = Penyewa -> Admin
+        21 = Rental -> Penyewa
+        22 = 
+        23 =
+        31 = Admin -> Penyewa
+        32 =
+        33 =
         */
         public int jenis_transfer { get; set; }
         public string deskripsi { get; set; }

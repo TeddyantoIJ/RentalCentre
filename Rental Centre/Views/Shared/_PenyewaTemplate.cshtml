@@ -207,8 +207,8 @@
                         <li class="dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">SHOP</a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Cart</a></li>
-                                <li><a href="#">Checkout</a></li>
+                                <li><a href="@Url.Action("Cart","Penyewa")">Cart</a></li>
+                                <li><a href="@Url.Action("Checkout","Penyewa")">Checkout</a></li>
                                 <li><a href="#">Wishlist</a></li>
                                 <li><a href="#">Shop Detail</a></li>
                             </ul>
@@ -225,10 +225,15 @@
                                         <li><a href="@Url.Action("lihat_mutasi","Penyewa")">Lihat mutasi</a></li>
                                     </ul>
                                 </li>
-                                
+
                             </ul>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="">Contact Us</a></li>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Contact Us</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("kritik_saran","Penyewa")">Kritik dan saran</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->
@@ -251,24 +256,41 @@
                 <a href="#" class="close-side"><i class="fa fa-times"></i></a>
                 <li class="cart-box">
                     <ul class="cart-list">
-                        <li>
-                            <a href="#" class="photo"><img src="~/Content/RoleUser/images/img-pro-01.jpg" class="cart-thumb" alt="" /></a>
-                            <h6><a href="#">Delica omtantur </a></h6>
-                            <p>1x - <span class="price">$80.00</span></p>
-                        </li>
-                        <li>
-                            <a href="#" class="photo"><img src="~/Content/RoleUser/images/img-pro-02.jpg" class="cart-thumb" alt="" /></a>
-                            <h6><a href="#">Omnes ocurreret</a></h6>
-                            <p>1x - <span class="price">$60.00</span></p>
-                        </li>
-                        <li>
-                            <a href="#" class="photo"><img src="~/Content/RoleUser/images/img-pro-03.jpg" class="cart-thumb" alt="" /></a>
-                            <h6><a href="#">Agam facilisis</a></h6>
-                            <p>1x - <span class="price">$40.00</span></p>
-                        </li>
+                        @{ int total = 0;
+                            if (ViewBag.cart != null)
+                            {
+
+                                foreach (var item in ViewBag.cart)
+                                {
+                                    foreach (var barang in ViewBag.allBarang)
+                                    {
+                                        if (barang.id_barang == item.id_barang)
+                                        {
+                                            total = total + barang.harga_sewa;
+                                            <li>
+                                                <a href="#" class="photo"><img src="~/Content/RoleRental/Image/Barang/@barang.link_gambar" class="cart-thumb" alt="" /></a>
+                                                <h6><a href="#">@barang.nama_barang </a></h6>
+                                                <p>1x - <span class="price">@String.Format("{0:c}", barang.harga_sewa)</span></p>
+                                            </li>
+                                        }
+
+                                    }
+
+                                }
+                            }
+                        }
+                        
                         <li class="total">
-                            <a href="#" class="btn btn-default hvr-hover btn-cart">VIEW CART</a>
-                            <span class="float-right"><strong>Total</strong>: $180.00</span>
+                            <div class="row">
+                                <div class="col">
+                                    <h4 class="text-center"><strong>Total </strong>@String.Format("{0:c}", total)</h4>    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <center><a href="@Url.Action("Cart","Penyewa")" class="btn btn-default hvr-hover btn-cart">VIEW CART</a></center>
+                                </div>                                
+                            </div>                            
                         </li>
                     </ul>
                 </li>

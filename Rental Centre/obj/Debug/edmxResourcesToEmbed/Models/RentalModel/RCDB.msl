@@ -4,6 +4,7 @@
     <EntitySetMapping Name="mskelompokjenis">
       <EntityTypeMapping TypeName="RCDBModel.mskelompokjeni">
         <MappingFragment StoreEntitySet="mskelompokjenis">
+          <ScalarProperty Name="deskripsi" ColumnName="deskripsi" />
           <ScalarProperty Name="id_kelompokjenis" ColumnName="id_kelompokjenis" />
           <ScalarProperty Name="nama_kelompokjenis" ColumnName="nama_kelompokjenis" />
           <ScalarProperty Name="status" ColumnName="status" />
@@ -50,6 +51,20 @@
           <ScalarProperty Name="id_rental" ColumnName="id_rental" />
           <ScalarProperty Name="id_jenisbarang" ColumnName="id_jenisbarang" />
           <ScalarProperty Name="id_barang" ColumnName="id_barang" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="dtmutasisaldoes">
+      <EntityTypeMapping TypeName="RCDBModel.dtmutasisaldo">
+        <MappingFragment StoreEntitySet="dtmutasisaldo">
+          <ScalarProperty Name="creadate" ColumnName="creadate" />
+          <ScalarProperty Name="jenis_transaksi" ColumnName="jenis_transaksi" />
+          <ScalarProperty Name="jumlah_saldo" ColumnName="jumlah_saldo" />
+          <ScalarProperty Name="jumlah_transaksi" ColumnName="jumlah_transaksi" />
+          <ScalarProperty Name="id_admin" ColumnName="id_admin" />
+          <ScalarProperty Name="id_rental" ColumnName="id_rental" />
+          <ScalarProperty Name="id_penyewa" ColumnName="id_penyewa" />
+          <ScalarProperty Name="id_mutasisaldo" ColumnName="id_mutasisaldo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

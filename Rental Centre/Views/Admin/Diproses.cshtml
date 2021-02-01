@@ -1,0 +1,126 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.trpenyewaan>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Diproses";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<div id="div_view">
+    <div class="row">
+        <div class="col">
+            <label>Penyewaan / <a href="">Diproses</a></label>
+        </div>
+        <div class="col">
+            @using (Html.BeginForm("Pemesanan", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+            {
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian..", @id = "lala" })
+                <input type="submit" value="Cari" class="btn btn-primary" />
+            }
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col">
+            @{ int i = ((Model.PageNumber - 1) * 10) + 1;}
+            <small>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr class="text-center">
+                                <th>
+                                    No.
+                                </th>
+                                <th>
+                                    Penyewa
+                                </th>
+                                <th>
+                                    Pengajuan
+                                </th>
+                                <th>
+                                    Tanggal penyewaan
+                                </th>
+                                <th>
+                                    Tanggal pengembalian
+                                </th>
+                                <th>
+                                    Biaya DP
+                                </th>
+                                <th>
+                                    Biaya total
+                                </th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+                                <td>@i.</td>
+
+                                @foreach (var penyewa in ViewBag.mspenyewa)
+                                {
+                                    if (penyewa.id_penyewa == item.id_penyewa)
+                                    {
+                                        <td>@penyewa.username (@penyewa.nama_penyewa)</td>
+                                    }
+                                }
+                                <td class="text-center">
+                                    @item.creadate.ToString("dd-MM-yyyy")
+                                </td>
+                                <td class="text-center">
+                                    @item.tgl_penyewaan.ToString("dd-MM-yyyy")
+                                </td>
+                                <td class="text-center">
+                                    @item.tgl_pengembalian.ToString("dd-MM-yyyy")
+                                </td>
+                                <td class="text-right">
+                                    @String.Format("{0:c}", item.total_dp)
+                                </td>
+                                <td class="text-right">
+                                    @String.Format("{0:c}", item.total_harga)
+                                </td>
+                                @{
+                                    string foto = "";
+                                    foreach (var pembayaran in ViewBag.trpembayaran)
+                                    {
+                                        if (pembayaran.id_penyewaan == item.id_penyewaan)
+                                        {
+                                            foto = pembayaran.bukti_pembayaran;
+                                        }
+                                    }
+                                }
+                                <td>                                    
+                                    <form action="Pemesanan_details" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                        <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            i++;
+
+                        }
+
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            @if (Model.PageNumber != 1)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Diproses",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                            }
+
+                            <li class="page-item"><a class="page-link" href="@Url.Action("Diproses",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                            @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                            {
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Diproses",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                            }
+
+                        </ul>
+                    </nav>
+                </div>
+            </small>
+        </div>
+    </div>
+</div>
+

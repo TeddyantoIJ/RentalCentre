@@ -31,7 +31,11 @@ namespace Rental_Centre.Controllers.PenyewaController
         model_trpembayaran trpembayaran = new model_trpembayaran();
         model_trtopup trtopup = new model_trtopup();
         model_dtmutasisaldo dtmutasisaldo = new model_dtmutasisaldo();
-        model_trtransaksi trtransaksi = new model_trtransaksi();
+        model_trtransfer trtransfer = new model_trtransfer();
+        model_trkeranjang trkeranjang = new model_trkeranjang();
+        model_trpenyewaan trpenyewaan = new model_trpenyewaan();
+        model_dtdetailpenyewaan dtdetailpenyewaan = new model_dtdetailpenyewaan();
+        model_trkritiksaran trkritiksaran = new model_trkritiksaran();
 
         public ActionResult Index()
         {
@@ -40,10 +44,14 @@ namespace Rental_Centre.Controllers.PenyewaController
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
+            ViewBag.msbarang = this.msbarang.getAllData().ToList<msbarang>().Take(20);
+
             if(Session["id"] != null)
             {
                 logged_id = Convert.ToInt32(Session["id"].ToString());
                 ViewBag.logged_in = "hidden";
+                ViewBag.cart = this.trkeranjang.getAllByPenyewa(logged_id).ToList<trkeranjang>();
+                ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
             }
             return View();
             
@@ -374,28 +382,233 @@ namespace Rental_Centre.Controllers.PenyewaController
             if(penyewa != null)
             {
                 trtransfer.id_penerima = penyewa.id_penyewa;
-                trtransfer.jenis_transfer = 1;
+                trtransfer.jenis_transfer = 11;
             }
             if(rental != null)
             {
                 trtransfer.id_penerima = rental.id_rental;
-                trtransfer.jenis_transfer = 2;
+                trtransfer.jenis_transfer = 12;
             }
             if(rental == null && penyewa == null)
             {
                 
                 return RedirectToAction("transfer");
             }
-            
-
+                       
             trtransfer.jml_transfer = Convert.ToInt32(data["jml_transfer"]);            
             trtransfer.deskripsi = data["deskripsi"];
             trtransfer.creadate = DateTime.Now;
 
-            this.trtransaksi.addData(trtransfer);
+            this.trtransfer.addData(trtransfer);
             
             return RedirectToAction("transfer");
         }
+        #endregion
+
+        #region Penyewaan
+
+        #region Cart
+        public ActionResult Cart()
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+            ViewBag.logged_in = "hidden";
+            ViewBag.cart = this.trkeranjang.getAllByPenyewa(logged_id).ToList<trkeranjang>();
+            ViewBag.countCart = this.trkeranjang.getAllByPenyewa(logged_id).ToList<trkeranjang>().Count();
+            ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+
+            return View();
+        }
+
+
+        [HttpPost]
+        public bool add_ToCart(int id)
+        {
+            if (logged_id == -1)
+            {                
+                return false;
+            }
+            if (this.trkeranjang.ada(id,logged_id))
+            {
+                return false;
+            }
+            
+            trkeranjang trkeranjang = new trkeranjang();
+            trkeranjang.id_barang = id;
+            trkeranjang.id_penyewa = logged_id;
+            trkeranjang.id_keranjang = logged_id + "_" + id;
+            this.trkeranjang.add(trkeranjang);
+            return true;
+        }
+
+        #endregion        
+
+        #region Checkout
+        public ActionResult Checkout(int? page)
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            ViewBag.logged_in = "hidden";
+
+            var trpenyewaan = this.trpenyewaan.getAllDataPenyewa(logged_id).Take(this.trpenyewaan.getAllDataPenyewa(logged_id).ToList<trpenyewaan>().Count());
+            
+            // Page
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(trpenyewaan.ToPagedList<trpenyewaan>(pageNumber, pageSize));
+        }
+        [HttpPost]
+        public ActionResult checkout(FormCollection data)
+        {
+            trpenyewaan trpenyewaan = new trpenyewaan();
+            trpenyewaan.id_penyewa = logged_id;
+            trpenyewaan.jenis_sewa = Convert.ToInt32(data["jenis_sewa"]);
+            if(trpenyewaan.jenis_sewa == 0)
+            {
+                trpenyewaan.alamat_tujuan = data["alamat_tujuan"];
+                trpenyewaan.kodepos = data["kodepos"];
+            }
+            trpenyewaan.creadate = DateTime.Now;
+            trpenyewaan.tgl_penyewaan = DateTime.Parse(data["tgl_penyewaan"]);
+            trpenyewaan.tgl_pengembalian = DateTime.Parse(data["tgl_pengembalian"]);
+            trpenyewaan.total_dp = Convert.ToInt32(data["total_dp"]);
+            trpenyewaan.total_harga = Convert.ToInt32(data["total_harga"]);
+            trpenyewaan.status_pembayaran = 0;
+            trpenyewaan.status_dp = 0;
+            trpenyewaan.status_transaksi = "PEMESANAN";
+
+            // SIMPAN DATA KE DALAM TABLE PENYEWAAN
+            this.trpenyewaan.add(trpenyewaan);
+
+            // PERULANGAN UNTUK MENYIMPAN KE DALAM DETAIL
+            dtdetailpenyewaan dtdetailpenyewaan = new dtdetailpenyewaan();
+            msbarang barang = new msbarang();
+            for(int i = 1; i <= this.trkeranjang.getAllByPenyewa(logged_id).ToList<trkeranjang>().Count(); i++)
+            {
+                barang = this.msbarang.getBarang(Convert.ToInt32(data["id_" + i]));
+                dtdetailpenyewaan.creadate = DateTime.Now;                
+                dtdetailpenyewaan.jml_barang = Convert.ToInt32(data["jumlah_" + i]);
+                dtdetailpenyewaan.id_barang = barang.id_barang;
+                dtdetailpenyewaan.harga_total = barang.harga_sewa * dtdetailpenyewaan.jml_barang;
+                dtdetailpenyewaan.id_penyewaan = this.trpenyewaan.getLastId();
+                dtdetailpenyewaan.status_barang = "DIPROSES";
+                this.dtdetailpenyewaan.add(dtdetailpenyewaan);
+            }
+
+            // PENGHAPUSAN DATA KERANJANG KARENA SUDAH CHECKOUT
+            this.trkeranjang.remove(logged_id);
+
+            return RedirectToAction("Checkout");
+        }
+
+        public ActionResult Checkout_details(int id)
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            ViewBag.logged_in = "hidden";
+
+            var detail = this.dtdetailpenyewaan.getAllData(id).ToList<dtdetailpenyewaan>();
+            ViewBag.msbarang = this.msbarang.getAllData();
+            return View(detail);
+        }
+        #endregion
+
+        #region Konfirmasi DP
+
+        public ActionResult Konfirmasi_dp(int id)
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.logged_in = "hidden";
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+            ViewBag.dana = this.mspenyewa.getPenyewa(logged_id).saldo;
+            trpenyewaan trpenyewaan = this.trpenyewaan.getPenyewaan(id,logged_id);
+            if(trpembayaran == null)
+            {
+                return RedirectToAction("Ceckout");
+            }
+
+            return View(trpenyewaan);
+        }
+        [HttpPost]
+        public ActionResult Konfirmasi_dp(FormCollection data)
+        {
+            trpembayaran trpembayaran = new trpembayaran();
+            trpembayaran.id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
+            trpembayaran.jml_dibayar = Convert.ToInt32(data["total_dp"]);            
+            trpembayaran.creadate = DateTime.Now;
+            trpembayaran.jenis_pembayaran = 0;
+
+            
+            if (data["pilihan_bayar"] == "2")
+            {                                
+                trpembayaran.bukti_pembayaran = data["bukti_pembayaran"];                
+                trpembayaran.validate = -1;                
+            }
+            else
+            {                
+                trpembayaran.bukti_pembayaran = "DENGAN DANA";                
+                trpembayaran.validate = 1;                
+                this.mspenyewa.bayar_dp(trpembayaran.jml_dibayar, logged_id);
+                this.trpenyewaan.bayarDP(trpembayaran.id_penyewaan);
+            }
+            this.trpenyewaan.ubahDisiapkan(trpembayaran.id_penyewaan);
+            this.trpembayaran.addData(trpembayaran);
+            
+            return RedirectToAction("Checkout");
+        }
+        #endregion
+        #endregion
+
+        #region kritik_saran
+        #region add kritik_saran
+        public ActionResult kritik_saran()
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.logged_in = "hidden";
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+            return View();
+
+        }
+        [HttpPost]
+        public ActionResult kritik_saran(trkritiksaran trkritiksaran)
+        {
+            trkritiksaran.id_penyewa = logged_id;
+            trkritiksaran.creadate = DateTime.Now;
+            this.trkritiksaran.addData(trkritiksaran);
+
+            return RedirectToAction("Index");
+        }
+        #endregion
         #endregion
 
         #region Dan lain lain

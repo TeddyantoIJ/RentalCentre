@@ -30,6 +30,10 @@ namespace Rental_Centre.Controllers.AdminController
         //TRANSAKSI
         model_trtopup trtopup = new model_trtopup();
         model_dtmutasisaldo dtmutasisaldo = new model_dtmutasisaldo();
+        model_trpenyewaan trpenyewaan = new model_trpenyewaan();
+        model_trpembayaran trpembayaran = new model_trpembayaran();
+        model_dtdetailpenyewaan dtdetailpenyewaan = new model_dtdetailpenyewaan();
+        model_trkritiksaran trkritiksaran = new model_trkritiksaran();
 
         public ActionResult Index()
         {
@@ -42,7 +46,7 @@ namespace Rental_Centre.Controllers.AdminController
                 logged_id = Convert.ToInt32(Session["id"].ToString());
             }
 
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            //ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
 
             return View();
@@ -872,8 +876,52 @@ namespace Rental_Centre.Controllers.AdminController
             ViewBag.saldo = saldo;
             return View();
         }
+        [HttpPost]
+        public ActionResult mutasi(int? page, DateTime awal, DateTime akhir, string kelompok)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
 
-        public ActionResult mutasi(int? page, int? jumlah)
+            //View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.msrental = this.msrental.getAllData().ToList<msrental>();
+            var dtmutasisaldo = this.dtmutasisaldo.getAll().Take(this.dtmutasisaldo.getAll().Count());
+
+            akhir = akhir.AddDays(1);
+
+            if (kelompok == "")
+            {
+                kelompok = "A";
+            }
+            if (kelompok == "A")
+            {
+                ViewBag.kelompok = "Semua";
+                dtmutasisaldo = this.dtmutasisaldo.getAll().Where(s => s.creadate >= awal && s.creadate <= akhir).Take(this.dtmutasisaldo.getAll().Count());
+            }
+            else if (kelompok == "TR")
+            {
+                ViewBag.kelompok = "TRANSFER";
+                dtmutasisaldo = this.dtmutasisaldo.getAll().Where(s => s.jenis_transaksi.Contains("TRANSFER") && DateTime.Compare(s.creadate, awal) > 0 && DateTime.Compare(s.creadate, akhir) < 0).Take(this.dtmutasisaldo.getAll().Count());
+            }
+            if (kelompok == "TU")
+            {
+                ViewBag.kelompok = "TOP UP";
+                dtmutasisaldo = this.dtmutasisaldo.getAll().Where(s => s.jenis_transaksi.Contains("TOP UP") && DateTime.Compare(s.creadate, awal) > 0 && DateTime.Compare(s.creadate, akhir) < 0).Take(this.dtmutasisaldo.getAll().Count());
+            }
+
+
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            ViewBag.awal = awal.ToString("yyyy-MM-dd");
+            ViewBag.akhir = awal.ToString("yyyy-MM-dd");
+            
+
+            return View(dtmutasisaldo.ToPagedList<dtmutasisaldo>(pageNumber, pageSize));
+        }        
+        public ActionResult mutasi(int? page)
         {
             //View Bag Wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
@@ -883,13 +931,147 @@ namespace Rental_Centre.Controllers.AdminController
             ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
             ViewBag.msrental = this.msrental.getAllData().ToList<msrental>();
 
-            var dtmutasisaldo = this.dtmutasisaldo.getAll().Take(this.dtmutasisaldo.getAll().Count());
+            var dtmutasisaldo = this.dtmutasisaldo.getAll().Where(s => s.creadate > DateTime.Now.AddMonths(-1) && s.creadate < DateTime.Now).Take(this.dtmutasisaldo.getAll().Count());
+
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            
+            return View(dtmutasisaldo.ToPagedList<dtmutasisaldo>(pageNumber, pageSize));
+        }
+        #endregion
+
+        #region PENYEWAAN
+
+        #region Pemesanan
+        public ActionResult Pemesanan(int? page)
+        {
+            if(logged_id == -1)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+
+            // View bag wajib
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.trpembayaran = this.trpembayaran.getAll().ToList<trpembayaran>();
+
+            var trpenyewaan = this.trpenyewaan.getAllData("VALIDASI DP").Take(this.trpenyewaan.getAllData("VALIDASI DP").ToList<trpenyewaan>().Count());
+            
+
+            // Page
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(trpenyewaan.ToPagedList<trpenyewaan>(pageNumber, pageSize));
+        }
+
+        [HttpPost]
+        public ActionResult Pemesanan(FormCollection data)
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+            
+            if(data["submit"] == "VALID")
+            {                
+                // UBAH STATUS PENYEWAAN JADI DISIAPKAN dan STATUS DP JADI 1
+                this.trpenyewaan.ubahDisiapkan(Convert.ToInt32(data["id_penyewaan"]),logged_id);
+                this.trpenyewaan.bayarDP(Convert.ToInt32(data["id_penyewaan"]));
+
+                // UBAH STATUS DP JADI VALID 
+                trpembayaran trpembayaran = new trpembayaran();
+                trpembayaran.id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
+                trpembayaran.id_admin = logged_id;
+                trpembayaran.tgl_validasi = DateTime.Now;
+                trpembayaran.validate = 1;
+                this.trpembayaran.ValidasiDP(trpembayaran);
+            }
+            else
+            {
+                // UBAH STATUS PENYEWAAN JADI GAGAL
+                this.trpenyewaan.ubahGagal(Convert.ToInt32(data["id_penyewaan"]), logged_id);
+                
+
+                // UBAH STATUS DP JADI VALID 
+                trpembayaran trpembayaran = new trpembayaran();
+                trpembayaran.id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
+                trpembayaran.id_admin = logged_id;
+                trpembayaran.tgl_validasi = DateTime.Now;
+                trpembayaran.validate = 0;
+                this.trpembayaran.ValidasiDP(trpembayaran);
+            }
+            return RedirectToAction("Pemesanan");
+        }
+        [HttpPost]
+        public ActionResult Pemesanan_details(int id)
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+
+            // View bag wajib
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag diwajibkan
+            var detail = this.dtdetailpenyewaan.getAllData(id).ToList<dtdetailpenyewaan>();
+            ViewBag.msbarang = this.msbarang.getAllData().ToList<msbarang>();
+            return View(detail);
+        }
+        #endregion
+
+        #region DIPROSES
+        public ActionResult Diproses(int? page)
+        {
+            if (logged_id == -1)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+
+            // View bag wajib
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            // View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.trpembayaran = this.trpembayaran.getAll().ToList<trpembayaran>();
+
+            var trpenyewaan = this.trpenyewaan.getAllData("DISIAPKAN").Take(this.trpenyewaan.getAllData("DISIAPKAN").ToList<trpenyewaan>().Count());
+
+
+            // Page
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(trpenyewaan.ToPagedList<trpenyewaan>(pageNumber, pageSize));
+        }
+        #endregion
+
+        #endregion
+
+        #region kritik_saran
+        public ActionResult kritik_saran(int? page, int? jumlah)
+        {
+            //View Bag Wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+
+            //View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.msrental = this.msrental.getAllData().ToList<msrental>();
+
+            var trkritiksaran = this.trkritiksaran.getAll().Take(this.trkritiksaran.getAll().Count());
 
 
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             ViewBag.jumlah = (jumlah ?? 0);
-            return View(dtmutasisaldo.ToPagedList<dtmutasisaldo>(pageNumber, pageSize));
+            return View(trkritiksaran.ToPagedList<trkritiksaran>(pageNumber, pageSize));
         }
         #endregion
 

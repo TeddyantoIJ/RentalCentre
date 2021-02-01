@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "kritik_saran";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+    <style>
+
+        input {
+            border: 0;
+            outline: 0;
+            background: transparent;
+            border-bottom: 3px solid blue;
+            width: inherit;
+        }
+    </style>
+
+<br />
+<div class="container">
+    <form action="kritik_saran" method="post">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <p style="font-size:30px">Kritik & Saran</p>
+                        <br/>
+                        <br/>
+                        <input type="text" name="kritik_saran" value="" placeholder="Masukkan kritik dan saran Anda" required />
+                    </div>
+                </div>
+                <br />
+                <input type="submit" id="btnInsert" name="btnInsert" value="Ajukan kritik saran" class="btn btn-primary float-right" style="border-radius:0" />
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+<br />

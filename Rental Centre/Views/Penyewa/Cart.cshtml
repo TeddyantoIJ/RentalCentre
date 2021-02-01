@@ -1,0 +1,250 @@
+﻿
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <label><a href="@Url.Action("Index")">Home </a> > Cart</label>
+    <form action="@Url.Action("checkout","Penyewa")" method="post" autocomplete="off">
+        <div class="row">
+            <div class="col" style="height:600px; overflow:scroll">
+                <div class="row">
+                    <div class="col-7">
+                        ITEMS (<div id="totalitem" class="d-inline">@ViewBag.countCart</div> items)
+                    </div>
+                    <div class="col-2">
+                        QUANTITY
+                    </div>
+                    <div class="col">
+                        PRICE
+                    </div>
+                </div>
+                <hr style="border:1px solid" />
+                @{ int nomor = 1;}
+                @foreach (var cart in ViewBag.cart)
+                {
+                    foreach (var data in ViewBag.allBarang)
+                    {
+                        if (data.id_barang == cart.id_barang)
+                        {
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <img src="~/Content/RoleRental/Image/Barang/@data.link_gambar" class="card-img-top" alt="...">
+                                        </div>
+                                        <div class="col">
+
+                                            <h5 style="color:black"><b>@data.nama_barang</b></h5>
+                                            <p style=" color:black;line-height:1px">
+                                                @{
+                                                    string harga = String.Format("{0:c}", data.harga_sewa);
+                                                }
+                                                Rp @harga.Replace("Rp", "")/hari
+                                            </p>
+                                            <p>
+                                                Stok Tersedia · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
+                                            </p>
+                                            <p>
+                                                <a href=""><u>Hapus</u></a> |
+                                                <a href=""><u>Masukkan ke wishlist</u></a>
+                                            </p>
+                                            <!--<p>
+
+                                                    10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
+                                                    ·
+                                                    3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
+
+                                            </p>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <input type="hidden" name="id_@nomor" value="@data.id_barang" />
+                                    <input type="number" name="jumlah_@nomor" id="jumlah_@nomor" onchange="tambah(@nomor,this.value,@data.harga_sewa)" onkeydown="return ''" class="spinner-border form-control quantity" value="1" min="1" max="@data.stok_barang" step="1" />
+                                </div>
+                                <div class="col">
+                                    <input type="text" readonly id="harga_@nomor" value="@data.harga_sewa" class="form-control" />
+                                </div>
+                            </div>
+                            nomor++;
+                        }
+                    }
+                    <hr />
+                }
+                <hr style="border:1px solid" />
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col">
+                        <label style="background-color:orangered;Color:white" class="form-control text-center"><b>SECURE CHECKOUT</b></label>
+                    </div>
+                </div>
+                <div class="row" style="background-color:lightgrey">
+                    <div class="col">
+                        <center><label><b>ORDER SUMMARY</b></label></center>
+                        <div class="row">
+                            <div class="col">
+                                <label>Subtotal (<div id="subtotal" class="d-inline">@ViewBag.countCart</div> items) :</label>
+                            </div>
+                            <div class="col-4">
+                                <label class="float-right"><div id="subharga"></div><span>/ hari</span></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" onclick="ubahRadio()" checked type="radio" name="jenis_penyewaan" id="kirim" value="0">
+                                    <label class="form-check-label" for="jenis_penyewaan">Kirim ke alamat :</label>
+                                    <div class="form-group">
+                                        <textarea id="textarea" class="form-control" onkeyup="setalamat()" style="border-radius:0"></textarea>
+                                        <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input list="kodepos" name="kodepos" id="kodepos" placeholder="Kodepos" style="border:0px" />
+                                        <datalist id="kodepos">
+                                            <option value="52363">52363</option>
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" onclick="ubahRadio()" type="radio" name="jenis_penyewaan" id="jemput" value="1">
+                                    <label class="form-check-label" for="jenis_penyewaan">Ambil di toko terkait</label>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    Tanggal sewa
+                                    <input type="date" id="tgl_penyewaan" name="tgl_penyewaan" onchange="ubahtanggal()" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="float-right" style="border:0px" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    Tanggal selesai
+                                    <input type="date" id="tgl_pengembalian" name="tgl_pengembalian" onchange="ubahtanggal()" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" class="float-right" style="border:0px" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                Biaya pengiriman :
+                            </div>
+                            <div class="col">
+                                <div id="biaya_pengiriman" class="d-inline float-right">40000</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label>Biaya Dp : (50% total)</label>
+                            </div>
+                            <div class="col-4">
+                                <label class="float-right"><div id="dp"></div></label>
+                                <input type="hidden" name="total_dp" id="total_dp" value="" />
+                            </div>
+                        </div>
+                        <div class="row" style="color:black">
+                            <div class="col">
+                                <label><b>Total :</b></label>
+                            </div>
+                            <div class="col-4">
+                                <label class="float-right"><b><div id="totalbiaya"></div></b></label>
+                                <input type="hidden" name="total_harga" id="total_harga" value="" />
+                            </div>
+                        </div>
+                        <hr />
+                        <label></label>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <input type="submit" name="btnCheckOut" value="Pesan sekarang" class="btn btn-primary float-right" style="border-radius:0" />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var totalitem = document.getElementById("totalitem").innerHTML;    
+    var subharga = 0;
+    for (i = 1; i <= totalitem; i++) {        
+        var harga = parseInt(document.getElementById("harga_" + i).value);        
+        subharga = subharga + harga;
+    }    
+    document.getElementById("subharga").innerHTML = subharga;
+    document.getElementById("dp").innerHTML = subharga * 50 / 100;
+    document.getElementById("totalbiaya").innerHTML = subharga + 40000;
+    document.getElementById("total_dp").value = subharga * 50 / 100;
+    document.getElementById("total_harga").value = subharga + 40000;
+
+
+    function tambah(id, jumlah, harga)
+    {
+        document.getElementById("harga_" + id).value = jumlah * harga;        
+        ubahtanggal();
+    }
+    function ubahtanggal()
+    {
+        var totalitem = document.getElementById("totalitem").innerHTML;
+        var subtotal = 0;
+        var subharga = 0;
+
+        const date1 = new Date(document.getElementById("tgl_pengembalian").value);
+        const date2 = new Date(document.getElementById("tgl_penyewaan").value);
+        const diffTime = Math.abs(date2 - date1);
+        const lamasewa = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                
+        for (i = 1; i <= totalitem; i++) {
+            var jumlah = parseInt(document.getElementById("jumlah_" + i).value);
+            var harga = parseInt(document.getElementById("harga_" + i).value);
+            subtotal = subtotal + jumlah;
+            subharga = subharga + harga;
+        }
+        document.getElementById("subtotal").innerHTML = subtotal;
+        document.getElementById("subharga").innerHTML = subharga;
+        document.getElementById("dp").innerHTML = (subharga * lamasewa) * 50 / 100;
+
+
+        document.getElementById("total_dp").value = (subharga * lamasewa) * 50 / 100;
+        if (document.getElementById("jemput").checked == true) {
+            document.getElementById("total_harga").value = subharga * lamasewa;
+            document.getElementById("totalbiaya").innerHTML = subharga * lamasewa;
+        } else {
+            document.getElementById("total_harga").value = (subharga * lamasewa) + 40000;
+            document.getElementById("totalbiaya").innerHTML = (subharga * lamasewa) + 40000;
+        }
+    }
+    function ubahRadio()
+    {
+        if (document.getElementById("jemput").checked == true) {
+            document.getElementById("textarea").readOnly = true;
+            document.getElementById("kodepos").disabled = true;
+            document.getElementById("biaya_pengiriman").innerHTML = '-';
+            document.getElementById("totalbiaya").innerHTML = parseInt(document.getElementById("subharga").innerHTML) - 40000;
+        } else {
+            document.getElementById("textarea").readOnly = false;
+            document.getElementById("kodepos").disabled = false;            
+            document.getElementById("biaya_pengiriman").innerHTML = '40000';
+            document.getElementById("totalbiaya").innerHTML = parseInt(document.getElementById("subharga").innerHTML) + 40000;
+        }
+    }
+    function setalamat()
+    {
+        var alamat = document.getElementById("textarea").value;
+        document.getElementById("alamat_tujuan").value = alamat;
+    }
+
+</script>

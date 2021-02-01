@@ -180,37 +180,10 @@
     <Compile Include="Models\model_trpembayaran.cs" />
     <Compile Include="Models\model_trpenyewaan.cs" />
     <Compile Include="Models\model_trtopup.cs" />
-    <Compile Include="Models\model_trtransaksi.cs" />
+    <Compile Include="Models\model_trtransfer.cs" />
     <Compile Include="Models\model_trwishlist.cs" />
-    <Compile Include="Models\RentalModel\msbarang.cs">
-      <DependentUpon>RCDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RentalModel\mskelompokjeni.cs">
-      <DependentUpon>RCDB.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\class\mskelompokjenis.cs" />
-    <Compile Include="Models\RentalModel\mskodepos.cs">
-      <DependentUpon>RCDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RentalModel\msprovinsi.cs">
-      <DependentUpon>RCDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RentalModel\RCDB.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RCDB.Context.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\class\RCDB.cs" />
-    <Compile Include="Models\RentalModel\RCDB.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RCDB.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RentalModel\RCDB1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>RCDB.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\class\trkeranjang.cs" />
     <Compile Include="Models\class\trkomentar.cs" />
     <Compile Include="Models\class\trkritiksaran.cs" />
@@ -232,16 +205,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\RentalModel\RCDB.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>RCDB.Context.cs</LastGenOutput>
-      <DependentUpon>RCDB.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\RentalModel\RCDB.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>RCDB.edmx</DependentUpon>
-      <LastGenOutput>RCDB1.cs</LastGenOutput>
-    </Content>
     <Content Include="Content\RoleAdmin\css\sb-admin-2.css" />
     <Content Include="Content\RoleAdmin\css\sb-admin-2.min.css" />
     <Content Include="Content\RoleAdmin\img\undraw_posting_photo.svg" />
@@ -371,13 +334,6 @@
     <Content Include="Content\RoleUser\webfonts\fa-solid-900.ttf" />
     <Content Include="Content\RoleUser\webfonts\fa-solid-900.woff" />
     <Content Include="Content\RoleUser\webfonts\fa-solid-900.woff2" />
-    <EntityDeploy Include="Models\RentalModel\RCDB.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>RCDB.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\RentalModel\RCDB.edmx.diagram">
-      <DependentUpon>RCDB.edmx</DependentUpon>
-    </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -2268,11 +2224,25 @@
     <Content Include="Views\Admin\cek_saldo.cshtml" />
     <Content Include="Views\Admin\mutasi.cshtml" />
     <Content Include="Views\Penyewa\transfer.cshtml" />
+    <Content Include="Views\Rental\transfer.cshtml" />
+    <Content Include="Views\Penyewa\Cart.cshtml" />
+    <Content Include="Views\Admin\Pemesanan.cshtml" />
+    <Content Include="Views\Penyewa\Checkout.cshtml" />
+    <Content Include="Views\Penyewa\Konfirmasi_dp.cshtml" />
+    <Content Include="Views\Rental\Pengajuan_sewa.cshtml" />
+    <Content Include="Views\Rental\Pengemasan.cshtml" />
+    <Content Include="Views\Penyewa\Checkout_details.cshtml" />
+    <Content Include="Views\Admin\Pemesanan_details.cshtml" />
+    <Content Include="Views\Admin\Diproses.cshtml" />
+    <Content Include="Views\Admin\kritik_saran.cshtml" />
+    <Content Include="Views\Rental\kritik_saran.cshtml" />
+    <Content Include="Views\Penyewa\kritik_saran.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\RoleUser\fonts\" />
     <Folder Include="Content\Temp\" />
+    <Folder Include="Models\RentalModel\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

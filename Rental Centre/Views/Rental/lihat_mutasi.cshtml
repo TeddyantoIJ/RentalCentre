@@ -1,4 +1,6 @@
-﻿
+﻿@model PagedList.IPagedList<Rental_Centre.Models.dtmutasisaldo>
+@using PagedList.Mvc;
+
 @{
     ViewBag.Title = "lihat_mutasi";
     ViewBag.Profile = ViewBag.logged_in.profil;
@@ -9,10 +11,13 @@
 }
 
 <div class="container">
-    <div class="card text-center">        
+    <a>Dana</a> / <a href="">Lihat Mutasi</a>
+    <div class="card text-center">
         <div class="card-body">
+            <h3 class="lead">MUTASI SAYA</h3>
+            <br />
             <table class="table table-hover">
-                <thead class="thead-dark">
+                <thead>
                     <tr>
                         <td>No.</td>
                         <td>Deskripsi</td>
@@ -24,8 +29,7 @@
                 </thead>
                 <tbody>
                     @{
-                        int no = 1;
-                        int jumlah = 0;
+                        int no = 1;                        
                     }
                     @foreach (var item in Model)
                     {
@@ -40,18 +44,16 @@
                                 if (item.jenis_transaksi == "TOP UP" || item.jenis_transaksi == "TERIMA TRANSFER")
                                 {
                                     <td class="text-right">@uang</td>
-                                    <td class="text-right">-</td>
-                                    jumlah += item.jumlah_transaksi;
+                                    <td class="text-right">-</td>                                    
                                 }
                                 else
                                 {
                                     <td class="text-right">-</td>
-                                    <td class="text-right">@uang</td>
-                                    jumlah -= item.jumlah_transaksi;
+                                    <td class="text-right">@uang</td>                                    
                                 }
                             }
 
-                            <td class="text-right">@String.Format("{0:c}", jumlah)</td>
+                            <td class="text-right">@String.Format("{0:c}", item.jumlah_saldo)</td>
                         </tr>
                         no++;
                     }

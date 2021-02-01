@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Rental_Centre.Models.dtdetailpenyewaan>
+
+@{
+    ViewBag.Title = "Pemesanan_details";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+
+<br />
+   
+    <script>
+        document.write('<label>Penyewaan / <a href = "' + document.referrer + '" > ' + document.referrer.substring(document.referrer.lastIndexOf('/') + 1) +' </a> / Pemesanan Details</label> <br />');
+        document.write('<a href = "'+ document.referrer +'" class= "btn btn-secondary" > Kembali </a>');        
+    </script>    
+    <br />
+    <br />
+    <div class="row">
+        <div class="col">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr class="text-center">
+                        <th>No</th>
+                        <th>Nama barang</th>
+                        <th>Jumlah barang</th>
+                        <th>Harga Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody style="height:300px; overflow:scroll">
+                    @{ int i = 1;
+                        int subjum = 0;
+                        int subharga = 0;
+                        string status = "SELESAI";}
+                    @foreach (var item in Model)
+                    {
+                        <tr class="text-center">
+                            <td>@i.</td>
+                            @foreach (var barang in ViewBag.msbarang)
+                            {
+                                if (barang.id_barang == item.id_barang)
+                                {
+                                    <td class="text-left">@barang.nama_barang</td>
+                                }
+                            }
+                            <td>@item.jml_barang</td>
+                            @{ subjum += item.jml_barang;}
+                            @{ subharga += item.harga_total;}
+                            <td class="text-right">@String.Format("{0:c}", item.harga_total)</td>
+                            @if (item.status_barang == "DIPROSES")
+                            {
+                                <td style="color:red">@item.status_barang</td>
+                                status = "BELUM SELESAI";
+                            }
+                            else
+                            {
+                                <td style="color:green">@item.status_barang</td>
+                            }
+
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="text-center" colspan="2"><b>TOTAL</b></td>
+                        <td class="text-center">@subjum</td>
+                        <td class="text-right">@String.Format("{0:c}", subharga)</td>
+                        <td class="text-center">@status</td>
+                    </tr>
+                    <tr><td colspan="5"></td></tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+
+
