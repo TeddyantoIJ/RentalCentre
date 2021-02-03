@@ -2,10 +2,7 @@
 @using PagedList.Mvc;
 
 @{
-    ViewBag.Title = "Pengajuan_sewa";
-    ViewBag.Profile = ViewBag.logged_in.profil;
-    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
-    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
+    ViewBag.Title = "Pengajuan_sewa";    
     Layout = "~/Views/Shared/_RentalTemplate.cshtml";
 }
 
@@ -109,15 +106,18 @@
                                     }
                                 }
                             }
-                            <td>
+                            <td class="text-center">
                                 <div class="row">
                                     <div class="col">
                                         <form action="Pengemasan" method="post" class="d-inline">
                                             <input type="hidden" name="id_penyewaan" value="@item.id_penyewaan" />
                                             <button style="background-color:transparent;border:0px"><span class="fa fa-check" title="Siapkan produk"></span></button> |
                                         </form>
-                                        
-                                        <a href="#"><span class="fa fa-info" title="Details"></span></a> |
+
+                                        <form action="Pemesanan_details" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                            <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
+                                        </form>
                                     </div>
                                 </div>
 
@@ -132,13 +132,13 @@
                         <ul class="pagination">
                             @if (Model.PageNumber != 1)
                             {
-                                <li class="page-item"><a class="page-link" href="@Url.Action("Pengajuan_sewag",new { page = Model.PageNumber-1})">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Pengajuan_sewa",new { page = Model.PageNumber-1})">Previous</a></li>
                             }
 
-                            <li class="page-item"><a class="page-link" href="@Url.Action("Pengajuan_sewag",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("Pengajuan_sewa",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
                             @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
                             {
-                                <li class="page-item"><a class="page-link" href="@Url.Action("Pengajuan_sewag",new { page = Model.PageNumber+1})">Next</a></li>
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Pengajuan_sewa",new { page = Model.PageNumber+1})">Next</a></li>
                             }
 
                         </ul>

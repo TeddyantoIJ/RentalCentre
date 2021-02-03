@@ -68,14 +68,13 @@
         }
 </style>
 
-<br />
 <div id="div_view">
     <div class="row">
         <div class="col">
-            <label>Penyewaan / <a href="">Pemesanan</a></label>
+            <label>Penyewaan / <a href="">Konfirmasi</a></label>
         </div>
         <div class="col">
-            @using (Html.BeginForm("Pemesanan", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+            @using (Html.BeginForm("Konfirmasi", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
             {
                 @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian..", @id = "lala" })
                 <input type="submit" value="Cari" class="btn btn-primary" />
@@ -119,49 +118,62 @@
                         @foreach (var item in Model)
                         {
 
-                            <tr>
-                                <td>@i.</td>
+                        <tr>
+                            <td>@i.</td>
 
-                                @foreach (var penyewa in ViewBag.mspenyewa)
+                            @foreach (var penyewa in ViewBag.mspenyewa)
+                            {
+                                if (penyewa.id_penyewa == item.id_penyewa)
                                 {
-                                    if (penyewa.id_penyewa == item.id_penyewa)
+                                    <td>@penyewa.username (@penyewa.nama_penyewa)</td>
+                                }
+                            }
+                            <td class="text-center">
+                                @item.creadate.ToString("dd-MM-yyyy")
+                            </td>
+                            <td class="text-center">
+                                @item.tgl_penyewaan.ToString("dd-MM-yyyy")
+                            </td>
+                            <td class="text-center">
+                                @item.tgl_pengembalian.ToString("dd-MM-yyyy")
+                            </td>
+                            <td class="text-right">
+                                @String.Format("{0:c}", item.total_dp)
+                            </td>
+                            <td class="text-right">
+                                @String.Format("{0:c}", item.total_harga)
+                            </td>
+
+                            @{
+                                string foto = "";
+                                foreach (var pembayaran in ViewBag.trpembayaran)
+                                {
+                                    if (pembayaran.id_penyewaan == item.id_penyewaan && pembayaran.jenis_pembayaran == 0 && pembayaran.validate == -1)
                                     {
-                                        <td>@penyewa.username (@penyewa.nama_penyewa)</td>
+                                        foto = pembayaran.bukti_pembayaran;
+                                        <td class="text-center">
+                                            <a href="#" onclick="detail('@String.Format("{0:c}", item.total_dp)','@foto',@item.id_penyewaan,0)"><span class="fa fa-check" title="Konfirmasi DP"></span></a> |
+                                            <form action="Pemesanan_details" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                                <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
+                                            </form>
+                                        </td>
+                                    }
+                                    if (pembayaran.id_penyewaan == item.id_penyewaan && pembayaran.jenis_pembayaran == 1 && pembayaran.validate == -1)
+                                    {
+                                        foto = pembayaran.bukti_pembayaran;
+                                        <td class="text-center">
+                                            <a href="#" onclick="detail('@String.Format("{0:c}", item.total_dp)','@foto',@item.id_penyewaan,1)"><span class="fa fa-check" title="Konfirmasi Pembayaran Sisa"></span></a> |
+                                            <form action="Pemesanan_details" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                                <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
+                                            </form>
+                                        </td>
                                     }
                                 }
-                                <td class="text-center">
-                                    @item.creadate.ToString("dd-MM-yyyy")
-                                </td>
-                                <td class="text-center">
-                                    @item.tgl_penyewaan.ToString("dd-MM-yyyy")
-                                </td>
-                                <td class="text-center">
-                                    @item.tgl_pengembalian.ToString("dd-MM-yyyy")
-                                </td>
-                                <td class="text-right">
-                                    @String.Format("{0:c}", item.total_dp)
-                                </td>
-                                <td class="text-right">
-                                    @String.Format("{0:c}", item.total_harga)
-                                </td>
-                                @{
-                                    string foto = "";
-                                    foreach (var pembayaran in ViewBag.trpembayaran)
-                                    {
-                                        if (pembayaran.id_penyewaan == item.id_penyewaan)
-                                        {
-                                            foto = pembayaran.bukti_pembayaran;
-                                        }
-                                    }
-                                }
-                                <td>                                    
-                                    <a href="#" onclick="detail('@String.Format("{0:c}", item.total_dp)','@foto',@item.id_penyewaan)"><span class="fa fa-check" title="Konfirmasi DP"></span></a> |
-                                    <form action="Pemesanan_details" method="post" class="d-inline">
-                                        <input type="hidden" name="id" value="@item.id_penyewaan" />
-                                        <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
-                                    </form>                                    
-                                </td>
-                            </tr>
+                            }
+
+                        </tr>
                             i++;
 
                         }
@@ -171,13 +183,13 @@
                         <ul class="pagination">
                             @if (Model.PageNumber != 1)
                             {
-                                <li class="page-item"><a class="page-link" href="@Url.Action("Pemesanan",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Konfirmasi",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
                             }
 
-                            <li class="page-item"><a class="page-link" href="@Url.Action("Pemesanan",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("Konfirmasi",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
                             @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
                             {
-                                <li class="page-item"><a class="page-link" href="@Url.Action("Pemesanan",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Konfirmasi",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
                             }
 
                         </ul>
@@ -188,9 +200,8 @@
     </div>
 </div>
 
-<div id="div_konfirmasi" hidden>
-    
-    <label>Penyewaan / <a href="#" onclick="batal()">Pemesanan</a> / <a>Konfirmasi DP</a></label>
+<div id="div_konfirmasi" hidden>  
+    <label>Penyewaan / <a href="#" onclick="batal()">Konfirmasi</a> / <a>Konfirmasi Transfer</a></label>
     <div class="card shadow">
         <div class="card-body">
             <div class="row">
@@ -206,20 +217,21 @@
                     <label>Jumlah yang dibayar : <b><div class="d-inline" id="jumlah"></div></b></label>
                     <label>Mohon periksa dengan <b style="color:red">SEKSAMA</b> agar tidak terjadi kesalahan</label>
                     <br />
-                    <form action="Pemesanan" method="post" class="d-inline">
+                    <form action="Konfirmasi" method="post" class="d-inline">
                         <input type="hidden" id="id_pemesanan1" name="id_penyewaan" value="" />
-                        <input type="submit" name="submit" value="VALID" class="btn btn-success" title="Tekan jika data benar"/>
+                        <input type="hidden" id="type1" name="jenis_pembayaran" value="" />
+                        <input type="submit" name="submit" value="VALID" class="btn btn-success" title="Tekan jika data benar" />
                     </form>
-                    <form action="Pemesanan" method="post" class="d-inline">
+                    <form action="Konfirmasi" method="post" class="d-inline">
                         <input type="submit" name="submit" value="INVALID" class="btn btn-danger" title="Tekan jika data tidak benar" />
+                        <input type="hidden" id="type2" name="jenis_pembayaran" value="" />
                         <input type="hidden" id="id_pemesanan2" name="id_penyewaan" value="" />
                     </form>
                 </div>
             </div>
             <br />
         </div>
-    </div>
-    
+    </div>    
 </div>
 <div id="myModal" class="modal" onclick="tutup()">
     <span class="close" onclick="tutup()">&times;</span>
@@ -228,11 +240,13 @@
 </div>
 <script>
     // Function to increase image size
-    function detail(jumlah, foto,id) {
+    function detail(jumlah, foto,id,type) {
         document.getElementById("img").src = "../../../Content/RoleAdmin/img/bukti_transfer/" + foto;
         document.getElementById("jumlah").innerHTML = jumlah;
         document.getElementById("id_pemesanan1").value = id;
         document.getElementById("id_pemesanan2").value = id;
+        document.getElementById("type1").value = type;
+        document.getElementById("type2").value = type;
         document.getElementById("div_konfirmasi").hidden = false;
         document.getElementById("div_view").hidden = true;
     }

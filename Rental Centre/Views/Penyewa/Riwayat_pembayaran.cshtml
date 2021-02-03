@@ -1,0 +1,99 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.trpembayaran>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Riwayat_pembayaran";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <label><a href="@Url.Action("Index")" class="text-muted">Home </a> > Riwayat pembayaran</label>
+    <br />
+    <div class="card-body" style="height:500px">
+        <table class="table table-hover">
+            <thead class="thead thead-dark">
+                <tr class="text-center">
+                    <td>No.</td>
+                    <td>Jenis pembayaran</td>
+                    <td>Tanggal penyewaan</td>
+                    <td>Jumlah dibayar</td>
+                    <td>Keterangan</td>
+                    <td>Waktu pembayaran</td>
+                    <td>Validasi</td>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int no = ((Model.PageNumber - 1) * 10) + 1; ;
+                }
+                @foreach (var item in Model)
+                {
+
+                    string uang = String.Format("{0:c}", item.jml_dibayar);
+
+                    <tr>
+                        <td>@no.</td>
+                        @if (item.jenis_pembayaran == 0)
+                        {
+                            <td>PEMBAYARAN DP</td>
+                        }
+                        else
+                        {
+                            <td>PEMBAYARAN SISA</td>
+                        }
+                        @foreach (var p in ViewBag.trpenyewaan)
+                        {
+                            if (p.id_penyewaan == item.id_penyewaan)
+                            {
+                                <td class="text-center">@p.tgl_penyewaan.ToString("dd-MM-yyyy")</td>
+                                break;
+                            }
+                        }
+                        <td class="text-right">@uang</td>
+                        @if (item.bukti_pembayaran == "DENGAN DANA")
+                        {
+                            <td>DENGAN DANA</td>
+                        }
+                        else
+                        {
+                            <td>TRANSFER</td>
+                        }
+                        <td class="text-center">@item.creadate.ToString("dd-MM-yyyy HH:mm WIB")</td>
+                        @if (item.validate == -1)
+                        {
+                            <td>Belum divalidasi</td>
+                        }
+                        else if (item.validate == 0)
+                        {
+                            <td style="color:red">Pembayaran tidak diterima</td>
+                        }
+                        else
+                        {
+                            <td style="color:green">Pembayaran diterima</td>
+                        }
+                        @{no++;}
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                @if (Model.PageNumber != 1)
+                {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("Riwayat_pembayaran",new { page = Model.PageNumber-1})">Previous</a></li>
+                }
+
+                <li class="page-item"><a class="page-link" href="@Url.Action("Riwayat_pembayaran",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
+                @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("Riwayat_pembayaran",new { page = Model.PageNumber+1})">Next</a></li>
+                }
+
+            </ul>
+        </nav>
+
+    </div>
+</div>

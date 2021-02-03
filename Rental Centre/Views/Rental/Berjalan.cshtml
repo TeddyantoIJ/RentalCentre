@@ -1,0 +1,184 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.trpenyewaan>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Berjalan";
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+
+<div class="container">
+    <div id="view">
+        <label>Aktivitas / Berjalan</label><br />
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <label>
+                            <p>
+                                Perlu diperhatikan <span style="color:black">"Biaya Total"</span> bukanlah uang yang akan didapat,
+                                melainkan total transaksi pada penyewaan tersebut
+                                Penyewaan ini belum tentu hanya terdiri dari produk anda saja, lihat bagian details.
+                            </p>
+                        </label>
+                    </div>
+                    <div class="col text-center justify-content-center" style="border-left:1px solid">
+                        <br />
+                        <label>
+                            <p style="color:black">
+                                Tekan tanda <span class="fa fa-info" style="color:blue"></span> untuk melihat details penyewaan<br />
+                            </p>
+                        </label>
+                    </div>
+                </div>
+                <br />
+                @{ int i = ((Model.PageNumber - 1) * 10) + 1;}
+                <small>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr class="text-center">
+                                    <th>
+                                        No.
+                                    </th>
+                                    <th>
+                                        Penyewa
+                                    </th>
+                                    <th>
+                                        Pengajuan
+                                    </th>
+                                    <th>
+                                        Tanggal penyewaan
+                                    </th>
+                                    <th>
+                                        Tanggal pengembalian
+                                    </th>
+                                    <th>
+                                        Jenis Sewa
+                                    </th>
+                                    <th>
+                                        Biaya total
+                                    </th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td>@i.</td>
+
+                                    @foreach (var penyewa in ViewBag.mspenyewa)
+                                    {
+                                        if (penyewa.id_penyewa == item.id_penyewa)
+                                        {
+                                            <td>@penyewa.username (@penyewa.nama_penyewa)</td>
+                                        }
+                                    }
+                                    <td class="text-center">
+                                        @item.creadate.ToString("dd-MM-yyyy")
+                                    </td>
+                                    <td class="text-center">
+                                        @item.tgl_penyewaan.ToString("dd-MM-yyyy")
+                                    </td>
+                                    <td class="text-center">
+                                        @item.tgl_pengembalian.ToString("dd-MM-yyyy")
+                                    </td>
+                                    @if (item.jenis_sewa == 0)
+                                    {
+                                        <td class="text-center">KIRIM</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center">DIAMBIL DI TOKO</td>
+                                    }
+
+                                    <td class="text-right">
+                                        @String.Format("{0:c}", item.total_harga)
+                                    </td>
+                                    @{
+                                        string foto = "";
+                                        foreach (var pembayaran in ViewBag.trpembayaran)
+                                        {
+                                            if (pembayaran.id_penyewaan == item.id_penyewaan)
+                                            {
+                                                foto = pembayaran.bukti_pembayaran;
+                                            }
+                                        }
+                                    }
+                                    <td class="text-center">                                        
+                                        <button onclick="konfirmasi('@item.id_penyewaan')" style="border:0px;background-color:transparent;cursor:pointer" title="Tekan untuk konfirmasi selesai"><span class="fa fa-check"></span> Selesai</button>
+                                        |
+                                        <form action="Pemesanan_details" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                            <button style="border:0px;background-color:transparent;cursor:pointer" title="Tekan untuk melihat detail"><span class="fa fa-eye"></span> Detail</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                i++;
+
+                            }
+
+                        </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                @if (Model.PageNumber != 1)
+                                {
+                                    <li class="page-item"><a class="page-link" href="@Url.Action("Berjalan",new { page = Model.PageNumber-1})">Previous</a></li>
+                                }
+
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Berjalan",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
+                                @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                                {
+                                    <li class="page-item"><a class="page-link" href="@Url.Action("Berjalan",new { page = Model.PageNumber+1})">Next</a></li>
+                                }
+
+                            </ul>
+                        </nav>
+                    </div>
+                </small>
+            </div>
+        </div>
+    </div>
+    <div id="konfirmasi" hidden>
+        <label>Aktivitas / <a  href="#" onclick="kembali()" class="text-muted">Berjalan</a> / Konfirmasi</label><br />
+        <br />
+        <div class="card">
+            <div class="card-body">
+                <h4 class="lead">Konfirmasi selesai</h4><br />
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>
+                            Dengan menekan konfirmasi maka transaksi dianggap telah selesai<br />
+                            biaya transaksi akan segera dikirimkan melalui saldo akun anda<br />
+                            sejumlah (90% * total transaksi produk anda)
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <form action="konfirmasi_selesai" method="post" class="d-inline">
+                            <input type="hidden" name="id" id="id" />
+                            <input type="submit" name="submit" value="Konfirmasi Selesai" class="btn btn-success form-control" />
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="#" class="btn btn-secondary" onclick="kembali()">Kembali</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function konfirmasi(a) {
+        document.getElementById("konfirmasi").hidden = false;
+        document.getElementById("view").hidden = true;
+        document.getElementById("id").value = a;
+    }
+    function kembali() {
+        document.getElementById("konfirmasi").hidden = true;
+        document.getElementById("view").hidden = false;
+    }
+</script>

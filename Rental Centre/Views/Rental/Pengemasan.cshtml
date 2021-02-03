@@ -1,11 +1,7 @@
 ﻿@model IEnumerable<Rental_Centre.Models.dtdetailpenyewaan>
 
 @{
-    ViewBag.Title = "Pengemasan";
-    ViewBag.Profile = ViewBag.logged_in.profil;
-    ViewBag.Nama_user = ViewBag.logged_in.nama_rental;
-    ViewBag.Toko_user = ViewBag.logged_in.nama_toko;
-
+    ViewBag.Title = "Pengemasan";    
     Layout = "~/Views/Shared/_RentalTemplate.cshtml";
 }
 
@@ -81,7 +77,7 @@
     <br />
     
     <div class="card shadow">
-        <div class="card-body">            
+        <div class="card-body">                   
             <form action="Pengemasan" method="post">
                 <input type="hidden" name="selesai" value="@ViewBag.trpenyewaan.id_penyewaan" />
                 <input type="submit" name="submit" value="SELESAI PENGEMASAN" class="btn btn-primary form-control" />

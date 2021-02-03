@@ -39,7 +39,7 @@
                 </thead>
                 <tbody>
                     @{
-                        int no = 1;                        
+                        int no = ((Model.PageNumber - 1) * 10) + 1; ;
                     }
                     @foreach (var item in Model)
                     {
@@ -51,14 +51,14 @@
                         <td>@item.jenis_transaksi</td>
                         <td>@item.creadate.ToString("dd/MM/yyyy HH:mm")</td>
                         @{
-                            if (item.jenis_transaksi == "TOP UP" || item.jenis_transaksi == "TERIMA TRANSFER")
+                            if (item.jenis_transaksi == "TOP UP" || item.jenis_transaksi.Contains("TERIMA"))
                             {
                                 <td class="text-right">@uang</td>
-                                <td class="text-right">-</td>                                
+                                <td>-</td>
                             }
                             else
                             {
-                                <td class="text-right">-</td>
+                                <td>-</td>
                                 <td class="text-right">@uang</td>                                
                             }
                         }

@@ -24,7 +24,7 @@
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="Index">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="@Url.Action("Index","Admin")">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
@@ -34,7 +34,7 @@
             <hr class="sidebar-divider my-0">
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="/Rental">
+                <a class="nav-link" href="@Url.Action("Index","Admin")">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -54,10 +54,12 @@
                 <div id="multimedia" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Proses penyewaan</h6>
-                        <a class="collapse-item" href="@Url.Action("Pemesanan","Admin")">Pemesanan</a>
-                        <a class="collapse-item" href="@Url.Action("Diproses","Admin")">Diproses</a>
-                        <a class="collapse-item" href="#">Berjalan</a>
-                        <a class="collapse-item" href="#">Selesai</a>
+                        <a class="collapse-item" href="@Url.Action("Konfirmasi","Admin")">Konfirmasi transfer <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_konfirmasi"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Diproses","Admin")">Diproses <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_diproses"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Siap_kirim","Admin")">Siap - dikirim <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_siap"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Berjalan","Admin")">Berjalan <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_berjalan"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Selesai","Admin")">Selesai <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_selesai"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Gagal","Admin")">Gagal <span class="badge badge-danger badge-counter float-right">@HttpContext.Current.Session["total_gagal"].ToString()</span></a>
                     </div>
                 </div>
             </li>
@@ -150,10 +152,10 @@
                 <div id="profil" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">profil</h6>
-                        <a class="collapse-item" href="@Url.Action("view_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Profile saya</a>
-                        <a class="collapse-item" href="@Url.Action("edit_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Ubah profile</a>
-                        <a class="collapse-item" href="@Url.Action("password_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Ubah password akun</a>
-                        <a class="collapse-item" href="@Url.Action("hapus_admin", "Admin",new { id = ViewBag.logged_in.id_admin })">Hapus akun</a>
+                        <a class="collapse-item" href="@Url.Action("view_admin", "Admin")">Profile saya</a>
+                        <a class="collapse-item" href="@Url.Action("edit_admin", "Admin")">Ubah profile</a>
+                        <a class="collapse-item" href="@Url.Action("password_admin", "Admin")">Ubah password akun</a>
+                        <a class="collapse-item" href="@Url.Action("hapus_admin", "Admin")">Hapus akun</a>
                     </div>
                 </div>
             </li>
@@ -438,9 +440,9 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@ViewBag.logged_in.nama_admin</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@HttpContext.Current.Session["nama_admin"].ToString()</span>
                                 <img class="img-profile rounded-circle"
-                                     src="~/Content/RoleAdmin/img/@ViewBag.logged_in.profil">
+                                     src="~/Content/RoleAdmin/img/@HttpContext.Current.Session["profil"].ToString()">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

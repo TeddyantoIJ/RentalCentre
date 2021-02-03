@@ -28,5 +28,11 @@ namespace Rental_Centre.Models
             dtdetailpenyewaan.status_barang = "DIKEMAS";
             _DB.SaveChanges();
         }
+        public void dikembalikan(dtdetailpenyewaan baru)
+        {
+            dtdetailpenyewaan dtdetailpenyewaan = _DB.dtdetailpenyewaan.Single<dtdetailpenyewaan>(s => s.id_penyewaan == baru.id_penyewaan && s.id_barang == baru.id_barang);
+            dtdetailpenyewaan.status_barang = "DIKEMBALIKAN";
+            _DB.SaveChanges();
+        }
     }
 }

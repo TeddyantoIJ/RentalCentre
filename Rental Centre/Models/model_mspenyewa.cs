@@ -115,5 +115,13 @@ namespace Rental_Centre.Models
 
             this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "DP PENYEWAAN", mspenyewa.saldo);
         }
+        public void bayar_sisa(int uang, int id_penyewa)
+        {
+            mspenyewa mspenyewa = _DB.mspenyewa.Single<mspenyewa>(s => s.id_penyewa == id_penyewa);
+            mspenyewa.saldo = mspenyewa.saldo - uang;
+            _DB.SaveChanges();
+
+            this.mutasisaldo.penyewa_mutasi(id_penyewa, uang, "PELUNASAN PENYEWAAN", mspenyewa.saldo);
+        }
     }
 }

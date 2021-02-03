@@ -2,30 +2,39 @@
 @using PagedList.Mvc;
 
 @{
-    ViewBag.Title = "Diproses";
-    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+    ViewBag.Title = "Pelunasan";
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
 }
 
-<div id="div_view">
-    <div class="row">
-        <div class="col">
-            <label>Penyewaan / <a href="">Diproses</a></label>
-        </div>
-        <div class="col">
-            @using (Html.BeginForm("Diproses", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
-            {
-                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian..", @id = "lala" })
-                <input type="submit" value="Cari" class="btn btn-primary" />
-            }
-        </div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col">
+
+<div class="container">
+    <label>Aktivitas / Pelunasan</label><br />
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <label>
+                        <p>
+                            Perlu diperhatikan <span style="color:black">"Biaya Total"</span> bukanlah uang yang akan didapat,
+                            melainkan total transaksi pada penyewaan tersebut
+                            Penyewaan ini belum tentu hanya terdiri dari produk anda saja, lihat bagian details.
+                        </p>
+                    </label>
+                </div>
+                <div class="col text-center justify-content-center" style="border-left:1px solid">
+                    <br />
+                    <label>
+                        <p style="color:black">
+                            Tekan tanda <span class="fa fa-info" style="color:blue"></span> untuk melihat details penyewaan<br />
+                        </p>
+                    </label>
+                </div>
+            </div>
+            <br />
             @{ int i = ((Model.PageNumber - 1) * 10) + 1;}
             <small>
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table">
                         <thead class="thead-dark">
                             <tr class="text-center">
                                 <th>
@@ -44,7 +53,7 @@
                                     Tanggal pengembalian
                                 </th>
                                 <th>
-                                    Biaya DP
+                                    Jenis Sewa
                                 </th>
                                 <th>
                                     Biaya total
@@ -55,6 +64,7 @@
 
                         @foreach (var item in Model)
                         {
+
                             <tr>
                                 <td>@i.</td>
 
@@ -74,9 +84,15 @@
                                 <td class="text-center">
                                     @item.tgl_pengembalian.ToString("dd-MM-yyyy")
                                 </td>
-                                <td class="text-right">
-                                    @String.Format("{0:c}", item.total_dp)
-                                </td>
+                                @if (item.jenis_sewa == 0)
+                                {
+                                    <td class="text-center">KIRIM</td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">DIAMBIL DI TOKO</td>
+                                }
+
                                 <td class="text-right">
                                     @String.Format("{0:c}", item.total_harga)
                                 </td>
@@ -90,7 +106,7 @@
                                         }
                                     }
                                 }
-                                <td>                                    
+                                <td class="text-center">
                                     <form action="Pemesanan_details" method="post" class="d-inline">
                                         <input type="hidden" name="id" value="@item.id_penyewaan" />
                                         <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
@@ -106,13 +122,13 @@
                         <ul class="pagination">
                             @if (Model.PageNumber != 1)
                             {
-                                <li class="page-item"><a class="page-link" href="@Url.Action("Diproses",new { page = Model.PageNumber-1, currentFilter = ViewBag.CurrentFilter})">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Pelunasan",new { page = Model.PageNumber-1})">Previous</a></li>
                             }
 
-                            <li class="page-item"><a class="page-link" href="@Url.Action("Diproses",new { page = Model.PageNumber, currentFilter = ViewBag.CurrentFilter})">@Model.PageNumber/@Model.PageCount</a></li>
+                            <li class="page-item"><a class="page-link" href="@Url.Action("Pelunasan",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
                             @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
                             {
-                                <li class="page-item"><a class="page-link" href="@Url.Action("Diproses",new { page = Model.PageNumber+1, currentFilter = ViewBag.CurrentFilter })">Next</a></li>
+                                <li class="page-item"><a class="page-link" href="@Url.Action("Pelunasan",new { page = Model.PageNumber+1})">Next</a></li>
                             }
 
                         </ul>
@@ -122,4 +138,5 @@
         </div>
     </div>
 </div>
+
 

@@ -102,5 +102,11 @@ namespace Rental_Centre.Models
                             select data);
             return msbarang;
         }
+        public void barangBertambah(int id_barang, int jumlah)
+        {
+            msbarang barang = _DB.msbarang.Single(data => data.id_barang == id_barang);
+            barang.stok_barang += jumlah;
+            _DB.SaveChanges();
+        }        
     }
 }

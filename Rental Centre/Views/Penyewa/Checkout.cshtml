@@ -87,7 +87,14 @@
                                             {
                                                 <form action="Konfirmasi_dp" method="post" class="d-inline">
                                                     <input type="hidden" name="id" value="@item.id_penyewaan" />
-                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-check" title="Kirim Bukti DP"></span></button> |
+                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-check" title="Kirim bukti DP"></span></button> |
+                                                </form>
+                                            }
+                                            @if (item.status_transaksi == "SIAP / DIKIRIM")
+                                            {
+                                                <form action="Konfirmasi_terima" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-check" title="Konfirmasi barang telah sampai"></span></button> |
                                                 </form>
                                             }
                                             <form action="Checkout_details" method="post" class="d-inline">

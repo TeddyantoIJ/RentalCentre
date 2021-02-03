@@ -16,7 +16,7 @@ namespace Rental_Centre.Controllers.RentalController
         // GET: Rental
         RCDB _DB = new RCDB();
         
-        static int logged_id = -1;
+        //static int Convert.ToInt32(Session["logged_id"]) = -1;
 
         // MASTER
         model_msjenisbarang msjenisbarang = new model_msjenisbarang();
@@ -37,12 +37,7 @@ namespace Rental_Centre.Controllers.RentalController
         model_dtdetailpenyewaan dtdetailpenyewaan = new model_dtdetailpenyewaan();
         model_trkritiksaran trkritiksaran = new model_trkritiksaran();
 
-
-        public RentalController()
-        {            
-            
-            
-        }
+        
         #region index
         public ActionResult Index()
         {
@@ -53,11 +48,20 @@ namespace Rental_Centre.Controllers.RentalController
             }
             else
             {
-                logged_id = Convert.ToInt32(Session["id"].ToString());
+                Session["logged_id"] = Convert.ToInt32(Session["id"].ToString());
             }                        
             //ViewBag
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            msrental rental = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
+            Session["Nama_user"] = rental.nama_rental;
+            Session["Profile"] = rental.profil;
+            Session["Toko"] = rental.nama_toko;
+
+            Session["total_pengajuan"] = this.trpenyewaan.getAllDataRental(rental.id_rental, "DISIAPKAN").ToList<trpenyewaan>().Count();
+            Session["total_siap"] = this.trpenyewaan.getAllDataRental(rental.id_rental, "SIAP / DIKIRIM").ToList<trpenyewaan>().Count();
+            Session["total_pelunasan"] = this.trpenyewaan.getAllDataRental(rental.id_rental, "VALIDASI TRANSFER").ToList<trpenyewaan>().Count();
+            Session["total_berjalan"] = this.trpenyewaan.getAllDataRental(rental.id_rental, "BERJALAN").ToList<trpenyewaan>().Count();
+            Session["total_selesai"] = this.trpenyewaan.getAllDataRental(rental.id_rental, "SELESAI").ToList<trpenyewaan>().Count();
 
             return View();
         }
@@ -77,9 +81,9 @@ namespace Rental_Centre.Controllers.RentalController
             
             ViewBag.totalbarang = this.msbarang.count();
             ViewBag.totaljenisbarang = this.msjenisbarang.count();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
-            var msbarang = this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).Take(this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).ToList<msbarang>().Count());
+            var msbarang = this.msbarang.getAllDataByIdRentGroupByKelompok(Convert.ToInt32(Session["logged_id"]), idi).Take(this.msbarang.getAllDataByIdRentGroupByKelompok(Convert.ToInt32(Session["logged_id"]), idi).ToList<msbarang>().Count());
             //Pagging
             if (searchString != null)
             {
@@ -97,7 +101,7 @@ namespace Rental_Centre.Controllers.RentalController
                 msbarang = msbarang.Where(s => s.nama_barang.ToLower().Contains(searchString.ToLower()));
             }
 
-            int pageSize = this.msbarang.getAllDataByIdRentGroupByKelompok(logged_id, idi).ToList<msbarang>().Count() ;
+            int pageSize = this.msbarang.getAllDataByIdRentGroupByKelompok(Convert.ToInt32(Session["logged_id"]), idi).ToList<msbarang>().Count() ;
             int pageNumber = (page ?? 1);
 
             if(pageSize == 0)
@@ -117,7 +121,7 @@ namespace Rental_Centre.Controllers.RentalController
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData();
 
             ViewBag.totalkelompokjenis = this.mskelompokjenis.count();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             return View();
         }
@@ -128,7 +132,7 @@ namespace Rental_Centre.Controllers.RentalController
             //ViewBag
 
             barang.id_jenisbarang = barang.id_jenisbarang;
-            barang.id_rental = logged_id;
+            barang.id_rental = Convert.ToInt32(Session["logged_id"]);
             barang.nama_barang = barang.nama_barang;
             barang.harga_sewa = barang.harga_sewa;
             barang.stok_barang = barang.stok_barang;
@@ -136,7 +140,7 @@ namespace Rental_Centre.Controllers.RentalController
             barang.link_gambar = barang.link_gambar;
 
             barang.status = 1;
-            barang.creaby = logged_id;
+            barang.creaby = Convert.ToInt32(Session["logged_id"]);
             barang.creadate = DateTime.Now;
             barang.modiby = null;
             barang.modidate = DateTime.Now;
@@ -186,7 +190,7 @@ namespace Rental_Centre.Controllers.RentalController
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData();
 
             ViewBag.totalkelompokjenis = this.mskelompokjenis.count();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             //Define all data needed
             msbarang barang = this.msbarang.getBarang(id);
@@ -208,7 +212,7 @@ namespace Rental_Centre.Controllers.RentalController
             barang.deskripsi_barang = barang.deskripsi_barang;
             barang.link_gambar = barang.link_gambar;
 
-            barang.modiby = logged_id;
+            barang.modiby = Convert.ToInt32(Session["logged_id"]);
             barang.modidate = DateTime.Now;
             
             this.msbarang.editData(barang);
@@ -334,9 +338,9 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
-            msrental msrental = this.msrental.getRental(logged_id);
+            msrental msrental = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             return View(msrental);
         }
@@ -346,9 +350,9 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
-            msrental msrental = this.msrental.getRental(logged_id);
+            msrental msrental = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             return View(msrental);
         }
@@ -392,9 +396,9 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
-            msrental msrental = this.msrental.getRental(logged_id);
+            msrental msrental = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             return View(msrental);
         }
@@ -413,9 +417,9 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
-            msrental msrental = this.msrental.getRental(logged_id);
+            msrental msrental = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             return View(msrental);
         }
@@ -423,7 +427,7 @@ namespace Rental_Centre.Controllers.RentalController
         public ActionResult hapus_akun(msrental msrental)
         {
             this.msrental.hapusData(msrental.id_rental);
-            logged_id = -1;
+            Session["logged_id"] = null;
             return RedirectToAction("Index", "Penyewa", new { id = msrental.id_rental });
         }
         #endregion
@@ -434,9 +438,9 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag WAJIB ADA
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
-            msrental msrental = this.msrental.getRental(logged_id);
+            msrental msrental = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
             return View(msrental);
 
         }
@@ -446,7 +450,7 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag WAJIB ADA
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             return View();
         }
@@ -458,7 +462,7 @@ namespace Rental_Centre.Controllers.RentalController
             trtopup.bukti_topup = data["bukti_pembayaran"];
             trtopup.creadate = DateTime.Now;
             trtopup.validate = 0;
-            trtopup.id_rental = logged_id;
+            trtopup.id_rental = Convert.ToInt32(Session["logged_id"]);
             trtopup.status = 1;
 
             this.trtopup.addData(trtopup);
@@ -470,16 +474,16 @@ namespace Rental_Centre.Controllers.RentalController
         #region Transfer
         public ActionResult transfer()
         {
-            if (logged_id == -1)
+            if (Convert.ToInt32(Session["logged_id"]) == -1)
             {
                 return RedirectToAction("Index");
             }
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             //Viewbag dibutuhkan
-            msrental a = this.msrental.getRental(logged_id);            
+            msrental a = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));            
             ViewBag.password = a.password;
             ViewBag.saldp = a.saldo;
 
@@ -494,7 +498,7 @@ namespace Rental_Centre.Controllers.RentalController
 
             trtransfer trtransfer = new trtransfer();
 
-            trtransfer.id_pengirim = logged_id;
+            trtransfer.id_pengirim = Convert.ToInt32(Session["logged_id"]);
             if (penyewa != null)
             {
                 trtransfer.id_penerima = penyewa.id_penyewa;
@@ -525,12 +529,12 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag WAJIB ADA
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             //Viewbag dibutuhkan            
-            var dtmutasisaldo = this.dtmutasisaldo.getAllRental(logged_id).Take(this.dtmutasisaldo.getAllRental(logged_id).ToList<dtmutasisaldo>().Count());
+            var dtmutasisaldo = this.dtmutasisaldo.getAllRental(Convert.ToInt32(Session["logged_id"])).Take(this.dtmutasisaldo.getAllRental(Convert.ToInt32(Session["logged_id"])).ToList<dtmutasisaldo>().Count());
 
-            int pageSize = 5;
+            int pageSize = 10;
             int pageNumber = (page ?? 1);
 
             return View(dtmutasisaldo.ToPagedList(pageNumber, pageSize));
@@ -544,13 +548,12 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag WAJIB ADA
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
-            var trpenyewaan = this.trpenyewaan.getAllDataRental(logged_id).Take(this.trpenyewaan.getAllDataRental(logged_id).ToList<trpenyewaan>().Count());
+            var trpenyewaan = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "DISIAPKAN").Take(this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]),"DISIAPKAN").ToList<trpenyewaan>().Count());
             ViewBag.mspenyewa = this.mspenyewa.getAllData();
-            ViewBag.trpembayaran = this.trpembayaran.getAll();
-
+            ViewBag.trpembayaran = this.trpembayaran.getAll();            
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
@@ -561,7 +564,7 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag WAJIB ADA
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             //UPDATE DATA DIKEMAS
             if(data["selesai"] != null)
@@ -580,6 +583,7 @@ namespace Rental_Centre.Controllers.RentalController
                 if (doneall)
                 {
                     this.trpenyewaan.ubahSiap(id_penyewaan);
+                    refresh_penyewaan();
                 }
                 return RedirectToAction("Pengajuan_sewa");
             }
@@ -587,10 +591,22 @@ namespace Rental_Centre.Controllers.RentalController
             {
                 if (data["id_barang"] != null)
                 {
-                    dtdetailpenyewaan detail = new dtdetailpenyewaan();
+                    dtdetailpenyewaan detail = new dtdetailpenyewaan();                    
                     detail.id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
                     detail.id_barang = Convert.ToInt32(data["id_barang"]);
-                    this.dtdetailpenyewaan.dikemas(detail);
+
+                    var dt = this.dtdetailpenyewaan.getAllData(detail.id_penyewaan);
+                    foreach (var item in dt)
+                    {
+                        if(item.id_barang == detail.id_barang)
+                        {
+                            msbarang barang = this.msbarang.getBarang(detail.id_barang);
+                            barang.stok_barang -= item.jml_barang;
+                            this.msbarang.editData(barang);
+                            break;
+                        }
+                    }
+                    this.dtdetailpenyewaan.dikemas(detail);                    
                 }
 
 
@@ -613,6 +629,131 @@ namespace Rental_Centre.Controllers.RentalController
         }
         #endregion
 
+        #region SIAP / DIKIRIM
+        public ActionResult Siap_kirim(int? page)
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
+
+            //View bag dibutuhkan
+            var trpenyewaan = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "SIAP / DIKIRIM").Take(this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "SIAP / DIKIRIM").ToList<trpenyewaan>().Count());
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+            ViewBag.trpembayaran = this.trpembayaran.getAll();
+            int pageNumber = page ?? 1;
+            int pageSize = 10;
+
+            return View(trpenyewaan.ToPagedList(pageNumber, pageSize));
+        }
+        #endregion
+
+        #region Validiasi Pelunasan
+        public ActionResult Pelunasan(int? page)
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
+
+            //View bag dibutuhkan
+            var trpenyewaan = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "VALIDASI TRANSFER").Take(this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "VALIDASI TRANSFER").ToList<trpenyewaan>().Count());
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+            ViewBag.trpembayaran = this.trpembayaran.getAll();
+            int pageNumber = page ?? 1;
+            int pageSize = 10;
+
+            return View(trpenyewaan.ToPagedList(pageNumber, pageSize));
+        }
+        #endregion
+
+        #region Berjalan
+        public ActionResult Berjalan(int? page)
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
+
+            //View bag dibutuhkan
+            var trpenyewaan = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "BERJALAN").Take(this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "BERJALAN").ToList<trpenyewaan>().Count());
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+            ViewBag.trpembayaran = this.trpembayaran.getAll();
+            int pageNumber = page ?? 1;
+            int pageSize = 10;
+
+            return View(trpenyewaan.ToPagedList(pageNumber, pageSize));
+        }
+
+        public ActionResult konfirmasi_selesai(FormCollection data)
+        {
+            int id_penyewaan = Convert.ToInt32(data["id"]);
+            this.trpenyewaan.ubahSelesai(id_penyewaan);
+            List<dtdetailpenyewaan> detail = this.dtdetailpenyewaan.getAllData(id_penyewaan).ToList<dtdetailpenyewaan>();
+            int uang = 0;
+            foreach (var item in detail)
+            {
+                uang += item.harga_total;
+                this.dtdetailpenyewaan.dikembalikan(item);
+                msbarang barang = this.msbarang.getBarang(item.id_barang);
+                barang.stok_barang += item.jml_barang;
+                this.msbarang.editData(barang);
+            }
+            uang = uang * 90 / 100;
+            this.msrental.saldo_tambah(uang, Convert.ToInt32(Session["logged_id"]), "PENYEWAAN");
+            refresh_penyewaan();
+            return RedirectToAction("Selesai");
+        }
+
+        #endregion
+
+        #region Selesai
+        public ActionResult Selesai(int? page)
+        {
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
+
+            //View bag dibutuhkan
+            var trpenyewaan = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "SELESAI").Take(this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "SELESAI").ToList<trpenyewaan>().Count());
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+            ViewBag.trpembayaran = this.trpembayaran.getAll();
+            int pageNumber = page ?? 1;
+            int pageSize = 10;
+
+            return View(trpenyewaan.ToPagedList(pageNumber, pageSize));
+        }
+        #endregion
+
+        #region Detail
+        [HttpPost]
+        public ActionResult Pemesanan_details(int id)
+        {
+            if (Session["logged_id"] == null)
+            {
+                return RedirectToAction("Index", "Rental");
+            }
+            
+            //ViewBag WAJIB ADA
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+
+            //View bag diwajibkan
+            var detail = this.dtdetailpenyewaan.getAllData(id).ToList<dtdetailpenyewaan>();                        
+            ViewBag.msbarang = this.msbarang.getAllData();
+            ViewBag.trpenyewaan = this.trpenyewaan.getPenyewaan(id);
+            ViewBag.mspenyewa = this.mspenyewa.getPenyewa(this.trpenyewaan.getPenyewaan(id).id_penyewa);
+            if (this.trpenyewaan.getPenyewaan(id).jenis_sewa == 0)
+            {
+                ViewBag.jenis_sewa = "DIKIRIM KE ALAMAT";
+            }
+            else
+            {
+                ViewBag.jenis_sewa = "DIAMBIL DI TOKO";
+            }
+
+            
+            ViewBag.msbarang = this.msbarang.getAllData().ToList<msbarang>();
+            return View(detail);
+        }
+        #endregion
+
         #endregion
 
         #region Kritik Saran
@@ -621,7 +762,7 @@ namespace Rental_Centre.Controllers.RentalController
         {
             //ViewBag WAJIB ADA
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msrental.getRental(logged_id);
+            ViewBag.logged_in = this.msrental.getRental(Convert.ToInt32(Session["logged_id"]));
 
             return View();
 
@@ -629,7 +770,7 @@ namespace Rental_Centre.Controllers.RentalController
         [HttpPost]
         public ActionResult kritik_saran(trkritiksaran trkritiksaran)
         {
-            trkritiksaran.id_rental = logged_id;
+            trkritiksaran.id_rental = Convert.ToInt32(Session["logged_id"]);
             trkritiksaran.creadate = DateTime.Now;
             this.trkritiksaran.addData(trkritiksaran);
 
@@ -641,9 +782,18 @@ namespace Rental_Centre.Controllers.RentalController
         #region Dan lain lain
         public ActionResult logout()
         {
-            logged_id = -1;
+            Session["logged_id"] = null;
             Session["id"] = null;
             return RedirectToAction("Index", "Penyewa");
+        }
+
+        public void refresh_penyewaan()
+        {
+            Session["total_pengajuan"] = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "DISIAPKAN").ToList<trpenyewaan>().Count();
+            Session["total_siap"] = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "SIAP / DIKIRIM").ToList<trpenyewaan>().Count();
+            Session["total_pelunasan"] = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "VALIDASI TRANSFER").ToList<trpenyewaan>().Count();
+            Session["total_berjalan"] = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "BERJALAN").ToList<trpenyewaan>().Count();
+            Session["total_selesai"] = this.trpenyewaan.getAllDataRental(Convert.ToInt32(Session["logged_id"]), "SELESAI").ToList<trpenyewaan>().Count();
         }
         #endregion
     }

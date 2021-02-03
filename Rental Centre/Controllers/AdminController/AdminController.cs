@@ -15,7 +15,7 @@ namespace Rental_Centre.Controllers.AdminController
     {
         // GET: Admin
         RCDB _DB = new RCDB();
-        static int logged_id = -1;
+        //static int Convert.ToInt32(Session["logged_id"]) = -1;
 
         // MASTER
         model_msjenisbarang msjenisbarang = new model_msjenisbarang();
@@ -43,12 +43,21 @@ namespace Rental_Centre.Controllers.AdminController
             }
             else
             {
-                logged_id = Convert.ToInt32(Session["id"].ToString());
+                Session["logged_id"] = Convert.ToInt32(Session["id"].ToString());
             }
+            
+            // VIEW BAG WAJIB
+            Session["total_penyewaan"] = this.trpenyewaan.getAllData().ToList<trpenyewaan>().Count();
+            Session["total_konfirmasi"] = this.trpenyewaan.getAllData("VALIDASI").ToList<trpenyewaan>().Count();
+            Session["total_diproses"] = this.trpenyewaan.getAllData("DISIAPKAN").ToList<trpenyewaan>().Count();
+            Session["total_siap"] = this.trpenyewaan.getAllData("SIAP / KIRIM").ToList<trpenyewaan>().Count();
+            Session["total_berjalan"] = this.trpenyewaan.getAllData("BERJALAN").ToList<trpenyewaan>().Count();
+            Session["total_selesai"] = this.trpenyewaan.getAllData("SELESAI").ToList<trpenyewaan>().Count();
+            Session["total_gagal"] = this.trpenyewaan.getAllData("GAGAL").ToList<trpenyewaan>().Count();
 
-            //ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
-
+            msadmin admin = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
+            Session["nama_admin"] = admin.nama_admin;
+            Session["profil"] = admin.profil;
             return View();
         }
 
@@ -59,8 +68,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_kelompokjenisbarang()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
@@ -76,8 +85,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_kelompokjenisbarang(string currentFilter, string searchString, int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
@@ -110,8 +119,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult add_kelompokjenisbarang()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             return View();
         }
@@ -121,7 +130,7 @@ namespace Rental_Centre.Controllers.AdminController
             new_mskelompokjenis.nama_kelompokjenis = new_mskelompokjenis.nama_kelompokjenis.ToUpper();
             new_mskelompokjenis.deskripsi = new_mskelompokjenis.deskripsi;
             new_mskelompokjenis.status = 1;
-            new_mskelompokjenis.creaby = logged_id;
+            new_mskelompokjenis.creaby = Convert.ToInt32(Session["logged_id"]);
             new_mskelompokjenis.creadate = DateTime.Now;
 
             this.mskelompokjenis.addData(new_mskelompokjenis);
@@ -133,8 +142,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult edit_kelompokjenisbarang(int id)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag yang dibutuhkan        
             mskelompokjenis mskelompokjenis = this.mskelompokjenis.getKelompok(id);            
@@ -146,7 +155,7 @@ namespace Rental_Centre.Controllers.AdminController
             new_mskelompokjenis.id_kelompokjenis = new_mskelompokjenis.id_kelompokjenis;
             new_mskelompokjenis.nama_kelompokjenis = new_mskelompokjenis.nama_kelompokjenis.ToUpper();
             new_mskelompokjenis.deskripsi = new_mskelompokjenis.deskripsi;
-            new_mskelompokjenis.modiby = logged_id;
+            new_mskelompokjenis.modiby = Convert.ToInt32(Session["logged_id"]);
             new_mskelompokjenis.modidate = DateTime.Now;
 
             //save edit
@@ -169,10 +178,11 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_jenisbarang()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View Bag yang dibutuhkan
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
             ViewBag.jumlahkelompok = this.mskelompokjenis.count();
             return View(this.msjenisbarang.getAllData().ToList<msjenisbarang>());
@@ -181,13 +191,13 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_jenisbarang(string currentFilter, string searchString, int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View Bag yang dibutuhkan
             ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
             ViewBag.jumlahkelompok = this.mskelompokjenis.count();
-
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             var msjenisbarang = this.msjenisbarang.getAllData()
                         .Where(s => s.status == 1)
                         .Take(this.msjenisbarang.count());
@@ -220,8 +230,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult add_jenisbarang()
         { 
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             return View();
         }
@@ -232,7 +242,7 @@ namespace Rental_Centre.Controllers.AdminController
             msjenisbarang.nama_jenisbarang = msjenisbarang.nama_jenisbarang;
             msjenisbarang.deskripsi = msjenisbarang.deskripsi;
             msjenisbarang.status = 1;
-            msjenisbarang.creaby = logged_id;
+            msjenisbarang.creaby = Convert.ToInt32(Session["logged_id"]);
             msjenisbarang.creadate = DateTime.Now;
 
             this.msjenisbarang.addData(msjenisbarang);
@@ -243,8 +253,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult edit_jenisbarang(int id)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             return View(this.msjenisbarang.getJenisbarang(id));
@@ -255,7 +265,7 @@ namespace Rental_Centre.Controllers.AdminController
             msjenisbarang.id_kelompokjenis = msjenisbarang.id_kelompokjenis;
             msjenisbarang.nama_jenisbarang = msjenisbarang.nama_jenisbarang;
             msjenisbarang.deskripsi = msjenisbarang.deskripsi;
-            msjenisbarang.modiby = logged_id;
+            msjenisbarang.modiby = Convert.ToInt32(Session["logged_id"]);
             msjenisbarang.modidate = DateTime.Now;
 
             this.msjenisbarang.editData(msjenisbarang);
@@ -276,8 +286,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_barang(string currentFilter, string searchString, int? page, string searchBy)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View Bag yang dibutuhkan
             ViewBag.msrental = this.msrental.getAllData().ToList<msrental>();
@@ -314,8 +324,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_provinsi()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag yang dibutuhkan / Data
             var msprovinsi = this.msprovinsi.getAllProvinsi();
@@ -325,8 +335,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_provinsi(string currentFilter, string searchString, int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag yang dibutuhkan / Data
             var msprovinsi = this.msprovinsi.getAllProvinsi().Take(this.msprovinsi.getAllProvinsi().ToList<msprovinsi>().Count());
@@ -357,8 +367,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult add_provinsi()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             return View();
         }
@@ -375,8 +385,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult edit_provinsi(int id)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // Data yang dibutuhkan
             msprovinsi msprovinsi = this.msprovinsi.getProvinsi(id);
@@ -401,14 +411,14 @@ namespace Rental_Centre.Controllers.AdminController
 
         #region pengguna
         #region view
-        public ActionResult view_admin(int id)
+        public ActionResult view_admin()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //data kebutuhan
-            msadmin msadmin = this.msadmin.getAdmin(id);
+            msadmin msadmin = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
             return View(msadmin);
         }
 
@@ -416,8 +426,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_admin()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // ViewBag dibutuhkan
             ViewBag.msadmin = this.msadmin.getAllData().ToList<msadmin>();
@@ -428,8 +438,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_admin(string currentFilter, string searchString, int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // ViewBag dibutuhkan
             var msadmin = this.msadmin.getAllData().Take(this.msadmin.getAllData().ToList<msadmin>().Count());
@@ -468,8 +478,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult add_admin()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
             msadmin msadmin = new msadmin();
             return View(msadmin);
         }
@@ -483,7 +493,7 @@ namespace Rental_Centre.Controllers.AdminController
             msadmin.jenis_kelamin = msadmin.jenis_kelamin;
             msadmin.email = msadmin.email;
 
-            msadmin.creaby = logged_id;
+            msadmin.creaby = Convert.ToInt32(Session["logged_id"]);
             msadmin.creadate = DateTime.Now;
             msadmin.status = 1;
 
@@ -493,8 +503,8 @@ namespace Rental_Centre.Controllers.AdminController
             {
                 ViewBag.error = "Username sudah digunakan";
                 //View Bag Wajib ada untuk template
-                ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-                ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+                
+                ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
                 return View(msadmin);
             }
@@ -564,20 +574,20 @@ namespace Rental_Centre.Controllers.AdminController
         }
         #endregion
         #region edit        
-        public ActionResult edit_admin(int id)
+        public ActionResult edit_admin()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // View bag dibutuhkan
-            msadmin msadmin = this.msadmin.getAdmin(id);
+            msadmin msadmin = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
             return View(msadmin);
         }
         [HttpPost]
         public ActionResult edit_admin(msadmin msadmin)
         {
-            msadmin.modiby = logged_id;
+            msadmin.modiby = Convert.ToInt32(Session["logged_id"]);
             msadmin.modidate = DateTime.Now;
 
             this.msadmin.editData(msadmin);
@@ -585,40 +595,40 @@ namespace Rental_Centre.Controllers.AdminController
         }
         #endregion
         #region hapus
-        public ActionResult hapus_admin(int id)
+        public ActionResult hapus_admin()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // View bag dibutuhkan
-            msadmin msadmin = this.msadmin.getAdmin(id);
+            msadmin msadmin = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
             return View(msadmin);
         }
         [HttpPost]
         public ActionResult hapus_admin(msadmin msadmin)
         {
-            msadmin.modiby = logged_id;
+            msadmin.modiby = Convert.ToInt32(Session["logged_id"]);
             msadmin.modidate = DateTime.Now;
             this.msadmin.hapusData(msadmin.id_admin);
             return RedirectToAction("Index");
         }
         #endregion
         #region ubah password
-        public ActionResult password_admin(int id)
+        public ActionResult password_admin()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // View bag dibutuhkan
-            msadmin msadmin = this.msadmin.getAdmin(logged_id);
+            msadmin msadmin = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
             return View(msadmin);
         }
         [HttpPost]
         public ActionResult password_admin(msadmin msadmin)
         {
-            msadmin.modiby = logged_id;
+            msadmin.modiby = Convert.ToInt32(Session["logged_id"]);
             msadmin.modidate = DateTime.Now;
 
             this.msadmin.ubahPassword(msadmin);
@@ -632,8 +642,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_rental(string currentFilter, string searchString, int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View Bag yang dibutuhkan            
             var msrental = this.msrental.getAllData().Take(this.msrental.getAllData().ToList<msrental>().Count());
@@ -666,8 +676,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_penyewa(string currentFilter, string searchString, int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View Bag yang dibutuhkan            
             var mspenyewa = this.mspenyewa.getAllData().Take(this.mspenyewa.getAllData().ToList<mspenyewa>().Count());
@@ -702,8 +712,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_kodepos()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //view bag yang dibutuhkan / data
             List<mskodepos> mskodepos = this.mskodepos.getAllKodePos();
@@ -713,8 +723,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult page_kodepos(string currentFilter, string searchString, string searchBy, int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //view bag yang dibutuhkan / data
             var mskodepos = this.mskodepos.getAllKodePos().Take(this.mskodepos.getAllKodePos().ToList<mskodepos>().Count());
@@ -766,8 +776,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult add_kodepos()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             return View();
         }
@@ -788,8 +798,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult edit_kodepos(int id)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             return View(this.mskodepos.getKodepos(id));
@@ -827,8 +837,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult user_top_up(int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
@@ -844,13 +854,13 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult topup_valid(FormCollection data)
         {
             int id_topup = Convert.ToInt32(data["id_topup"]);
-            this.trtopup.valid(id_topup, logged_id);
+            this.trtopup.valid(id_topup, Convert.ToInt32(Session["logged_id"]));
             return RedirectToAction("user_top_up");
         }
         public ActionResult topup_invalid(FormCollection data)
         {
             int id_topup = Convert.ToInt32(data["id_topup"]);
-            this.trtopup.valid(id_topup, logged_id);
+            this.trtopup.valid(id_topup, Convert.ToInt32(Session["logged_id"]));
             return RedirectToAction("user_top_up");
         }
         #endregion
@@ -858,8 +868,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult cek_saldo()
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             var mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
             var msrental = this.msrental.getAllData().ToList<msrental>();
@@ -880,8 +890,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult mutasi(int? page, DateTime awal, DateTime akhir, string kelompok)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
@@ -924,8 +934,8 @@ namespace Rental_Centre.Controllers.AdminController
         public ActionResult mutasi(int? page)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
@@ -943,22 +953,22 @@ namespace Rental_Centre.Controllers.AdminController
 
         #region PENYEWAAN
 
-        #region Pemesanan
-        public ActionResult Pemesanan(int? page)
+        #region Konfirmasi
+        public ActionResult Konfirmasi(int? page)
         {
-            if(logged_id == -1)
+            if(Convert.ToInt32(Session["logged_id"]) == -1)
             {
                 return RedirectToAction("Index", "Penyewa");
             }
 
             // View bag wajib
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // View bag dibutuhkan
             ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
             ViewBag.trpembayaran = this.trpembayaran.getAll().ToList<trpembayaran>();
 
-            var trpenyewaan = this.trpenyewaan.getAllData("VALIDASI DP").Take(this.trpenyewaan.getAllData("VALIDASI DP").ToList<trpenyewaan>().Count());
+            var trpenyewaan = this.trpenyewaan.getAllData("VALIDASI").Take(this.trpenyewaan.getAllData("VALIDASI").ToList<trpenyewaan>().Count());
             
 
             // Page
@@ -970,9 +980,9 @@ namespace Rental_Centre.Controllers.AdminController
         }
 
         [HttpPost]
-        public ActionResult Pemesanan(FormCollection data)
+        public ActionResult Konfirmasi(FormCollection data)
         {
-            if (logged_id == -1)
+            if (Session["logged_id"] == null)
             {
                 return RedirectToAction("Index", "Penyewa");
             }
@@ -980,61 +990,110 @@ namespace Rental_Centre.Controllers.AdminController
             if(data["submit"] == "VALID")
             {                
                 // UBAH STATUS PENYEWAAN JADI DISIAPKAN dan STATUS DP JADI 1
-                this.trpenyewaan.ubahDisiapkan(Convert.ToInt32(data["id_penyewaan"]),logged_id);
-                this.trpenyewaan.bayarDP(Convert.ToInt32(data["id_penyewaan"]));
+                if(data["jenis_pembayaran"] == "0")
+                {
+                    this.trpenyewaan.ubahDisiapkan(Convert.ToInt32(data["id_penyewaan"]),Convert.ToInt32(Session["logged_id"]));
+                    this.trpenyewaan.bayarDP(Convert.ToInt32(data["id_penyewaan"]));
+                }
+                else
+                {
+                    this.trpenyewaan.ubahBerjalan(Convert.ToInt32(data["id_penyewaan"]), Convert.ToInt32(Session["logged_id"]));
+                    this.trpenyewaan.bayarSisa(Convert.ToInt32(data["id_penyewaan"]));
+                }
 
                 // UBAH STATUS DP JADI VALID 
                 trpembayaran trpembayaran = new trpembayaran();
                 trpembayaran.id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
-                trpembayaran.id_admin = logged_id;
+                trpembayaran.id_admin = Convert.ToInt32(Session["logged_id"]);
                 trpembayaran.tgl_validasi = DateTime.Now;
                 trpembayaran.validate = 1;
-                this.trpembayaran.ValidasiDP(trpembayaran);
+                this.trpembayaran.ValidasiSisa(trpembayaran);
             }
             else
             {
                 // UBAH STATUS PENYEWAAN JADI GAGAL
-                this.trpenyewaan.ubahGagal(Convert.ToInt32(data["id_penyewaan"]), logged_id);
+                //this.trpenyewaan.ubahGagal(Convert.ToInt32(data["id_penyewaan"]), Convert.ToInt32(Session["logged_id"]));
                 
 
                 // UBAH STATUS DP JADI VALID 
                 trpembayaran trpembayaran = new trpembayaran();
                 trpembayaran.id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
-                trpembayaran.id_admin = logged_id;
+                trpembayaran.id_admin = Convert.ToInt32(Session["logged_id"]);
                 trpembayaran.tgl_validasi = DateTime.Now;
                 trpembayaran.validate = 0;
-                this.trpembayaran.ValidasiDP(trpembayaran);
+                this.trpembayaran.ValidasiSisa(trpembayaran);
             }
-            return RedirectToAction("Pemesanan");
+            refresh_penyewaan();
+            return RedirectToAction("Konfirmasi");
         }
         [HttpPost]
         public ActionResult Pemesanan_details(int id)
         {
-            if (logged_id == -1)
+            if (Session["logged_id"] == null)
             {
                 return RedirectToAction("Index", "Penyewa");
             }
 
             // View bag wajib
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag diwajibkan
             var detail = this.dtdetailpenyewaan.getAllData(id).ToList<dtdetailpenyewaan>();
+            ViewBag.msbarang = this.msbarang.getAllData();
+            ViewBag.trpenyewaan = this.trpenyewaan.getPenyewaan(id);
+            ViewBag.mspenyewa = this.mspenyewa.getPenyewa(this.trpenyewaan.getPenyewaan(id).id_penyewa);
+            if (this.trpenyewaan.getPenyewaan(id).jenis_sewa == 0)
+            {
+                ViewBag.jenis_sewa = "DIKIRIM KE ALAMAT";
+            }
+            else
+            {
+                ViewBag.jenis_sewa = "DIAMBIL DI TOKO";
+            }
             ViewBag.msbarang = this.msbarang.getAllData().ToList<msbarang>();
             return View(detail);
         }
         #endregion
 
-        #region DIPROSES
-        public ActionResult Diproses(int? page)
+        #region Siap dikirim
+
+        public ActionResult Siap_kirim(int? page)
         {
-            if (logged_id == -1)
+            if (Session["logged_id"] == null)
             {
                 return RedirectToAction("Index", "Penyewa");
             }
 
             // View bag wajib
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
+
+            // View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.trpembayaran = this.trpembayaran.getAll().ToList<trpembayaran>();
+
+            var trpenyewaan = this.trpenyewaan.getAllData("SIAP / KIRIM").Take(this.trpenyewaan.getAllData("SIAP / KIRIM").ToList<trpenyewaan>().Count());
+
+
+            // Page
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(trpenyewaan.ToPagedList<trpenyewaan>(pageNumber, pageSize));
+        }
+
+        #endregion
+
+        #region DIPROSES
+        public ActionResult Diproses(int? page)
+        {
+            if (Session["logged_id"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+
+            // View bag wajib
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             // View bag dibutuhkan
             ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
@@ -1052,14 +1111,95 @@ namespace Rental_Centre.Controllers.AdminController
         }
         #endregion
 
+        #region Berjalan
+        public ActionResult Berjalan(int? page)
+        {
+            if (Session["logged_id"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+
+            // View bag wajib
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
+
+            // View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.trpembayaran = this.trpembayaran.getAll().ToList<trpembayaran>();
+
+            var trpenyewaan = this.trpenyewaan.getAllData("BERJALAN").Take(this.trpenyewaan.getAllData("BERJALAN").ToList<trpenyewaan>().Count());
+
+
+            // Page
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(trpenyewaan.ToPagedList<trpenyewaan>(pageNumber, pageSize));
+        }
+        #endregion
+
+        #region Selesai
+        public ActionResult Selesai(int? page)
+        {
+            if (Session["logged_id"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+
+            // View bag wajib
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
+
+            // View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.trpembayaran = this.trpembayaran.getAll().ToList<trpembayaran>();
+
+            var trpenyewaan = this.trpenyewaan.getAllData("SELESAI").Take(this.trpenyewaan.getAllData("SELESAI").ToList<trpenyewaan>().Count());
+
+
+            // Page
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(trpenyewaan.ToPagedList<trpenyewaan>(pageNumber, pageSize));
+        }
+        #endregion
+
+        #region Gagal
+        public ActionResult Gagal(int? page)
+        {
+            if (Session["logged_id"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+
+            // View bag wajib
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
+
+            // View bag dibutuhkan
+            ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
+            ViewBag.trpembayaran = this.trpembayaran.getAll().ToList<trpembayaran>();
+
+            var trpenyewaan = this.trpenyewaan.getAllData("GAGAL").Take(this.trpenyewaan.getAllData("GAGAL").ToList<trpenyewaan>().Count());
+
+
+            // Page
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(trpenyewaan.ToPagedList<trpenyewaan>(pageNumber, pageSize));
+        }
+        #endregion
+
         #endregion
 
         #region kritik_saran
         public ActionResult kritik_saran(int? page, int? jumlah)
         {
             //View Bag Wajib ada untuk template
-            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
-            ViewBag.logged_in = this.msadmin.getAdmin(logged_id);
+            
+            ViewBag.logged_in = this.msadmin.getAdmin(Convert.ToInt32(Session["logged_id"]));
 
             //View bag dibutuhkan
             ViewBag.mspenyewa = this.mspenyewa.getAllData().ToList<mspenyewa>();
@@ -1079,9 +1219,20 @@ namespace Rental_Centre.Controllers.AdminController
         #region Dan lain lain
         public ActionResult logout()
         {
-            logged_id = -1;
+            Session["logged_id"] = null;
             Session["id"] = null;
             return RedirectToAction("Index", "Penyewa");
+        }
+
+        public void refresh_penyewaan()
+        {
+            Session["total_penyewaan"] = this.trpenyewaan.getAllData().ToList<trpenyewaan>().Count();
+            Session["total_konfirmasi"] = this.trpenyewaan.getAllData("VALIDASI").ToList<trpenyewaan>().Count();
+            Session["total_diproses"] = this.trpenyewaan.getAllData("DISIAPKAN").ToList<trpenyewaan>().Count();
+            Session["total_berjalan"] = this.trpenyewaan.getAllData("BERJALAN").ToList<trpenyewaan>().Count();
+            Session["total_selesai"] = this.trpenyewaan.getAllData("SELESAI").ToList<trpenyewaan>().Count();
+            Session["total_gagal"] = this.trpenyewaan.getAllData("GAGAL").ToList<trpenyewaan>().Count();
+            Session["total_siap"] = this.trpenyewaan.getAllData("SIAP / KIRIM").ToList<trpenyewaan>().Count();
         }
         #endregion
     }

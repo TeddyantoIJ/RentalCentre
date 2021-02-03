@@ -19,6 +19,13 @@ namespace Rental_Centre.Models
             int id = (from data in _DB.trpenyewaan select data.id_penyewaan).Max();
             return id;
         }
+        public IEnumerable<trpenyewaan> getAllData(int id_penyewa)
+        {
+            var trpenyewaan = (from data in _DB.trpenyewaan
+                               where data.id_penyewa == id_penyewa
+                               select data);
+            return trpenyewaan;
+        }
         public IEnumerable<trpenyewaan> getAllData()
         {
             var trpenyewaan = (from data in _DB.trpenyewaan                               
@@ -28,7 +35,7 @@ namespace Rental_Centre.Models
         public IEnumerable<trpenyewaan> getAllData(string status_transaksi)
         {
             var trpenyewaan = (from data in _DB.trpenyewaan
-                               where data.status_transaksi == status_transaksi
+                               where data.status_transaksi.Contains(status_transaksi)
                                select data);
             return trpenyewaan;
         }
@@ -39,7 +46,7 @@ namespace Rental_Centre.Models
                                select data);
             return trpenyewaan;
         }
-        public IEnumerable<trpenyewaan> getAllDataRental(int id_rental)
+        public IEnumerable<trpenyewaan> getAllDataRental(int id_rental, string status)
         {
             
             var trpenyewaan = (from penyewaan in _DB.trpenyewaan
@@ -49,12 +56,26 @@ namespace Rental_Centre.Models
                                on detail.id_barang equals barang.id_barang
                           join rental in _DB.msrental
                                on barang.id_rental equals rental.id_rental                            
-                          where rental.id_rental == id_rental                            
-                            
+                          where rental.id_rental == id_rental && penyewaan.status_transaksi.Contains(status)                            
+                               select penyewaan);
+            trpenyewaan = trpenyewaan.GroupBy(s => s.id_penyewaan).Select(g => g.FirstOrDefault());
+            
+            return trpenyewaan;
+        }
+        public IEnumerable<trpenyewaan> getAllDataRental(int id_rental)
+        {
+
+            var trpenyewaan = (from penyewaan in _DB.trpenyewaan
+                               join detail in _DB.dtdetailpenyewaan
+                                    on penyewaan.id_penyewaan equals detail.id_penyewaan
+                               join barang in _DB.msbarang
+                                    on detail.id_barang equals barang.id_barang
+                               join rental in _DB.msrental
+                                    on barang.id_rental equals rental.id_rental
+                               where rental.id_rental == id_rental
                                select penyewaan);
             trpenyewaan = trpenyewaan.GroupBy(s => s.id_penyewaan).Select(g => g.FirstOrDefault());
 
-            
             return trpenyewaan;
         }
         public trpenyewaan getPenyewaan(int id_penyewaan)
@@ -66,6 +87,25 @@ namespace Rental_Centre.Models
         {
             trpenyewaan trpenyewaan = _DB.trpenyewaan.SingleOrDefault<trpenyewaan>(s => s.id_penyewaan == id_penyewaan && s.id_penyewa == id_penyewa);
             return trpenyewaan;
+        }
+        public void ubahBerjalan(int id_penyewaan)
+        {
+            trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
+            trpenyewaan.status_transaksi = "BERJALAN";
+            _DB.SaveChanges();
+        }
+        public void ubahSelesai(int id_penyewaan)
+        {
+            trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
+            trpenyewaan.status_transaksi = "SELESAI";
+            _DB.SaveChanges();
+        }
+        public void ubahBerjalan(int id_penyewaan, int id_admin)
+        {
+            trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
+            trpenyewaan.status_transaksi = "BERJALAN";
+            trpenyewaan.id_admin = id_admin;
+            _DB.SaveChanges();
         }
         public void ubahSiap(int id_penyewaan)
         {
@@ -91,7 +131,13 @@ namespace Rental_Centre.Models
             trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
             trpenyewaan.status_transaksi = "VALIDASI DP";
             _DB.SaveChanges();
-        } 
+        }
+        public void ubahValidasiTransfer(int id_penyewaan)
+        {
+            trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
+            trpenyewaan.status_transaksi = "VALIDASI TRANSFER";
+            _DB.SaveChanges();
+        }
         public void ubahGagal(int id_penyewaan, int id_admin)
         {
             trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
@@ -104,6 +150,12 @@ namespace Rental_Centre.Models
             trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
             trpenyewaan.status_dp = 1;
             _DB.SaveChanges();
-        }        
+        }
+        public void bayarSisa(int id_penyewaan)
+        {
+            trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
+            trpenyewaan.status_pembayaran = 1;
+            _DB.SaveChanges();
+        }
     }
 }

@@ -59,7 +59,7 @@
                 </thead>
                 <tbody>
                     @{
-                        int no = 1;
+                        int no = ((Model.PageNumber - 1) * 10) + 1; ;
                     }
                     @foreach (var item in Model)
                     {

@@ -2226,7 +2226,7 @@
     <Content Include="Views\Penyewa\transfer.cshtml" />
     <Content Include="Views\Rental\transfer.cshtml" />
     <Content Include="Views\Penyewa\Cart.cshtml" />
-    <Content Include="Views\Admin\Pemesanan.cshtml" />
+    <Content Include="Views\Admin\Konfirmasi.cshtml" />
     <Content Include="Views\Penyewa\Checkout.cshtml" />
     <Content Include="Views\Penyewa\Konfirmasi_dp.cshtml" />
     <Content Include="Views\Rental\Pengajuan_sewa.cshtml" />
@@ -2237,6 +2237,17 @@
     <Content Include="Views\Admin\kritik_saran.cshtml" />
     <Content Include="Views\Rental\kritik_saran.cshtml" />
     <Content Include="Views\Penyewa\kritik_saran.cshtml" />
+    <Content Include="Views\Penyewa\Konfirmasi_terima.cshtml" />
+    <Content Include="Views\Admin\Berjalan.cshtml" />
+    <Content Include="Views\Admin\Selesai.cshtml" />
+    <Content Include="Views\Admin\Gagal.cshtml" />
+    <Content Include="Views\Rental\Siap_kirim.cshtml" />
+    <Content Include="Views\Rental\Berjalan.cshtml" />
+    <Content Include="Views\Rental\Selesai.cshtml" />
+    <Content Include="Views\Rental\Pemesanan_details.cshtml" />
+    <Content Include="Views\Admin\Siap_kirim.cshtml" />
+    <Content Include="Views\Rental\Pelunasan.cshtml" />
+    <Content Include="Views\Penyewa\Riwayat_pembayaran.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

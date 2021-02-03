@@ -33,7 +33,7 @@ namespace Rental_Centre.Controllers
             }                        
             if (mspenyewa != null && mspenyewa.status == 1)
             {
-                Session["id"] = mspenyewa.id_penyewa;
+                Session["penyewa"] = mspenyewa.id_penyewa;
                 return RedirectToAction("Index", "Penyewa");
             }                        
             if (msrental != null && msrental.status == 1)

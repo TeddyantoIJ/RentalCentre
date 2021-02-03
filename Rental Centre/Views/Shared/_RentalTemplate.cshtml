@@ -28,7 +28,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">@ViewBag.Toko_user</div>
+                <div class="sidebar-brand-text mx-3">@HttpContext.Current.Session["Toko"].ToString()</div>
             </a>
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
@@ -73,10 +73,12 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">aktivitas</h6>
                         <a class="collapse-item" href="#">Seluruh aktivitas</a>
-                        <a class="collapse-item" href="@Url.Action("Pengajuan_sewa","Rental")">Pengajuan sewa</a>
-                        <a class="collapse-item" href="#">Sedang berjalan</a>
-                        <a class="collapse-item" href="#">Riwayat penyewaan</a>
-                        <a class="collapse-item" href="#">Ulasan sewa</a>
+                        <a class="collapse-item" href="@Url.Action("Pengajuan_sewa","Rental")">Pengajuan sewa <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_pengajuan"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Siap_kirim","Rental")">Siap / Dikirim <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_siap"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Pelunasan","Rental")">Pelunasan <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_pelunasan"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Berjalan","Rental")">Sedang berjalan <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_berjalan"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Selesai","Rental")">Selesai <span class="badge badge-primary badge-counter float-right">@HttpContext.Current.Session["total_selesai"].ToString()</span></a>
+                        <a class="collapse-item" href="@Url.Action("Ulasan","Rental")">Ulasan sewa </a>
                     </div>
                 </div>
             </li>
@@ -414,9 +416,9 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@ViewBag.Nama_user</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@HttpContext.Current.Session["Nama_user"].ToString()</span>
                                 <img class="img-profile rounded-circle"
-                                     src="~/Content/RoleRental/Image/Profil/@ViewBag.Profile">
+                                     src="~/Content/RoleRental/Image/Profil/@HttpContext.Current.Session["Profile"].ToString()">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
