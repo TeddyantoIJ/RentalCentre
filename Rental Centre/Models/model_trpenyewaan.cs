@@ -157,5 +157,11 @@ namespace Rental_Centre.Models
             trpenyewaan.status_pembayaran = 1;
             _DB.SaveChanges();
         }
+        public void beriUlasan(int id_penyewaan)
+        {
+            trpenyewaan trpenyewaan = _DB.trpenyewaan.Single<trpenyewaan>(s => s.id_penyewaan == id_penyewaan);
+            trpenyewaan.status_ulasan = 1;
+            _DB.SaveChanges();
+        }
     }
 }

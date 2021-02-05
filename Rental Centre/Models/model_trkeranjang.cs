@@ -39,5 +39,11 @@ namespace Rental_Centre.Models
             }
             _DB.SaveChanges();
         }
+        public void remove(int id_penyewa, int id_barang)
+        {
+            trkeranjang data = _DB.trkeranjang.SingleOrDefault<trkeranjang>(s => s.id_penyewa == id_penyewa && s.id_barang == id_barang);            
+            _DB.trkeranjang.Remove(data);            
+            _DB.SaveChanges();
+        }
     }
 }

@@ -33,6 +33,7 @@ namespace Rental_Centre.Controllers
             }                        
             if (mspenyewa != null && mspenyewa.status == 1)
             {
+                Session["error"] = "Login berhasil!";
                 Session["penyewa"] = mspenyewa.id_penyewa;
                 return RedirectToAction("Index", "Penyewa");
             }                        
@@ -41,6 +42,7 @@ namespace Rental_Centre.Controllers
                 Session["id"] = msrental.id_rental;
                 return RedirectToAction("Index", "Rental");
             }
+            Session["error"] = "Gagal untuk login, username atau password tidak tepat!";
             return RedirectToAction("Index", "Penyewa");
         }        
     }

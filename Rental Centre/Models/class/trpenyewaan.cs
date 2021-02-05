@@ -25,8 +25,9 @@ namespace Rental_Centre.Models
         public DateTime creadate { get; set; }
         public string status_transaksi { get; set; }
         // [PEMESANAN],[VALIDASI DP], [DISIAPKAN],[SIAP / DIKIRIM],[BERJALAN],[SELESAI], [GAGAL]
-        public int status_dp { get; set; }
         // 0 = BLM, 1 = SUDAH
+        public int status_dp { get; set; }        
         public int status_pembayaran { get; set; }
+        public int status_ulasan { get; set; }
     }
 }

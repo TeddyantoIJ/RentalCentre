@@ -110,5 +110,30 @@ namespace Rental_Centre.Models
                 
             this.dtmutasisaldo.rental_mutasi(id_rental, uang, "KIRIM TRANSFER KE "+pengirim.ToUpper(),msrental.saldo);
         }
+        public void beriRating(int rating, int id_rental)
+        {
+            var detail = (from data in _DB.dtdetailpenyewaan
+                          join barang in _DB.msbarang
+                                on data.id_barang equals barang.id_barang
+                          join rental in _DB.msrental
+                                on barang.id_rental equals rental.id_rental
+                          where rental.id_rental == id_rental
+                          select data);
+            detail = detail.GroupBy(s => s.id_penyewaan).Select(g => g.FirstOrDefault());
+            int jumlah = detail.ToList<dtdetailpenyewaan>().Count()-1;
+            msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
+            decimal saat_ini = 0.0M;
+            if (jumlah == 0)
+            {
+                saat_ini = msrental.rating;
+                msrental.rating = Convert.ToDecimal(rating);
+            }            
+            else
+            {
+                saat_ini = msrental.rating / jumlah;
+                msrental.rating = (saat_ini + rating) / jumlah + 1;
+            }            
+            _DB.SaveChanges();
+        }        
     }
 }

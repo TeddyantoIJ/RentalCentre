@@ -5,9 +5,68 @@
     ViewBag.Title = "Riwayat_pembayaran";
     Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
 }
+<style>
 
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
+
+    /* Modal Content (Image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    /* Caption of Modal Image (Image Text) - Same Width as the Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation - Zoom in the Modal */
+    .modal-content, #caption {
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    /* The Close Button */
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
 <br />
-<div class="container">
+<div class="container" id="div_view">
     <label><a href="@Url.Action("Index")" class="text-muted">Home </a> > Riwayat pembayaran</label>
     <br />
     <div class="card-body" style="height:500px">
@@ -21,11 +80,17 @@
                     <td>Keterangan</td>
                     <td>Waktu pembayaran</td>
                     <td>Validasi</td>
+                    <td>Aksi</td>
                 </tr>
             </thead>
             <tbody>
                 @{
-                    int no = ((Model.PageNumber - 1) * 10) + 1; ;
+                    int no = ((Model.PageNumber - 1) * 10) + 1;
+                    string tgl_sewa = "";
+                    string tgl_bayar;
+                    string keterangan;
+                    string metode = "";
+                    string jenis = "";
                 }
                 @foreach (var item in Model)
                 {
@@ -36,16 +101,19 @@
                         <td>@no.</td>
                         @if (item.jenis_pembayaran == 0)
                         {
+                            jenis = "PEMBAYARAN DP";
                             <td>PEMBAYARAN DP</td>
                         }
                         else
                         {
+                            jenis = "PEMBAYARAN SISA";
                             <td>PEMBAYARAN SISA</td>
                         }
                         @foreach (var p in ViewBag.trpenyewaan)
                         {
                             if (p.id_penyewaan == item.id_penyewaan)
                             {
+                                tgl_sewa = p.tgl_penyewaan.ToString("dd-MM-yyyy");
                                 <td class="text-center">@p.tgl_penyewaan.ToString("dd-MM-yyyy")</td>
                                 break;
                             }
@@ -53,29 +121,40 @@
                         <td class="text-right">@uang</td>
                         @if (item.bukti_pembayaran == "DENGAN DANA")
                         {
+                            metode = "DANA AKUN";
                             <td>DENGAN DANA</td>
                         }
                         else
                         {
+                            metode = "TRANSFER";
                             <td>TRANSFER</td>
                         }
+                        @{tgl_bayar = item.creadate.ToString("dd-MM-yyyy HH:mm WIB");}
                         <td class="text-center">@item.creadate.ToString("dd-MM-yyyy HH:mm WIB")</td>
                         @if (item.validate == -1)
                         {
+                            keterangan = "Belum divalidasi";
                             <td>Belum divalidasi</td>
                         }
                         else if (item.validate == 0)
                         {
+                            keterangan = "Pembayaran tidak diterima";
                             <td style="color:red">Pembayaran tidak diterima</td>
                         }
                         else
                         {
+                            keterangan = "Pembayaran diterima";
                             <td style="color:green">Pembayaran diterima</td>
                         }
                         @{no++;}
+                        <td>                            
+                            <a href="#" onclick="detail('@String.Format("{0:c}", item.jml_dibayar)','@item.bukti_pembayaran','@tgl_sewa','@tgl_bayar','@keterangan','@metode','@jenis')"class="btn btn-warning" style="border-radius:0px"><span class="fa fa-eye"> Detail</span></a>
+                        </td>
                     </tr>
                 }
-
+                <tr>
+                    <td colspan="8"></td>
+                </tr>
             </tbody>
         </table>
 
@@ -97,3 +176,65 @@
 
     </div>
 </div>
+
+<div class="container" id="div_konfirmasi" hidden>
+    <label><a href="@Url.Action("Index")" class="text-muted">Home </a> > <a href="#" xlass="text-muted" onclick="batal()">Riwayat pembayaran</a> > Detail</label>    
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <h3 class="lead">Bukti pembayaran <b><div class="d-inline" id="jenis"></div></b></h3>
+                    <a href="" class="float-right"><span class="fa fa-window-close" onclick="batal()"></span></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">                    
+                    <img src="" id="img" title="Tekan foto untuk melihat" onclick="modal(this.src)" alt="Foto bukti transfer" />
+                </div>
+                <div class="col" style="border-left:1px solid">                    
+                    <label>Jumlah yang dibayar : <b><div class="d-inline" id="jumlah"></div></b></label><br />
+                    <label>Tanggal penyewaan : <b><div class="d-inline" id="tgl_sewa"></div></b></label><br />
+                    <label>Waktu pembayaran : <b><div class="d-inline" id="tgl_bayar"></div></b></label><br />
+                    <label>Keterangan validasi : <b><div class="d-inline" id="keterangan"></div></b></label><br />
+                    <label>Metode pembayaran : <b><div class="d-inline" id="metode"></div></b></label>
+                    <br />
+                </div>
+            </div>
+            <br />
+        </div>
+    </div>
+    <br />    
+</div>
+<div id="myModal" class="modal" onclick="tutup()">
+    <span class="close" onclick="tutup()">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+</div>
+<script>
+    // Function to increase image size
+    function detail(jumlah, foto,tgl_sewa,tgl_bayar,keterangan,metode,jenis) {
+        document.getElementById("img").src = "../../../Content/RoleAdmin/img/bukti_transfer/" + foto;
+        document.getElementById("jumlah").innerHTML = jumlah;
+        document.getElementById("tgl_sewa").innerHTML = tgl_sewa;
+        document.getElementById("tgl_bayar").innerHTML = tgl_bayar;
+        document.getElementById("keterangan").innerHTML = keterangan;
+        document.getElementById("metode").innerHTML = metode;
+        document.getElementById("jenis").innerHTML = jenis;
+                
+        document.getElementById("div_konfirmasi").hidden = false;
+        document.getElementById("div_view").hidden = true;
+    }
+    function batal()
+    {
+        document.getElementById("div_konfirmasi").hidden = true;
+        document.getElementById("div_view").hidden = false;
+    }
+    function modal(img) {
+        document.getElementById("myModal").style.display = "block";
+        document.getElementById("img01").src = img;
+        document.getElementById("caption").innerHTML = "BUKTI TRANSFER";
+    }
+    function tutup() {
+        document.getElementById("myModal").style.display = "none";
+    }
+</script> 

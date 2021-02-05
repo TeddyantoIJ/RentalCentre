@@ -16,7 +16,18 @@ namespace Rental_Centre.Models
                           select data);
             return detail;
         }
-
+        public IEnumerable<msrental> getAllDataRentalByIdPenyewaan(int id_penyewaan)
+        {
+            var detail = (from data in _DB.dtdetailpenyewaan
+                          join barang in _DB.msbarang 
+                                on data.id_barang equals barang.id_barang
+                          join rental in _DB.msrental
+                                on barang.id_rental equals rental.id_rental                            
+                          where data.id_penyewaan == id_penyewaan
+                          select rental);
+            detail = detail.GroupBy(s => s.id_rental).Select(g => g.FirstOrDefault());
+            return detail;
+        }
         public void add(dtdetailpenyewaan dtdetailpenyewaan)
         {
             _DB.dtdetailpenyewaan.Add(dtdetailpenyewaan);

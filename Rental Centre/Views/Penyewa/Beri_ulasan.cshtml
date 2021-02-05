@@ -1,0 +1,247 @@
+﻿@model Rental_Centre.Models.trpenyewaan
+@{
+    ViewBag.Title = "Beri_ulasan";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <form action="Beri_ulasan_fix" method="post" autocomplete="off">
+        <input type="hidden" name="id_penyewaan" value="@Model.id_penyewaan" />
+        <label><a href="@Url.Action("Index")">SHOP </a> > <a href="@Url.Action("Checkout","Penyewa")" class="text-muted">Checkout</a> > Ulasan</label>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <p class="label lead">Ulasan hasil sewa</p>
+                    </div>
+                    <div class="col">
+                        <input type="submit" name="submit" value="Kirim ulasan" class="btn float-right" style="border-radius:0px;background-color:peachpuff" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br />
+        <div class="card">
+            <div class="card-body">
+                <h5 class="lead"><b>Peringkat untuk rentaller <span style="color:red">*</span></b></h5>
+                <br />
+                <div class="row">
+                    @foreach (var item in ViewBag.msrental)
+                    {
+                        <div class="col-md-6" style="border-right:1px solid">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <img class="card-img" src="~/Content/RoleRental/Image/Profil/@item.profil" />
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Nama</label>
+                                        </div>
+                                        <div class="col">
+                                            <label>: @item.nama_rental</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Toko</label>
+                                        </div>
+                                        <div class="col">
+                                            <label>: @item.nama_toko</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Email</label>
+                                        </div>
+                                        <div class="col">
+                                            <label>: @item.email</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Telepon</label>
+                                        </div>
+                                        <div class="col">
+                                            <label>: @item.no_telp</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Peringkat saat ini</label>
+                                        </div>
+                                        <div class="col">
+                                            <label>: </label>
+                                            @if (item.rating >= 1.0M)
+                                            {
+                                                <span class="fa fa-star" style="color:yellow"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fa fa-star"></span>
+                                            }
+                                            @if (item.rating >= 2.0M)
+                                            {
+                                                <span class="fa fa-star" style="color:yellow"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fa fa-star"></span>
+                                            }
+                                            @if (item.rating >= 3.0M)
+                                            {
+                                                <span class="fa fa-star" style="color:yellow"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fa fa-star"></span>
+                                            }
+                                            @if (item.rating >= 4.0M)
+                                            {
+                                                <span class="fa fa-star" style="color:yellow"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fa fa-star"></span>
+                                            }
+                                            @if (item.rating == 5.0M)
+                                            {
+                                                <span class="fa fa-star" style="color:yellow"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="fa fa-star"></span>
+                                            }
+                                                <span>@item.rating/5</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label><b>Beri peringkat</b></label>
+                                        </div>
+                                        <div class="col">
+                                            <label>: </label>
+                                            <span class="fa fa-star" title="sangat buruk" id="1_@item.id_rental" style="cursor:pointer" onclick="ratted(1,'@item.id_rental')"></span>
+                                            <span class="fa fa-star" title="buruk" id="2_@item.id_rental" style="cursor:pointer" onclick="ratted(2,'@item.id_rental')"></span>
+                                            <span class="fa fa-star" title="cukup" id="3_@item.id_rental" style="cursor:pointer" onclick="ratted(3,'@item.id_rental')"></span>
+                                            <span class="fa fa-star" title="puas" id="4_@item.id_rental" style="cursor:pointer" onclick="ratted(4,'@item.id_rental')"></span>
+                                            <span class="fa fa-star" title="sangat puas" id="5_@item.id_rental" style="cursor:pointer" onclick="ratted(5,'@item.id_rental')"></span>                                            
+                                            <br />
+                                            <input  onkeypress="return false" type="text" name="rating_@item.id_rental" value="" id="rating_@item.id_rental" style="border:0px;width:50px" required />
+                                            <label><div class="d-inline" id="ket_@item.id_rental"></div></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="card">
+            <div class="card-body">
+                <h5 class="lead">Komentar untuk barang (optional)</h5>
+                <br />
+                @foreach (var item in ViewBag.dtdetailpenyewaan)
+                {
+                    foreach (var barang in ViewBag.barang)
+                    {
+                        if (barang.id_barang == item.id_barang)
+                        {
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img src="~/Content/RoleRental/Image/Barang/@barang.link_gambar" alt="Alternate Text" class="card-img" />
+                                        </div>
+                                        <div class="col" style="border-left:1px solid">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>Produk</label>
+                                                </div>
+                                                <div class="col">
+                                                    <label><b>: @barang.nama_barang</b></label>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>Harga sewa</label>
+                                                </div>
+                                                <div class="col">
+                                                    <label><b>: @String.Format("{0:c}", barang.harga_sewa) / hari</b></label>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>Deskripsi</label>
+                                                </div>
+                                                <div class="col">
+                                                    <label><b>: @barang.deskripsi_barang</b></label>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label>Komentar saya :</label>
+                                                </div>
+                                                <div class="col">
+                                                    <textarea placeholder="Beri komentar di sini..." name="bar_@barang.id_barang" value="" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                        }
+                    }
+
+                }
+
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+
+<script>
+    function ratted(bintang, id) {        
+        for (var i = 1; i <= 5; i++) {
+            document.getElementById(i + "_" + id).style.color = "";
+        }
+        for (var i = 1; i <= bintang; i++) {            
+            document.getElementById(i + "_" + id).style.color = "yellow";
+        }
+        document.getElementById("rating_" + id).value = bintang;
+        
+        var nilai;
+        switch (bintang) {
+            case 1:
+                nilai = "sangat buruk";
+                break;
+            case 2:
+                nilai = "buruk";
+                break;
+            case 3:
+                nilai = "cukup";
+                break;
+            case 4:
+                nilai = "puas";
+                break;
+            case 5:
+                nilai = "sangat puas";
+                break;
+        }        
+        document.getElementById("ket_" + id).innerHTML = "<b>" + nilai+"</b>";
+    }
+
+    function checkrating(jumlah) {
+
+    }
+</script>

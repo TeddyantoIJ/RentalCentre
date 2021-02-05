@@ -97,6 +97,13 @@
                                                     <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-check" title="Konfirmasi barang telah sampai"></span></button> |
                                                 </form>
                                             }
+                                            @if (item.status_ulasan == 0)
+                                            {
+                                                <form action="Beri_ulasan" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-comment" title="Beri ulasan hasil sewa"></span></button> |
+                                                </form>
+                                            }
                                             <form action="Checkout_details" method="post" class="d-inline">
                                                 <input type="hidden" name="id" value="@item.id_penyewaan" />
                                                 <button style="background-color:transparent;border:0px;cursor:pointer"><span class="fa fa-info" title="Details Checkout"></span></button> |
@@ -109,7 +116,7 @@
                             </tr>
                                 i++;
                             }
-                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="9"></td></tr>
                         </tbody>
                     </table>
                     <nav aria-label="Page navigation example">

@@ -8,5 +8,14 @@ namespace Rental_Centre.Models
     public class model_trkomentar
     {
         RCDB _DB = new RCDB();
+
+        public void add(trkomentar komentar)
+        {
+            _DB.trkomentar.Add(komentar);
+            _DB.SaveChanges();
+        }
+    
     }
+
+    
 }

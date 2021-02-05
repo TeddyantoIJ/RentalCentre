@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Rental_Centre.Models.trwishlist>
+@{
+    ViewBag.Title = "WishList";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+<br />
+<div class="container">
+    <label><a href="@Url.Action("Index")" class="text-muted">Home </a> > Wishlist</label>
+    <div class="row">
+        <div class="col text-center">
+            <h3 class="lead">MY WISHLIST</h3>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+
+        @foreach (var item in Model)
+        {
+            foreach (var barang in ViewBag.allBarang)
+            {
+                if (item.id_barang == barang.id_barang)
+                {
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <img src="~/Content/RoleRental/Image/Barang/@barang.link_gambar" alt="Alternate Text" class="card-img" />
+                                            </div>
+                                            <div class="col">
+                                                <h5 style="color:black"><b>@barang.nama_barang</b></h5>
+                                                <p style=" color:black;line-height:1px">
+                                                    @{
+                                                        string harga = String.Format("{0:c}", barang.harga_sewa);
+                                                    }
+                                                    Rp @harga.Replace("Rp", "")/hari
+                                                </p>
+                                                <p>
+                                                    Stok Tersedia · Diperbarui @barang.modidate.ToString("dd/MM/yyyy")
+                                                </p>
+                                                <p>
+                                                    <a href="@Url.Action("dwish", "Penyewa", new { id = barang.id_barang })"><u>Hapus</u></a> |
+                                                    <a href="@Url.Action("add_ToCart1", "Penyewa", new { id = barang.id_barang })"><u>Masukkan ke keranjang</u></a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                }
+            }
+        }
+    </div>                
+</div>
+<br />
+

@@ -11,7 +11,7 @@ namespace Rental_Centre.Models
     public class trwishlist
     {
         [Key]
-        public int id_wishlist { get; set; }
+        public string id_wishlist { get; set; }
         public int id_penyewa { get; set; }        
         public int id_barang { get; set; }
     }

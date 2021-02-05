@@ -30,7 +30,7 @@
                         if (data.id_barang == cart.id_barang)
                         {
                             <div class="row">
-                                <div class="col-7">
+                                <div class="col-md-7">
                                     <div class="row">
                                         <div class="col-4">
                                             <img src="~/Content/RoleRental/Image/Barang/@data.link_gambar" class="card-img-top" alt="...">
@@ -48,8 +48,8 @@
                                                 Stok Tersedia · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
                                             </p>
                                             <p>
-                                                <a href=""><u>Hapus</u></a> |
-                                                <a href=""><u>Masukkan ke wishlist</u></a>
+                                                <a href="@Url.Action("dcart", "Penyewa", new { id = data.id_barang })"><u>Hapus</u></a> |
+                                                <a href="@Url.Action("add_toWishList1", "Penyewa", new { id_barang = data.id_barang })"><u>Masukkan ke wishlist</u></a>
                                             </p>
                                             <!--<p>
 
@@ -61,7 +61,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-2">
+                                <div class="col-md-2">
                                     <input type="hidden" name="id_@nomor" value="@data.id_barang" />
                                     <input type="number" name="jumlah_@nomor" id="jumlah_@nomor" onchange="tambah(@nomor,this.value,@data.harga_sewa)" onkeydown="return ''" class="spinner-border form-control quantity" value="1" min="1" max="@data.stok_barang" step="1" />
                                 </div>
@@ -76,7 +76,7 @@
                 }
                 <hr style="border:1px solid" />
             </div>
-            <div class="col-4">
+            <div class="col-md-4">
                 <div class="row">
                     <div class="col">
                         <label style="background-color:orangered;Color:white" class="form-control text-center"><b>SECURE CHECKOUT</b></label>

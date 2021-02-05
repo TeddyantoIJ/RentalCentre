@@ -2248,6 +2248,8 @@
     <Content Include="Views\Admin\Siap_kirim.cshtml" />
     <Content Include="Views\Rental\Pelunasan.cshtml" />
     <Content Include="Views\Penyewa\Riwayat_pembayaran.cshtml" />
+    <Content Include="Views\Penyewa\Beri_ulasan.cshtml" />
+    <Content Include="Views\Penyewa\WishList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

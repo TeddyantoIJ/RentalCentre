@@ -15,6 +15,7 @@ namespace Rental_Centre.Controllers.PenyewaController
     {
         // GET: Penyewa
         RCDB _DB = new RCDB();
+        static string error = "";
         //static int Convert.ToInt32(Session["penyewa"].ToString()) = -1;
 
         // MASTER
@@ -36,6 +37,10 @@ namespace Rental_Centre.Controllers.PenyewaController
         model_trpenyewaan trpenyewaan = new model_trpenyewaan();
         model_dtdetailpenyewaan dtdetailpenyewaan = new model_dtdetailpenyewaan();
         model_trkritiksaran trkritiksaran = new model_trkritiksaran();
+        model_dtkomentar dtkomentar = new model_dtkomentar();
+        model_trkomentar trkomentar = new model_trkomentar();
+        model_trwishlist trwishlist = new model_trwishlist();
+
 
         public ActionResult Index()
         {
@@ -51,6 +56,16 @@ namespace Rental_Centre.Controllers.PenyewaController
                 ViewBag.logged_in = "hidden";
                 ViewBag.cart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>();
                 ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+            }
+            if(error != "")
+            {
+                ViewBag.error = error;
+                error = "";
+            }
+            if(Session["error"] != null)
+            {
+                ViewBag.error = Session["error"].ToString();
+                Session["error"] = null;
             }
             return View();
             
@@ -91,7 +106,7 @@ namespace Rental_Centre.Controllers.PenyewaController
 
             if (this.msadmin.adaUsername(mspenyewa.username) || this.msrental.adaUsername(mspenyewa.username) || this.mspenyewa.adaUsername(mspenyewa.username))
             {
-                ViewBag.error = "Username sudah digunakan";
+                error = "Username sudah digunakan";
                 //View Bag Wajib ada untuk template
                 
 
@@ -426,16 +441,18 @@ namespace Rental_Centre.Controllers.PenyewaController
         }
 
 
-        [HttpPost]
-        public bool add_ToCart(int id)
+        [HttpGet]
+        public ActionResult add_ToCart(int id)
         {
             if (Session["penyewa"] == null)
             {                
-                return false;
+                error = "gagal menambahkan ke keranjang, mohon login terlebih dahulu";
+                return RedirectToAction("Index");
             }
             if (this.trkeranjang.ada(id,Convert.ToInt32(Session["penyewa"].ToString())))
             {
-                return false;
+                error = "gagal menambahkan ke keranjang, data sudah ada";
+                return RedirectToAction("Index");
             }
             
             trkeranjang trkeranjang = new trkeranjang();
@@ -443,10 +460,95 @@ namespace Rental_Centre.Controllers.PenyewaController
             trkeranjang.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
             trkeranjang.id_keranjang = Convert.ToInt32(Session["penyewa"].ToString()) + "_" + id;
             this.trkeranjang.add(trkeranjang);
-            return true;
+            error = "berhasil menambahkan ke keranjang";
+            return RedirectToAction("Index");
         }
+        [HttpGet]
+        public ActionResult add_ToCart1(int id)
+        {
+            if (Session["penyewa"] == null)
+            {                
+                return RedirectToAction("Index");
+            }
+            if (this.trkeranjang.ada(id, Convert.ToInt32(Session["penyewa"].ToString())))
+            {
+                this.trwishlist.remove(Convert.ToInt32(Session["penyewa"].ToString()), id);
+                return RedirectToAction("WishList");
+            }
 
-        #endregion        
+            trkeranjang trkeranjang = new trkeranjang();
+            trkeranjang.id_barang = id;
+            trkeranjang.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
+            trkeranjang.id_keranjang = Convert.ToInt32(Session["penyewa"].ToString()) + "_" + id;
+            this.trkeranjang.add(trkeranjang);            
+            return RedirectToAction("WishList");
+        }
+        public ActionResult dcart(int id)
+        {
+            this.trkeranjang.remove(Convert.ToInt32(Session["penyewa"].ToString()), id);
+            return RedirectToAction("Cart");
+        }
+        #endregion
+
+        #region Wishlist
+        public ActionResult WishList()
+        {
+            if (Session["penyewa"] == null)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+            ViewBag.logged_in = "hidden";
+                        
+            ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+            var wishlist = this.trwishlist.getAll(Convert.ToInt32(Session["penyewa"].ToString()));
+            return View(wishlist);
+        }
+        [HttpGet]
+        public ActionResult add_toWishList0(int id_barang)
+        {
+            if (Session["penyewa"] == null)
+            {
+                error = "gagal menambahkan ke wishlist, mohon login terlebih dahulu";
+                return RedirectToAction("Index");
+            }
+            if (this.trwishlist.ada(id_barang, Convert.ToInt32(Session["penyewa"].ToString())))
+            {
+                error = "gagal menambahkan ke wishlist, data sudah ada";
+                return RedirectToAction("Index");
+            }
+            trwishlist trwishlist = new trwishlist();
+            trwishlist.id_barang = id_barang;
+            trwishlist.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
+            trwishlist.id_wishlist = Convert.ToInt32(Session["penyewa"].ToString()) + "_" + id_barang;
+            this.trwishlist.add(trwishlist);
+            error = "berhasil menambahkan wishlist";
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public ActionResult add_toWishList1(int id_barang)
+        {
+            if (Session["penyewa"] == null)
+            {                
+                return RedirectToAction("Index");
+            }            
+            trwishlist trwishlist = new trwishlist();
+            trwishlist.id_barang = id_barang;
+            trwishlist.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
+            trwishlist.id_wishlist = Convert.ToInt32(Session["penyewa"].ToString()) + "_" + id_barang;
+            this.trwishlist.add(trwishlist);
+            this.trkeranjang.remove(trwishlist.id_penyewa, id_barang);
+            return RedirectToAction("Cart");
+        }
+        public ActionResult dwish(int id)
+        {
+            this.trwishlist.remove(Convert.ToInt32(Session["penyewa"].ToString()),id);
+            return RedirectToAction("Wishlist");
+        }
+        #endregion
 
         #region Checkout
         public ActionResult Checkout(int? page)
@@ -491,6 +593,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             trpenyewaan.total_harga = Convert.ToInt32(data["total_harga"]);
             trpenyewaan.status_pembayaran = 0;
             trpenyewaan.status_dp = 0;
+            trpenyewaan.status_ulasan = 0;
             trpenyewaan.status_transaksi = "PEMESANAN";
 
             // SIMPAN DATA KE DALAM TABLE PENYEWAAN
@@ -654,6 +757,59 @@ namespace Rental_Centre.Controllers.PenyewaController
             return View(trpembayaran.ToPagedList<trpembayaran>(pageNumber, pageSize));            
         }
 
+        #endregion
+
+        #region Beri_ulasan
+        public ActionResult Beri_ulasan(int id)
+        {
+            if (Session["penyewa"] == null)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.logged_in = "hidden";
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+
+            int id_penyewaan = id;
+            trpenyewaan trpenyewaan = this.trpenyewaan.getPenyewaan(id_penyewaan);
+            ViewBag.dtdetailpenyewaan = this.dtdetailpenyewaan.getAllData(id_penyewaan);
+            ViewBag.msrental = this.dtdetailpenyewaan.getAllDataRentalByIdPenyewaan(id_penyewaan);
+            ViewBag.barang = this.msbarang.getAllData();
+
+            return View(trpenyewaan);
+        }
+        [HttpPost]
+        public ActionResult Beri_ulasan_fix(FormCollection data)
+        {
+            if (Session["penyewa"] == null)
+            {
+                return RedirectToAction("Index");
+            }
+            int id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
+            this.trpenyewaan.beriUlasan(id_penyewaan);
+
+            var msrental = this.dtdetailpenyewaan.getAllDataRentalByIdPenyewaan(id_penyewaan);
+            var dtdetailpenyewaan = this.dtdetailpenyewaan.getAllData(id_penyewaan);
+
+            foreach (var item in msrental)
+            {
+                this.msrental.beriRating(Convert.ToInt32(data["rating_" + item.id_rental]), item.id_rental);
+            }
+            foreach (var item in dtdetailpenyewaan)
+            {
+                trkomentar komen = new trkomentar();                
+                komen.id_penyewa = Convert.ToInt32(Session["penyewa"]);
+                komen.isi_komentar = data["bar_"+item.id_barang];
+                komen.creadate = DateTime.Now;
+                if(komen.isi_komentar != "")
+                {
+                    this.trkomentar.add(komen);
+                }                
+            }            
+            return RedirectToAction("Checkout");
+        }
         #endregion
 
         #endregion
