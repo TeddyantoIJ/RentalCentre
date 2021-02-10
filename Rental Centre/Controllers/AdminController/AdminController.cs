@@ -565,14 +565,20 @@ namespace Rental_Centre.Controllers.AdminController
             msadmin.tempat_lahir = msadmin.tempat_lahir;
             msadmin.jenis_kelamin = msadmin.jenis_kelamin;
             msadmin.email = msadmin.email;
-
+            
             msadmin.creaby = Convert.ToInt32(Session["admin"]);
             msadmin.creadate = DateTime.Now;
             msadmin.status = 1;
 
             msadmin.password = RandomString(10);
 
-            if(this.msadmin.adaUsername(msadmin.username) || this.msrental.adaUsername(msadmin.username) || this.mspenyewa.adaUsername(msadmin.username))
+            if (Session["filename"] != null)
+            {                
+                msadmin.profil = Session["filename"].ToString();
+                Session["filename"] = null;
+            }
+
+            if (this.msadmin.adaUsername(msadmin.username) || this.msrental.adaUsername(msadmin.username) || this.mspenyewa.adaUsername(msadmin.username))
             {
                 ViewBag.error = "Username sudah digunakan";
                 //View Bag Wajib ada untuk template
@@ -629,17 +635,10 @@ namespace Rental_Centre.Controllers.AdminController
 
         [HttpPost]
         public void uploadFile()
-        {
-            string date = DateTime.Now.ToString();
-            string b = string.Empty;
-            for (int i = 0; i < date.Length; i++)
-            {
-                if (Char.IsDigit(date[i]))
-                    b += date[i];
-            }
-            Session["filename"] = b;
+        {            
             HttpPostedFileBase file = Request.Files[0]; //Uploaded file
-            string path = Path.Combine(Server.MapPath("~/Content/Temp"),b);
+            string path = Path.Combine(Server.MapPath("~/Content/Temp"),
+                Path.GetFileName(file.FileName));
 
             file.SaveAs(path);
         }        
@@ -652,11 +651,13 @@ namespace Rental_Centre.Controllers.AdminController
             {
                 if (Char.IsDigit(date[i]))
                     b += date[i];
-            }
-            Session["filename"] = b;
+            }            
             HttpPostedFileBase file = Request.Files[0]; //Uploaded file
-            string path = Path.Combine(Server.MapPath("~/Content/RoleAdmin/img"),b);
-
+            string name = file.FileName;
+            string[] split = name.Split('.');
+            name = b+"."+split[1];
+            string path = Path.Combine(Server.MapPath("~/Content/RoleAdmin/img/profil"),name);
+            Session["filename"] = name;
             file.SaveAs(path);
         }
         #endregion
@@ -677,7 +678,23 @@ namespace Rental_Centre.Controllers.AdminController
             msadmin.modiby = Convert.ToInt32(Session["admin"]);
             msadmin.modidate = DateTime.Now;
             msadmin.profil = msadmin.profil;
+            if(Session["filename"] != null)
+            {
+                string profil = this.msadmin.getAdmin(Convert.ToInt32(Session["admin"])).profil;
+                FileInfo file = new FileInfo("~/Content/RoleAdmin/img/profil/"+profil);
+                try
+                {
+                    file.Delete();
+                }
+                catch (Exception ex)
+                {
+
+                }
+                msadmin.profil = Session["filename"].ToString();
+                Session["filename"] = null;
+            }
             this.msadmin.editData(msadmin);
+            refresh_penyewaan();
             return RedirectToAction("view_admin");
         }
         #endregion
@@ -1587,6 +1604,11 @@ namespace Rental_Centre.Controllers.AdminController
             Session["total_selesai"] = this.trpenyewaan.getAllData("SELESAI").ToList<trpenyewaan>().Count();
             Session["total_gagal"] = this.trpenyewaan.getAllData("GAGAL").ToList<trpenyewaan>().Count();
             Session["total_siap"] = this.trpenyewaan.getAllData("SIAP / KIRIM").ToList<trpenyewaan>().Count();
+
+            msadmin admin = this.msadmin.getAdmin(Convert.ToInt32(Session["admin"]));
+            Session["nama_admin"] = admin.nama_admin;
+            Session["profil"] = admin.profil;
+            Session["username"] = admin.username;
         }
         #endregion
     }

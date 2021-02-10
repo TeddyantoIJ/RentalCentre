@@ -54,8 +54,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             ViewBag.msbarang = this.msbarang.getAllData().ToList<msbarang>();
 
             if(Session["penyewa"] != null || Session["username"] != null)
-            {                
-                
+            {                                
                 ViewBag.cart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>();
                 ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
                 Session["username"] = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).username;

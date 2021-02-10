@@ -216,16 +216,16 @@ namespace Rental_Centre.Controllers.RentalController
             barang.nama_barang = barang.nama_barang;
             barang.harga_sewa = barang.harga_sewa;
             barang.stok_barang = barang.stok_barang;
-            barang.deskripsi_barang = barang.deskripsi_barang;
-            barang.link_gambar = barang.link_gambar;
+            barang.deskripsi_barang = barang.deskripsi_barang;            
 
             barang.status = 1;
             barang.creaby = Convert.ToInt32(Session["logged_id"]);
             barang.creadate = DateTime.Now;
             barang.modiby = null;
             barang.modidate = DateTime.Now;
-            
-            
+
+            barang.link_gambar = Session["barang_filename"].ToString();
+            Session["barang_filename"] = null;
             
             //this.msbarang.createData(barang);
 
@@ -254,11 +254,20 @@ namespace Rental_Centre.Controllers.RentalController
         }
         [HttpPost]
         public void uploadFileFix()
-        {
+        {            
+            string date = DateTime.Now.ToString();
+            string b = string.Empty;
+            for (int i = 0; i < date.Length; i++)
+            {
+                if (Char.IsDigit(date[i]))
+                    b += date[i];
+            }
             HttpPostedFileBase file = Request.Files[0]; //Uploaded file
-            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Barang"),
-                                               Path.GetFileName(file.FileName));
-
+            string name = file.FileName;
+            string[] split = name.Split('.');
+            name = b + "." + split[1];
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Barang"), name);
+            Session["barang_filename"] = name;
             file.SaveAs(path);
         }
         #region  edit
@@ -290,7 +299,13 @@ namespace Rental_Centre.Controllers.RentalController
             barang.harga_sewa = barang.harga_sewa;
             barang.stok_barang = barang.stok_barang;
             barang.deskripsi_barang = barang.deskripsi_barang;
-            barang.link_gambar = barang.link_gambar;
+
+            if(Session["barang_filename"] != null)
+            {
+                barang.link_gambar = Session["barang_filename"].ToString();
+                Session["barang_filename"] = null;
+            }            
+            
 
             barang.modiby = Convert.ToInt32(Session["logged_id"]);
             barang.modidate = DateTime.Now;
@@ -408,6 +423,14 @@ namespace Rental_Centre.Controllers.RentalController
             msrental.saldo = 0;
             msrental.rating = 0;
 
+            msrental.profil = Session["profile_filename"].ToString();
+            msrental.berkas1 = Session["berkas1_filename"].ToString();
+            msrental.berkas2 = Session["berkas2_filename"].ToString();
+
+            Session["profile_filename"] = null;
+            Session["berkas1_filename"] = null;
+            Session["berkas2_filename"] = null;
+
             if (this.msadmin.adaUsername(msrental.username) || this.msrental.adaUsername(msrental.username) || this.mspenyewa.adaUsername(msrental.username))
             {
                 ViewBag.error = "Username sudah digunakan";
@@ -425,8 +448,7 @@ namespace Rental_Centre.Controllers.RentalController
                     var body = "<h2>Hello, " + msrental.nama_rental +
                             "</h2>Berkaitan dengan website Rental Centre, Berikut Terlampir detail informasi akun anda<br>"
                             + "Username : <b>" + msrental.username + "</b><br>Password   : <b>" + msrental.password +
-                            "</b>Sekian info yang dapat kami sampaikan atas perhatiannya kami ucapkan terimakasih." +
-                            "<br><br>Sekretaris";
+                            "</b>Sekian info yang dapat kami sampaikan atas perhatiannya kami ucapkan terimakasih.";
                     var smtp = new SmtpClient
                     {
                         Host = "smtp.gmail.com",
@@ -460,24 +482,44 @@ namespace Rental_Centre.Controllers.RentalController
         [HttpPost]
         public void uploadFileAkun()
         {
+            string date = DateTime.Now.ToString();
+            string b = string.Empty;
+            for (int i = 0; i < date.Length; i++)
+            {
+                if (Char.IsDigit(date[i]))
+                    b += date[i];
+            }
+            string name = "";
+            string[] split = null;
+            string path = "";
+
             HttpPostedFileBase profil, berkas1, berkas2;
-            string path;
-
-
+            // PROFIL
             profil = Request.Files[0]; //Uploaded file
+            name = profil.FileName;
+            split = name.Split('.');
+            name = b + "." + split[1];
+            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Profil"), name);
+            Session["profile_filename"] = name;
+                        
+            // BERKAS 1
             berkas1 = Request.Files[1]; //Uploaded file
-            berkas2 = Request.Files[2]; //Uploaded file
+            name = berkas1.FileName;
+            split = name.Split('.');
+            name = b + "." + split[1];
+            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas1"), name);
+            Session["berkas1_filename"] = name;
 
-            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Profil"),
-                                               Path.GetFileName(profil.FileName));
-            profil.SaveAs(path);
+            // BERKAS 2
+            berkas2 = Request.Files[2]; //Uploaded file            
+            name = berkas2.FileName;
+            split = name.Split('.');
+            name = b + "." + split[1];
+            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas2"), name);
+            Session["berkas2_filename"] = name;
 
-            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas1"),
-                                               Path.GetFileName(berkas1.FileName));
-            berkas1.SaveAs(path);
-
-            path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas2"),
-                                               Path.GetFileName(berkas2.FileName));
+            profil.SaveAs(path);            
+            berkas1.SaveAs(path);            
             berkas2.SaveAs(path);
 
         }
@@ -509,35 +551,76 @@ namespace Rental_Centre.Controllers.RentalController
         public ActionResult edit_profil(msrental msrental)
         {
             msrental.modidate = DateTime.Now;
+            if(Session["profile_filename"] != null)
+            {
+                msrental.profil = Session["profile_filename"].ToString();
+                Session["profile_filename"] = null;
+            }
+            if(Session["berkas1_filename"] != null)
+            {
+                msrental.berkas1 = Session["berkas1_filename"].ToString();
+                Session["berkas1_filename"] = null;
+            }
+            if(Session["berkas2_filename"] != null)
+            {
+                msrental.berkas2 = Session["berkas2_filename"].ToString();
+                Session["berkas2_filename"] = null;
+            }
+                                    
             this.msrental.editData(msrental);
             return RedirectToAction("Index");
         }
         public void uploadProfil()
         {
+            string date = DateTime.Now.ToString();
+            string b = string.Empty;
+            for (int i = 0; i < date.Length; i++)
+            {
+                if (Char.IsDigit(date[i]))
+                    b += date[i];
+            }
             HttpPostedFileBase file = Request.Files[0]; //Uploaded file
-            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Profil"),
-                                               Path.GetFileName(file.FileName));
+            string name = file.FileName;
+            string[] split = name.Split('.');
+            name = b + "." + split[1];
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Profil"), name);
+            Session["profile_filename"] = name;
             file.SaveAs(path);
-
-            //return RedirectToAction("page_penawaran");
+            
         }
         public void uploadBerkas1()
         {
+            string date = DateTime.Now.ToString();
+            string b = string.Empty;
+            for (int i = 0; i < date.Length; i++)
+            {
+                if (Char.IsDigit(date[i]))
+                    b += date[i];
+            }
             HttpPostedFileBase file = Request.Files[0]; //Uploaded file
-            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas1"),
-                                               Path.GetFileName(file.FileName));
-            file.SaveAs(path);
-
-            //return RedirectToAction("page_penawaran");
+            string name = file.FileName;
+            string[] split = name.Split('.');
+            name = b + "." + split[1];
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas1"), name);
+            Session["berkas1_filename"] = name;
+            file.SaveAs(path);            
         }
         public void uploadBerkas2()
         {
+            string date = DateTime.Now.ToString();
+            string b = string.Empty;
+            for (int i = 0; i < date.Length; i++)
+            {
+                if (Char.IsDigit(date[i]))
+                    b += date[i];
+            }
             HttpPostedFileBase file = Request.Files[0]; //Uploaded file
-            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas2"),
-                                               Path.GetFileName(file.FileName));
-            file.SaveAs(path);
-
-            //return RedirectToAction("page_penawaran");
+            string name = file.FileName;
+            string[] split = name.Split('.');
+            name = b + "." + split[1];
+            string path = Path.Combine(Server.MapPath("~/Content/RoleRental/Image/Berkas2"), name);
+            Session["berkas2_filename"] = name;
+            file.SaveAs(path);            
         }
         #endregion
         #region edit password
