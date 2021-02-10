@@ -1,0 +1,499 @@
+﻿@model Rental_Centre.Models.msbarang
+
+@{
+    ViewBag.Title = "Product";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+<style>
+    html{       
+        scroll-behavior: smooth;
+    }
+    input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 3px solid;
+        width: inherit;
+    }
+</style>
+
+
+<div class="container">
+    <div class="card">
+        <div class="card-body text-center">
+            <h3><b>Deskripsi Product</b></h3>
+        </div>
+    </div>
+    <br />
+    <!-- INFO BARANG -->
+    <div class="card" id="barang">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img src="~/Content/RoleRental/Image/Barang/@Model.link_gambar" class="card-img-top" alt="..." style="height:150px;width:auto">
+                </div>
+                <div class="col-md">
+                    <h4 style="color:black"><b>@Model.nama_barang</b></h4>
+                    <h5 style=" color:black;">
+                        @{
+                            string harga = String.Format("{0:c}", Model.harga_sewa);
+                        }
+                        Rp @harga.Replace("Rp", "")/hari
+                    </h5>
+                    @if (Model.stok_barang > 0)
+                    {
+                        <h5>
+                            <b>Stok Tersedia</b> · Diperbarui @Model.modidate.ToString("dd/MM/yyyy")
+                        </h5>
+                    }
+                    else
+                    {
+                        <h5>
+                            <b>Stok Sedang kosong</b> · Diperbarui @Model.modidate.ToString("dd/MM/yyyy")
+                        </h5>
+                    }
+                    <h5>
+                        @Model.deskripsi_barang
+                    </h5>
+                    <p>
+
+                        <button class="btn btn-sm btn-outline-info" style="border-radius:0px" onclick="lihatkomentar()"><span class="fa fa-comment"></span> Komentar</button>
+                        <script>
+                            function lihatkomentar() {
+                                var elmt = document.getElementById("barang");
+                                document.getElementById("komentar").hidden = false;
+                                elmt.scrollIntoView();
+                            }
+                        </script>
+                        @if (Session["username"] == null)
+                        {
+                            <a onclick="return alert('Mohon login terlebih dahulu')" class="btn btn-sm btn-outline-primary" style="border-radius:0px;"><span class="fa fa-address-book"></span> Wishlist</a>
+                            <a onclick="return alert('Mohon login terlebih dahulu')" class="btn btn-sm btn-outline-success" style="border-radius:0px;"><span class="fa fa-cart-plus"></span> Keranjang</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-sm btn-outline-primary" style="border-radius:0px;" href="@Url.Action("add_toWishList0", "Penyewa", new { id_barang = Model.id_barang })"><span class="fa fa-address-book"></span> Wishlist</a>
+                            <a class="btn btn-sm btn-outline-success" style="border-radius:0px;" href="@Url.Action("add_ToCart", "Penyewa",new { id = Model.id_barang})"><span class="fa fa-cart-plus"></span> Keranjang</a>
+                        }
+
+                    </p>
+                </div>
+                <!-- RENTALLER -->
+                <div class="col-md" style="border-left:1px solid">
+                    <div class="row">
+                        <div class="col text-center">
+                            <p>RENTALLER</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img src="~/Content/RoleRental/Image/Profil/@ViewBag.rental.profil" alt="Alternate Text" class="card-img" />
+                        </div>
+                        <div class="col">
+                            <h4><b>@ViewBag.rental.nama_toko</b></h4>
+                            <p>@ViewBag.rental.nama_rental</p>
+                            <p>@ViewBag.rental.no_telp</p>
+                            <p>@ViewBag.rental.email</p>
+                            <p>
+                                @if (ViewBag.rental.rating >= 1.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (ViewBag.rental.rating >= 2.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (ViewBag.rental.rating >= 3.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (ViewBag.rental.rating >= 4.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (ViewBag.rental.rating == 5.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                <span>@ViewBag.rental.rating/5</span>
+                            </p>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col">
+                            <a href="@Url.Action("Rental_profile","Penyewa",new { username = ViewBag.rental.username })" style="border-radius:0px" class="btn btn-sm btn-outline-danger"><span class="fa fa-eye"></span> Lihat Profil</a>
+                            @if (Session["username"] == null)
+                            {
+                                <a onclick="return alert('Mohon login terlebih dahulu')" style="border-radius:0px" class="btn btn-sm btn-outline-primary"><span class="fa fa-newspaper"></span> Hubungi rentaller</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Pesan_baru","Penyewa",new { username = ViewBag.rental.username })" style="border-radius:0px" class="btn btn-sm btn-outline-primary"><span class="fa fa-newspaper"></span> Hubungi rentaller</a>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- KOMENTAR -->
+    <section id="komentar" hidden>
+        <br />
+        <div class="card">
+            <div class="card-body">
+                <div class="footer-widget text-center">
+                    <h4 style="color:black">Komentar</h4>
+                </div>
+                <!-- KETIKA BELUM ADA KOMENTAR -->
+                @if (Enumerable.Count(ViewBag.trkomentar) == 0)
+                {
+                    <div class="container text-center">
+                        <h1>BELUM ADA KOMENTAR</h1>
+                    </div>
+                    <!-- KALO BELUM LOGIN -->
+                    if (Session["username"] == null)
+                    {
+                        <div class="row">
+                            <div class="col text-center">
+                                <button onclick="daftar()" id="daftar" class="btn btn-outline-warning">Jadilah yang pertama</button>
+                                <script>
+                                    function daftar() {
+                                        var elmt = document.getElementById("daftar");
+                                        elmt.scrollIntoView();
+                                    }
+                                </script>
+                            </div>
+                        </div>                        
+                    }
+                }
+                else
+                {
+                    if (Session["username"] == null)
+                    {
+                        <div class="row">
+                            <div class="col text-center">
+                                <button onclick="daftar()" class="btn btn-outline-warning">Beri Komentar</button>
+                                <br /><br />
+                                <script>
+                                    function daftar() {
+                                        var elmt = document.getElementById("daftar");
+                                        elmt.scrollIntoView();
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    }
+                }
+                @if (Session["username"] != null)
+                {
+                    <br />
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col-md-8">
+                            <!-- BAGIAN KOMENTAR BARU -->
+                            <form action="@Url.Action("Komentar","Penyewa")" method="post" autocomplete="off" id="myForm">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <input type="hidden" name="id_barang" value="@Model.id_barang" />
+                                            <input type="hidden" name="filter" value="@ViewBag.currentFilter" />
+                                            <input type="text" id="isi_komentar" name="isi_komentar" value="" onkeypress="send()" placeholder="Tulis komentar…" onkeyup="komentar()" />
+                                            <script>
+                                                function send() {
+                                                    if (event.keyCode === 13) {
+                                                        if (document.getElementById("isi_komentar").value != "") {
+                                                            document.getElementById("submitbtn").click();
+                                                        }
+                                                    }
+                                                }
+                                                function komentar() {
+                                                    var komentar = document.getElementById("isi_komentar").value;
+                                                    if (komentar != "") {
+                                                        document.getElementById("submitbtn").disabled = false;
+                                                        document.getElementById("btnbatal").disabled = false;
+                                                        document.getElementById("submitbtn").className = "btn btn-primary float-right";
+                                                    } else {
+                                                        document.getElementById("submitbtn").disabled = true;
+                                                        document.getElementById("btnbatal").disabled = true;
+                                                        document.getElementById("submitbtn").className = "btn btn-secondary float-right";
+                                                    }
+                                                }
+                                            </script>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col"></div>
+                                        <div class="col-md-4" id="komenbtn">
+                                            <span>
+                                                <input type="submit" id="submitbtn" style="border-radius:0px" name="submit" value="Komentar" class="btn btn-secondary float-right" disabled />
+                                                <button class="btn bg-white float-lg-right" style="border-radius:0px" id="btnbatal" onclick="hapus()" disabled>Batal</button>
+                                                <script>
+                                                    function hapus() {
+                                                        document.getElementById("isi_komentar").value = "";
+                                                        komentar();
+                                                    }
+                                                </script>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                }
+                <!-- BAGIAN KOMENTAR -->
+                @foreach (Rental_Centre.Models.trkomentar item in ViewBag.trkomentar)
+                {
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col-md-8">
+                            <div class="container">
+                                <div class="row" style="color:black">
+                                    @{
+                                        string nama = "";
+                                        string profil = "";
+                                        string username = "";
+                                    }
+                                    @if (item.id_rental != null)
+                                    {
+                                        foreach (Rental_Centre.Models.msrental rental in ViewBag.msrental)
+                                        {
+                                            if (rental.id_rental == item.id_rental)
+                                            {
+                                                nama = rental.nama_rental + " (" + rental.nama_rental + ")";
+                                                profil = "../../Content/RoleRental/Image/Profil/" + rental.profil;
+                                                username = rental.username;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (Rental_Centre.Models.mspenyewa penyewa in ViewBag.mspenyewa)
+                                        {
+                                            if (penyewa.id_penyewa == item.id_penyewa)
+                                            {
+                                                nama = penyewa.nama_penyewa;
+                                                profil = "../../Content/RoleUser/images/profil_user/" + penyewa.profil;
+                                                username = penyewa.username;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    <div class="col-md-1">
+                                        <img src="@profil" alt="Alternate Text" class="card-img img-profile rounded-circle" style="height:40px;width:auto" />
+                                    </div>
+                                    <div class="col" style="margin-left:20px">
+                                        <p>
+                                            <b>@nama</b>
+                                            <span class="text-muted"> @item.creadate.ToString("HH:mm WIB | dd MMM yyyy")</span>
+                                            @if (Session["username"] != null)
+                                            {
+                                                if (username == Session["username"].ToString())
+                                                {
+                                                    <a href="@Url.Action("Hapus_komentar","Penyewa",new { id = item.id_komentar })" onclick="return confirm('tekan OK untuk menghapus komentar')">
+                                                        <span style="cursor:pointer" class="float-right fa fa-trash" title="Hapus komentar saya"></span>
+                                                    </a>
+                                                }
+                                            }
+                                        </p>
+                                        <p>@item.isi_komentar</p>
+                                    </div>
+                                </div>
+                                <!-- BAGIAN FEATURE BALAS -->
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col" style="margin-left:20px">
+                                        @if (Session["username"] != null)
+                                        {
+                                            <p style="cursor:pointer" onclick="balasan('@item.id_komentar')">Balas</p>
+                                        }
+                                        <form action="@Url.Action("Balas_komentar","Penyewa")" method="post" id="roombalas_@item.id_komentar" hidden autocomplete="off">
+                                            <div class="row">
+                                                <div class="col-md">
+                                                    <input type="hidden" name="id_komentar" value="@item.id_komentar" />
+                                                    <input type="hidden" name="filter" value="@ViewBag.currentFilter" />
+                                                    <input type="hidden" name="id_barang" value="@Model.id_barang" />
+                                                    <input type="text" id="isi_komentar_@item.id_komentar" name="isi_komentar" value="" onkeypress="send1('@item.id_komentar')" placeholder="Tambahkan balasan…" onkeyup="komentar1('@item.id_komentar')" />
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="row">
+                                                <div class="col"></div>
+                                                <div class="col-md-6" id="komenbtn_@item.id_komentar">
+                                                    <span>
+                                                        <input class="btn btn-sm btn-secondary float-right" type="submit" id="submitbtn_@item.id_komentar" style="border-radius:0px" name="submit" value="Balas" disabled />
+                                                        <button class="btn btn-sm bg-white float-lg-right" style="border-radius:0px" id="btnbatal_@item.id_komentar" onclick="hapus1('@item.id_komentar')">Batal</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- BAGIAN BALASAN BALASAN -->
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col" style="margin-left:20px">
+                                        @foreach (Rental_Centre.Models.dtkomentar balasan in ViewBag.dtkomentar)
+                                        {
+                                            if (balasan.id_komentar == item.id_komentar)
+                                            {
+                                                <p style="cursor:pointer; color:blue" onclick="lihatbalasan('@item.id_komentar')" id="semuabalasan_@item.id_komentar">Lihat semua balasan </p>
+                                                break;
+                                            }
+                                        }
+                                        <br />
+                                        <div class="row" id="balasan_@item.id_komentar" hidden>
+                                            <div class="col">
+                                                @foreach (Rental_Centre.Models.dtkomentar balasan in ViewBag.dtkomentar)
+                                                {
+                                                    if (balasan.id_komentar == item.id_komentar)
+                                                    {
+                                                        if (balasan.id_rental != null)
+                                                        {
+                                                            foreach (Rental_Centre.Models.msrental rental in ViewBag.msrental)
+                                                            {
+                                                                if (rental.id_rental == balasan.id_rental)
+                                                                {
+                                                                    nama = rental.nama_rental + " (" + rental.nama_rental + ")";
+                                                                    profil = "../../Content/RoleRental/Image/Profil/" + rental.profil;
+                                                                    username = rental.username;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            foreach (Rental_Centre.Models.mspenyewa penyewa in ViewBag.mspenyewa)
+                                                            {
+                                                                if (penyewa.id_penyewa == balasan.id_penyewa)
+                                                                {
+                                                                    nama = penyewa.nama_penyewa;
+                                                                    profil = "../../Content/RoleUser/images/profil_user/" + penyewa.profil;
+                                                                    username = penyewa.username;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                        <div class="row">
+                                                            <div class="col-md-1">
+                                                                <img src="@profil" alt="Alternate Text" class="card-img img-profile rounded-circle" style="height:35px;width:auto" />
+                                                            </div>
+                                                            <div class="col" style="margin-left:20px">
+                                                                <p>
+                                                                    <b>@nama</b>
+                                                                    <span class="text-muted"> @balasan.creadate.ToString("HH:mm WIB | dd MMM yyyy")</span>
+                                                                    @if (Session["username"] != null)
+                                                                    {
+                                                                        if (username == Session["username"].ToString())
+                                                                        {
+                                                                            <a href="@Url.Action("Hapus_balasan","Penyewa",new { id = balasan.id_dtkomentar, id_barang = Model.id_barang })" onclick="return confirm('tekan OK untuk menghapus balasan')">
+                                                                                <span style="cursor:pointer" class="float-right fa fa-trash" title="Hapus komentar saya"></span>
+                                                                            </a>
+                                                                        }
+                                                                    }
+                                                                </p>
+                                                                <p>@balasan.isi_komentar</p>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                }
+                <script>
+                    function balasan(id_komentar) {
+                        document.getElementById("roombalas_" + id_komentar).hidden = false;
+                    }
+                    function lihatbalasan(id_komentar) {
+                        if (document.getElementById("semuabalasan_" + id_komentar).innerHTML == "Sembunyikan balasan") {
+                            document.getElementById("semuabalasan_" + id_komentar).innerHTML = "Lihat semua balasan";
+                            document.getElementById("balasan_" + id_komentar).hidden = true;
+                        } else {
+                            document.getElementById("semuabalasan_" + id_komentar).innerHTML = "Sembunyikan balasan";
+                            document.getElementById("balasan_" + id_komentar).hidden = false;
+                        }
+                    }
+                    function hapus1(id_komentar) {
+                        document.getElementById("roombalas_" + id_komentar).hidden = true;
+                        document.getElementById("isi_komentar_" + id_komentar).value = "";
+                        komentar1(id_komentar);
+                        event.preventDefault();
+                    }
+                    function send1(id_komentar) {
+                        if (event.keyCode === 13) {
+                            if (document.getElementById("isi_komentar_" + id_komentar).value != "") {
+                                document.getElementById("submitbtn_" + id_komentar).click();
+                            }
+                        }
+                    }
+                    function komentar1(id_komentar) {
+                        var komentar = document.getElementById("isi_komentar_" + id_komentar).value;
+                        if (komentar != "") {
+                            document.getElementById("submitbtn_" + id_komentar).disabled = false;
+                            document.getElementById("submitbtn_" + id_komentar).className = "btn btn-sm btn-primary float-right";
+                        } else {
+                            document.getElementById("submitbtn_" + id_komentar).disabled = true;
+                            document.getElementById("submitbtn_" + id_komentar).className = "btn btn-sm btn-secondary float-right";
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+    </section>
+    <div  id="daftar"></div>
+    <br />
+    <div class="row">
+        <div class="col">
+            <a href="@Url.Action("All","Penyewa")" class="btn btn-outline-danger" style="border-radius:0">Show All</a>            
+        </div>
+    </div>
+    @if (Session["username"] == null)
+    {
+        <hr />
+        <section class="subscription my-5 d-flex justify-content-center align-items-center">
+            <div class="d-flex align-items-center flex-column">
+                <h3 class="text-center font-weight-bold">Jadilah bagian dari kami</h3>
+                <p class="text-center">Tunggu apa lagi! Mari daftarkan diri anda segera</p>
+                <div class="d-flex mt-3">
+                    <a href="@Url.Action("add_myAccount", "Penyewa")" class="btn btn-danger mr-4">Jadi Penyewa</a>
+                    <a href="@Url.Action("page_signup", "Rental")" class="btn btn-outline-danger">Jadi Rentaller</a>
+                </div>
+            </div>
+        </section>
+    }
+</div>
+
+<br />

@@ -40,8 +40,10 @@ namespace Rental_Centre.Controllers.PenyewaController
         model_dtkomentar dtkomentar = new model_dtkomentar();
         model_trkomentar trkomentar = new model_trkomentar();
         model_trwishlist trwishlist = new model_trwishlist();
+        model_trpencairan trpencairan = new model_trpencairan();
+        model_dtchat dtchat = new model_dtchat();
 
-
+        #region INDEX
         public ActionResult Index()
         {
             
@@ -49,13 +51,14 @@ namespace Rental_Centre.Controllers.PenyewaController
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
-            ViewBag.msbarang = this.msbarang.getAllData().ToList<msbarang>().Take(20);
+            ViewBag.msbarang = this.msbarang.getAllData().ToList<msbarang>();
 
-            if(Session["penyewa"] != null)
+            if(Session["penyewa"] != null || Session["username"] != null)
             {                
-                ViewBag.logged_in = "hidden";
+                
                 ViewBag.cart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>();
                 ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+                Session["username"] = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).username;
             }
             if(error != "")
             {
@@ -70,16 +73,145 @@ namespace Rental_Centre.Controllers.PenyewaController
             return View();
             
         }
-        
+        public ActionResult All(string filter)
+        {
+            if (Session["penyewa"] != null)
+            {
+                
+                ViewBag.cart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>();
+                ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+                Session["username"] = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).username;
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+            ViewBag.msbarang = this.msbarang.getAllData(DateTime.Now, 1).ToList<msbarang>();            
+            Session["filter"] = null;
+            if (filter != null)
+            {
+                Session["filter"] = filter;
+            }
+            
+            
+            return View();
+        }
+        [HttpPost]
+        public ActionResult All(DateTime tgl_sewa, int lama_sewa)
+        {
+            if (Session["penyewa"] != null)
+            {
+                
+                ViewBag.cart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>();
+                ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+                Session["username"] = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).username;
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            ViewBag.tgl_sewa = tgl_sewa;
+            ViewBag.lama_sewa = lama_sewa;
+            tgl_sewa = tgl_sewa.AddDays(lama_sewa);
+            ViewBag.msbarang = this.msbarang.getAllData(tgl_sewa,lama_sewa).ToList<msbarang>();
+            
+            return View();
+        }
+
+        #endregion
+        #region Product
+
+        public ActionResult Product(int? id, string filter)
+        {
+            if (Session["penyewa"] != null)
+            {                
+                ViewBag.cart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>();
+                ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+                Session["username"] = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).username;
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+
+            int idb = id ?? 1;
+            msbarang msbarang = this.msbarang.getBarang(idb);
+            ViewBag.currentFilter = filter;
+            int id_rental = msbarang.id_rental ?? 0;
+
+            ViewBag.rental = this.msrental.getRental(id_rental);
+            ViewBag.trkomentar = this.trkomentar.GetTrkomentar(idb).ToList();
+            List<int> id_komentar = this.trkomentar.GetTrkomentar(idb).Select(s => s.id_komentar).ToList<int>();
+            ViewBag.dtkomentar = this.dtkomentar.GetDtkomentars(id_komentar).ToList();
+            ViewBag.msrental = this.msrental.getAllData();
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+
+            ViewBag.currentFilter = filter;
+
+            return View(msbarang);
+        }
+        #region Komentar
+
+        [HttpPost]
+        public ActionResult Komentar(trkomentar komen, string filter)
+        {
+            komen.id_penyewa = Convert.ToInt32(Session["penyewa"]);
+            komen.creadate = DateTime.Now;
+            this.trkomentar.add(komen);
+
+            return RedirectToAction("Product", new { id = komen.id_barang, filter = filter });
+        }
+        public ActionResult Balas_komentar(dtkomentar balasan, string filter, int id_barang)
+        {            
+            balasan.id_penyewa = Convert.ToInt32(Session["penyewa"]);
+            balasan.creadate = DateTime.Now;
+
+            if(balasan.isi_komentar != "")
+            {
+                this.dtkomentar.add(balasan);
+            }            
+            return RedirectToAction("Product", new { id = id_barang, filter = filter });
+        }
+        [HttpGet]
+        public ActionResult Hapus_komentar(int id)
+        {
+            trkomentar trkomentar = this.trkomentar.getKomentarbyId(id);            
+            this.trkomentar.delete(trkomentar);
+            this.dtkomentar.delete(id);
+            return RedirectToAction("Product", new { id = trkomentar.id_barang });
+        }
+        [HttpGet]
+        public ActionResult Hapus_balasan(int id, int id_barang)
+        {
+            dtkomentar dtkomentar = this.dtkomentar.getKomentarById(id);
+            this.dtkomentar.delete(dtkomentar);                        
+            return RedirectToAction("Product", new { id = id_barang });
+        }
+        #endregion
+
+        #region Rental Profile
+        public ActionResult Rental_profile(string username)
+        {
+            msrental msrental = this.msrental.getRentalUsername(username);
+            ViewBag.msbarang = this.msbarang.getAllDataByRental(msrental.id_rental).ToList();
+            return View(msrental);
+        }
+        #endregion
+
+        #endregion
         #region MyAccount
         #region View / sudah login
         public ActionResult page_myAccount()
         {
-            if(Convert.ToInt32(Session["penyewa"].ToString()) != -1)
+            if(Session["penyewa"] == null)
             {
                 return RedirectToAction("Index");
             }
-            return View("add_myAccount");
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
+
+            mspenyewa mspenyewa = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"]));
+            return View(mspenyewa);
         }
         #endregion
         #region add
@@ -196,6 +328,11 @@ namespace Rental_Centre.Controllers.PenyewaController
             {
                 return RedirectToAction("Index");
             }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
+
             mspenyewa mspenyewa = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString()));
             return View(mspenyewa);
         }
@@ -207,7 +344,7 @@ namespace Rental_Centre.Controllers.PenyewaController
 
             this.mspenyewa.editPenyewa(mspenyewa);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("page_myAccount");
         }
         [HttpPost]
         public void uploadprofil()
@@ -253,6 +390,11 @@ namespace Rental_Centre.Controllers.PenyewaController
             {
                 return RedirectToAction("Index");
             }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
+
             mspenyewa mspenyewa = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString()));
             return View(mspenyewa);
         }
@@ -274,6 +416,11 @@ namespace Rental_Centre.Controllers.PenyewaController
             {
                 return RedirectToAction("Index");
             }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
+
             mspenyewa mspenyewa = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString()));
             return View(mspenyewa);
         }
@@ -288,6 +435,8 @@ namespace Rental_Centre.Controllers.PenyewaController
         #endregion
 
         #region Saldo
+
+        #region cek saldo
         public ActionResult cek_saldo()
         {
             if(Session["penyewa"] == null)
@@ -297,11 +446,13 @@ namespace Rental_Centre.Controllers.PenyewaController
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
-            ViewBag.logged_in = "hidden";
+            
             mspenyewa mspenyewa = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString()));
 
             return View(mspenyewa);
         }
+
+        #endregion
         
         #region Top up
         public ActionResult top_up()
@@ -313,7 +464,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
-            ViewBag.logged_in = "hidden";
+            
 
             mspenyewa mspenyewa = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString()));
 
@@ -344,6 +495,7 @@ namespace Rental_Centre.Controllers.PenyewaController
         }
         #endregion
 
+        #region mutasi
         public ActionResult lihat_mutasi(int? page)
         {
             if (Session["penyewa"] == null)
@@ -353,7 +505,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
-            ViewBag.logged_in = "hidden";
+            
 
             //Viewbag dibutuhkan            
             var dtmutasisaldo = this.dtmutasisaldo.getAllPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).Take(this.dtmutasisaldo.getAllPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<dtmutasisaldo>().Count());
@@ -364,6 +516,10 @@ namespace Rental_Centre.Controllers.PenyewaController
             return View(dtmutasisaldo.ToPagedList(pageNumber, pageSize));
         }
 
+        #endregion
+
+        #region Transfer
+
         public ActionResult transfer()
         {
             if (Session["penyewa"] == null)
@@ -373,7 +529,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
-            ViewBag.logged_in = "hidden";
+            
 
             //Viewbag dibutuhkan
             mspenyewa a = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString()));
@@ -419,10 +575,8 @@ namespace Rental_Centre.Controllers.PenyewaController
         }
         #endregion
 
-        #region Penyewaan
-
-        #region Cart
-        public ActionResult Cart()
+        #region Uangkan
+        public ActionResult Uangkan()
         {
             if (Session["penyewa"] == null)
             {
@@ -431,37 +585,77 @@ namespace Rental_Centre.Controllers.PenyewaController
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
 
-            ViewBag.logged_in = "hidden";
+            ViewBag.penyewa = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"].ToString()));
+            return View(mspenyewa);
+        }
+        [HttpPost]
+        public ActionResult Uangkan(FormCollection data)
+        {
+            int uang = Convert.ToInt32(data["uangkan"]);
+            this.mspenyewa.saldo_kurang(uang, Convert.ToInt32(Session["penyewa"]), "PENCAIRAN");
+
+            trpencairan trpencairan = new trpencairan();
+            trpencairan.creadate = DateTime.Now;
+            trpencairan.id_penyewa = Convert.ToInt32(Session["penyewa"]);
+            trpencairan.jml_pencairan = uang;
+            trpencairan.no_rek = data["no_rek"];
+            trpencairan.status_pencairan = 0;
+            this.trpencairan.add(trpencairan);
+            return RedirectToAction("cek_saldo");
+        }
+        #endregion
+
+        #endregion
+
+        #region Penyewaan
+
+        #region Cart
+        [HttpGet]
+        public ActionResult Cart(DateTime? date1, DateTime? date2)
+        {
+            if (Session["penyewa"] == null)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
+
             ViewBag.cart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>();
             ViewBag.countCart = this.trkeranjang.getAllByPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trkeranjang>().Count();
-            ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
+            
+            DateTime date11 = date1 ?? DateTime.Now;
+            DateTime date12 = date2 ?? DateTime.Now;
+            
+            int selanghari = (date12 - date11).Days;            
+            
+            ViewBag.allBarang = this.msbarang.getAllData(date11,selanghari).ToList<msbarang>();
 
             return View();
         }
-
-
+        
         [HttpGet]
         public ActionResult add_ToCart(int id)
         {
             if (Session["penyewa"] == null)
-            {                
-                error = "gagal menambahkan ke keranjang, mohon login terlebih dahulu";
+            {                                
                 return RedirectToAction("Index");
             }
             if (this.trkeranjang.ada(id,Convert.ToInt32(Session["penyewa"].ToString())))
-            {
-                error = "gagal menambahkan ke keranjang, data sudah ada";
-                return RedirectToAction("Index");
+            {                
+                return RedirectToAction("Cart");
             }
             
             trkeranjang trkeranjang = new trkeranjang();
             trkeranjang.id_barang = id;
             trkeranjang.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
             trkeranjang.id_keranjang = Convert.ToInt32(Session["penyewa"].ToString()) + "_" + id;
-            this.trkeranjang.add(trkeranjang);
-            error = "berhasil menambahkan ke keranjang";
-            return RedirectToAction("Index");
+            this.trwishlist.remove(Convert.ToInt32(Session["penyewa"].ToString()), id);
+            this.trkeranjang.add(trkeranjang);            
+            return RedirectToAction("Cart");
         }
         [HttpGet]
         public ActionResult add_ToCart1(int id)
@@ -470,16 +664,11 @@ namespace Rental_Centre.Controllers.PenyewaController
             {                
                 return RedirectToAction("Index");
             }
-            if (this.trkeranjang.ada(id, Convert.ToInt32(Session["penyewa"].ToString())))
-            {
-                this.trwishlist.remove(Convert.ToInt32(Session["penyewa"].ToString()), id);
-                return RedirectToAction("WishList");
-            }
-
             trkeranjang trkeranjang = new trkeranjang();
             trkeranjang.id_barang = id;
             trkeranjang.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
             trkeranjang.id_keranjang = Convert.ToInt32(Session["penyewa"].ToString()) + "_" + id;
+            this.trwishlist.remove(Convert.ToInt32(Session["penyewa"].ToString()), id);
             this.trkeranjang.add(trkeranjang);            
             return RedirectToAction("WishList");
         }
@@ -501,32 +690,30 @@ namespace Rental_Centre.Controllers.PenyewaController
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
-            ViewBag.logged_in = "hidden";
+            
                         
             ViewBag.allBarang = this.msbarang.getAllData().ToList<msbarang>();
             var wishlist = this.trwishlist.getAll(Convert.ToInt32(Session["penyewa"].ToString()));
             return View(wishlist);
         }
         [HttpGet]
-        public ActionResult add_toWishList0(int id_barang)
+        public ActionResult add_toWishList0(int id_barang, string filter)
         {
             if (Session["penyewa"] == null)
-            {
-                error = "gagal menambahkan ke wishlist, mohon login terlebih dahulu";
+            {                
                 return RedirectToAction("Index");
             }
             if (this.trwishlist.ada(id_barang, Convert.ToInt32(Session["penyewa"].ToString())))
-            {
-                error = "gagal menambahkan ke wishlist, data sudah ada";
-                return RedirectToAction("Index");
+            {             
+                return RedirectToAction("Wishlist");
             }
             trwishlist trwishlist = new trwishlist();
             trwishlist.id_barang = id_barang;
             trwishlist.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
             trwishlist.id_wishlist = Convert.ToInt32(Session["penyewa"].ToString()) + "_" + id_barang;
             this.trwishlist.add(trwishlist);
-            error = "berhasil menambahkan wishlist";
-            return RedirectToAction("Index");
+            this.trkeranjang.remove(trwishlist.id_penyewa, id_barang);            
+            return RedirectToAction("Wishlist");
         }
         [HttpGet]
         public ActionResult add_toWishList1(int id_barang)
@@ -560,7 +747,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
-            ViewBag.logged_in = "hidden";
+            
 
             var trpenyewaan = this.trpenyewaan.getAllDataPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).Take(this.trpenyewaan.getAllDataPenyewa(Convert.ToInt32(Session["penyewa"].ToString())).ToList<trpenyewaan>().Count());
             
@@ -580,11 +767,16 @@ namespace Rental_Centre.Controllers.PenyewaController
             }
             trpenyewaan trpenyewaan = new trpenyewaan();
             trpenyewaan.id_penyewa = Convert.ToInt32(Session["penyewa"].ToString());
-            trpenyewaan.jenis_sewa = Convert.ToInt32(data["jenis_sewa"]);
+            trpenyewaan.jenis_sewa = Convert.ToInt32(data["jenis_penyewaan"]);
             if(trpenyewaan.jenis_sewa == 0)
             {
                 trpenyewaan.alamat_tujuan = data["alamat_tujuan"];
                 trpenyewaan.kodepos = data["kodepos"];
+            }
+            else
+            {
+                trpenyewaan.alamat_tujuan = "-";
+                trpenyewaan.kodepos = "-";
             }
             trpenyewaan.creadate = DateTime.Now;
             trpenyewaan.tgl_penyewaan = DateTime.Parse(data["tgl_penyewaan"]);
@@ -620,6 +812,9 @@ namespace Rental_Centre.Controllers.PenyewaController
             return RedirectToAction("Checkout");
         }
 
+        #endregion
+
+        #region Checkout details
         public ActionResult Checkout_details(int id)
         {
             if (Session["penyewa"] == null)
@@ -629,11 +824,31 @@ namespace Rental_Centre.Controllers.PenyewaController
             //Viewbag wajib ada untuk template
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
-            ViewBag.logged_in = "hidden";
+            
 
             var detail = this.dtdetailpenyewaan.getAllData(id).ToList<dtdetailpenyewaan>();
             ViewBag.msbarang = this.msbarang.getAllData();
             return View(detail);
+        }
+        #endregion
+
+        #region batal transaksi
+        [HttpPost]
+        public ActionResult Batal_transaksi(int id)
+        {
+            if (Session["penyewa"] == null)
+            {
+                return RedirectToAction("Index");
+            }
+            //Viewbag wajib ada untuk template
+            
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
+            this.trpenyewaan.ubahGagal(id);
+            this.dtdetailpenyewaan.dibatalkan(id);
+            
+            return RedirectToAction("Checkout");
         }
         #endregion
 
@@ -646,7 +861,7 @@ namespace Rental_Centre.Controllers.PenyewaController
                 return RedirectToAction("Index");
             }
             //Viewbag wajib ada untuk template
-            ViewBag.logged_in = "hidden";
+            
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
@@ -698,7 +913,7 @@ namespace Rental_Centre.Controllers.PenyewaController
                 return RedirectToAction("Index");
             }
             //Viewbag wajib ada untuk template
-            ViewBag.logged_in = "hidden";
+            
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
             
@@ -743,7 +958,7 @@ namespace Rental_Centre.Controllers.PenyewaController
                 return RedirectToAction("Index");
             }
             //Viewbag wajib ada untuk template
-            ViewBag.logged_in = "hidden";
+            
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
@@ -767,7 +982,7 @@ namespace Rental_Centre.Controllers.PenyewaController
                 return RedirectToAction("Index");
             }
             //Viewbag wajib ada untuk template
-            ViewBag.logged_in = "hidden";
+            
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
@@ -787,8 +1002,7 @@ namespace Rental_Centre.Controllers.PenyewaController
             {
                 return RedirectToAction("Index");
             }
-            int id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);
-            this.trpenyewaan.beriUlasan(id_penyewaan);
+            int id_penyewaan = Convert.ToInt32(data["id_penyewaan"]);            
 
             var msrental = this.dtdetailpenyewaan.getAllDataRentalByIdPenyewaan(id_penyewaan);
             var dtdetailpenyewaan = this.dtdetailpenyewaan.getAllData(id_penyewaan);
@@ -797,12 +1011,14 @@ namespace Rental_Centre.Controllers.PenyewaController
             {
                 this.msrental.beriRating(Convert.ToInt32(data["rating_" + item.id_rental]), item.id_rental);
             }
+            this.trpenyewaan.beriUlasan(id_penyewaan);
             foreach (var item in dtdetailpenyewaan)
             {
                 trkomentar komen = new trkomentar();                
                 komen.id_penyewa = Convert.ToInt32(Session["penyewa"]);
                 komen.isi_komentar = data["bar_"+item.id_barang];
                 komen.creadate = DateTime.Now;
+                komen.id_barang = item.id_barang;
                 if(komen.isi_komentar != "")
                 {
                     this.trkomentar.add(komen);
@@ -814,6 +1030,183 @@ namespace Rental_Centre.Controllers.PenyewaController
 
         #endregion
 
+        #region Chatting
+
+        #region Pesan_baru
+
+        public ActionResult Pesan_baru(string username)
+        {
+            if (Session["penyewa"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+                        
+
+            //viewbag kebutuhan
+
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+            ViewBag.msadmin = this.msadmin.getAllData();
+            ViewBag.msrental = this.msrental.getAllData();
+
+            ViewBag.username_penerima = username;
+            dtchat dtchat = new dtchat();
+            dtchat.username_penerima = username;
+            return View(dtchat);
+        }
+        [HttpPost]
+        public ActionResult sendChatBaru(dtchat data)
+        {
+            dtchat dtchat = new dtchat();
+            dtchat.creadate = DateTime.Now;
+            dtchat.dibaca = 0;
+            dtchat.isi_pesan = data.isi_pesan;
+            dtchat.username_penerima = data.username_penerima;
+            dtchat.username_pengirim = this.mspenyewa.getPenyewa(Convert.ToInt32(Session["penyewa"])).username;
+
+            var mspenyewas = this.mspenyewa.getAllData();
+            var msrentals = this.msrental.getAllData();
+
+            if (!msrentals.Any(s => s.username == data.username_penerima) && !mspenyewas.Any(s => s.username == data.username_penerima))
+            {
+                //Viewbag wajib ada untuk template
+                ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+                ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+                
+
+                //viewbag kebutuhan
+                ViewBag.mspenyewa = this.mspenyewa.getAllData();
+                ViewBag.msadmin = this.msadmin.getAllData();
+                ViewBag.msrental = this.msrental.getAllData();
+
+                ViewBag.notif = "Username tidak ditemukan!";
+
+                return View("Pesan_baru", data);
+            }
+            this.dtchat.add(dtchat);
+
+            return RedirectToAction("Obrolan");
+        }
+        #endregion
+
+        #region Obrolan
+        public ActionResult Obrolan()
+        {
+            if (Session["penyewa"] == null)
+            {
+                return RedirectToAction("Index", "Penyewa");
+            }
+            //Viewbag wajib ada untuk template
+            ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
+            ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
+            
+
+            ViewBag.mspenyewa = this.mspenyewa.getAllData();
+            ViewBag.msadmin = this.msadmin.getAllData();
+            ViewBag.msrental = this.msrental.getAllData();
+
+            ViewBag.dtchat = this.dtchat.getChat(Session["username"].ToString()).ToList<dtchat>();
+            ViewBag.dtchatdescen = this.dtchat.getChatDesc(Session["username"].ToString()).ToList<dtchat>();
+            ViewBag.listobrolan = this.dtchat.getList(Session["username"].ToString());
+
+            return View();
+        }
+        [HttpPost]
+        public JsonResult sendChat(dtchat data)
+        {
+            dtchat dtchat = new dtchat();
+            dtchat.creadate = DateTime.Now;
+            dtchat.dibaca = 0;
+            dtchat.isi_pesan = data.isi_pesan;
+            dtchat.username_penerima = data.username_penerima;
+            dtchat.username_pengirim = Session["username"].ToString();
+            this.dtchat.add(dtchat);
+
+            dtchat.username_pengirim = dtchat.creadate.ToString("HH:mm");
+            dtchat.username_penerima = dtchat.creadate.ToString("dd MMM");
+
+            return Json(dtchat, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public void baca(string username)
+        {
+            this.dtchat.baca(username);
+        }
+        #region ga kepake
+        [HttpPost]
+        public JsonResult getjumlahpesan()
+        {
+            if (Session["penyewa"] == null)
+            {
+                return null;
+            }
+            var dtpesan = this.dtchat.getChatDesc(Session["username"].ToString()).ToList<dtchat>();
+            var list = ViewBag.listobrolan = this.dtchat.getList(Session["username"].ToString());
+            int jumlah = 0;
+            List<dtchat> chat = new List<dtchat>();
+            foreach (var item in list)
+            {
+                foreach (var pesan in dtpesan)
+                {
+                    if (pesan.username_pengirim == item && pesan.dibaca == 0)
+                    {
+                        jumlah++;
+                        chat.Add(pesan);
+                    }
+                }
+            }
+            Session["pesan"] = chat;
+            Session["jumlah_pesan"] = jumlah;
+            var data = jumlah;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult getpesan()
+        {
+            if (Session["penyewa"] == null)
+            {
+                return null;
+            }
+            var dtpesan = this.dtchat.getChatDesc(Session["username"].ToString()).ToList<dtchat>();
+            var list = ViewBag.listobrolan = this.dtchat.getList(Session["username"].ToString());
+            int jumlah = 0;
+            List<dtchat> chat = new List<dtchat>();
+            var data = new dtchat();
+            foreach (var item in list)
+            {
+                foreach (var pesan in dtpesan)
+                {
+                    if (pesan.username_pengirim == item && pesan.dibaca == 0)
+                    {
+                        jumlah++;
+                        chat.Add(pesan);
+                        if (jumlah == 1)
+                        {
+                            pesan.username_penerima = pesan.creadate.ToString("HH:mm | dd MMM");
+                            data = pesan;
+                        }
+                    }
+                }
+            }
+            Session["pesan"] = chat;
+            Session["jumlah_pesan"] = jumlah;
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+        #endregion
+
+        #region Pesan_hapus
+        public ActionResult Pesan_hapus(string username)
+        {
+            string username_login = Session["username"].ToString();
+            this.dtchat.hapus(username, username_login);
+            return RedirectToAction("Obrolan");
+        }
+        #endregion
+        #endregion
+
         #region kritik_saran
         #region add kritik_saran
         public ActionResult kritik_saran()
@@ -823,7 +1216,7 @@ namespace Rental_Centre.Controllers.PenyewaController
                 return RedirectToAction("Index");
             }
             //Viewbag wajib ada untuk template
-            ViewBag.logged_in = "hidden";
+            
             ViewBag.mskelompokjenis = this.mskelompokjenis.getAllData().ToList<mskelompokjenis>();
             ViewBag.msjenisbarang = this.msjenisbarang.getAllData().ToList<msjenisbarang>();
 
@@ -845,8 +1238,7 @@ namespace Rental_Centre.Controllers.PenyewaController
         #region Dan lain lain
         public ActionResult logout()
         {
-            Session["penyewa"] = null;
-            Session["id"] = null;
+            Session.Clear();
             return RedirectToAction("Index");
         }        
         #endregion

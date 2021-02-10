@@ -1,0 +1,156 @@
+﻿@model IEnumerable<Rental_Centre.Models.dtmutasisaldo>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "laporan_mutasi";
+    ViewBag.Profile = ViewBag.Logged_in.profil;
+    ViewBag.Nama_user = ViewBag.Logged_in.nama_admin;
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<div class="container">
+    <a>Laporan</a> / <a href="">Laporan Mutasi</a>
+    <div class="card">
+        <div class="card-header"></div>
+        <div class="card-body">
+            <h5 class="lead text-center">LAPORAN MUTASI BULANAN</h5>
+            <br />
+            <form action="@Url.Action("laporan_mutasi","Admin")" method="post">
+                <div class="row">
+
+                    <div class="col">
+                        <label for="awal">Dari : @ViewBag.awal</label>
+                        <input type="date" name="awal" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")" class="form-control" />
+                    </div>
+                    <div class="col">
+                        <label for="akhir">Sampai:  @ViewBag.akhir</label>
+                        <input type="date" name="akhir" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
+                    </div>
+                    <div class="col-2">
+                        <label for="btn">FILTER</label>
+                        <input type="submit" name="btn" class="btn btn-primary" value="Set Mutasi" />
+                    </div>
+
+                </div>
+            </form>
+            <br />
+            <table id="multi_filter" class="table table-hover  text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <td>No.</td>
+                        <td>Deskripsi</td>
+                        <td>Bersangkutan</td>
+                        <td>Waktu transaksi</td>
+                        <!--
+                        <td>Masuk</td>
+                        <td>Keluar</td>
+                        <td>Dana Website</td>
+                            -->
+                        <td>Jumlah Transaksi</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int no = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+
+                        string uang = String.Format("{0:c}", item.jumlah_transaksi);
+                        string nama = "";
+                        if (item.id_penyewa != null)
+                        {
+                            foreach (var a in ViewBag.mspenyewa)
+                            {
+                                if (a.id_penyewa == item.id_penyewa)
+                                {
+                                    nama = a.username.ToUpper();
+                                }
+                            }
+                        }
+                        if (item.id_rental != null)
+                        {
+                            foreach (var a in ViewBag.msrental)
+                            {
+                                if (a.id_rental == item.id_rental)
+                                {
+                                    nama = a.username.ToUpper();
+                                }
+                            }
+                        }
+                        <tr>
+                            <td>@no.</td>
+                            <td>@item.jenis_transaksi</td>
+                            <td>@nama</td>
+                            <td>@item.creadate.ToString("dd/MM/yyyy HH:mm")</td>
+                            @*@{
+                                    if (item.jenis_transaksi == "TOP UP")
+                                    {
+                                        <td>-</td>
+                                        <td class="text-right">@uang</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-right">@uang</td>
+                                        <td class="text-right">@uang</td>
+                                    }
+                                }*@
+                            @*<td class="text-right">@String.Format("{0:c}", item.jumlah_saldo)</td>*@
+                            <td class="text-right">@uang</td>
+                        </tr>
+                        no++;
+                    }
+                </tbody>
+            </table>
+            @*<nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        @if (Model.PageNumber != 1)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("laporan_mutasi",new { page = Model.PageNumber-1})">Previous</a></li>
+                        }
+
+                        <li class="page-item"><a class="page-link">@Model.PageNumber/@Model.PageCount</a></li>
+                        @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+                        {
+                            <li class="page-item"><a class="page-link" href="@Url.Action("laporan_mutasi",new { page = Model.PageNumber+1})">Next</a></li>
+                        }
+
+                    </ul>
+                </nav>*@
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    
+    <script>
+        $(document).ready(function () {
+            $('#multi_filter').DataTable({
+                dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>rtip',
+                buttons: [
+                    {
+                        extend: 'copy',
+                    }, {
+                        extend: 'excel',
+                        title: 'Laporan Mutasi',
+                        filename: 'Laporan Mutasi ',
+                    }, {
+                        extend: 'pdf',
+                        title: 'Laporan Mutasi',
+                        filename: 'Laporan Mutasi',
+                        pageSize: 'LETTER',
+                    }, {
+                        extend: 'print',
+                        title: 'Laporan Mutasi',
+                        filename: 'Laporan Mutasi ',
+                    },
+                ],
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    ['10', '25', '50', 'All']
+                ],
+            });
+        });
+    </script>
+}

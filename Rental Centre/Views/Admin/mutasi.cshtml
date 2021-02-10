@@ -15,30 +15,49 @@
         <div class="card-body">
             <h5 class="lead text-center">MUTASI</h5>
             <br />
-            <form action="@Url.Action("mutasi","Admin", new { page = Model.PageNumber })" method="post">
+            <form action="@Url.Action("mutasi","Admin", new { page = Model.PageNumber })" method="get" onchange="submit(this)" id="formku">
                 <div class="row">
-
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-md">
+                                <input type="date" id="awal" name="awal" value="@ViewBag.awal.ToString("yyyy-MM-dd")" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" onkeypress="return false" />
+                            </div>
+                            <div class="col-md">
+                                <input type="date" id="akhir" name="akhir" value="@ViewBag.akhir.ToString("yyyy-MM-dd")" class="form-control" max="@DateTime.Now.ToString("yyyy-MM-dd")" onkeypress="return false" />
+                            </div>                            
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md">
+                                <select name="kelompok" class="form-control" id="kelompok">
+                                    <option value="A">SEMUA</option>
+                                    <option value="TR">TRANSFER</option>
+                                    <option value="TU">TOP UP</option>
+                                    <option value="DP">DP PENYEWAAN</option>
+                                    <option value="PL">PELUNASAN SEWA</option>
+                                </select>
+                                <script>
+                            document.getElementById("kelompok").value = "@ViewBag.kelompok";
+                                function submit(a) {
+                                    a.submit();
+                                }
+                                </script>
+                            </div>
+                        </div>
+                    </div>                    
                     <div class="col">
-                        <label for="awal">Dari : @ViewBag.awal</label>
-                        <input type="date" name="awal" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")" class="form-control" />
+                        <p class="text-primary">
+                            Ubah salah satu filter untuk mengubah data, atau tekan <a href="#" class="text-danger" onclick="bulan()">di sini</a> untuk melihat data satu bulan ke belakanag
+                        </p>
+                        <script>
+                            function bulan() {
+                                document.getElementById("akhir").value = "@DateTime.Now.ToString("yyyy-MM-dd")";
+                                document.getElementById("awal").value = "@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")";
+                                var a = document.getElementById("formku");
+                                submit(a);
+                            }
+                        </script>
                     </div>
-                    <div class="col">
-                        <label for="akhir">Sampai:  @ViewBag.akhir</label>
-                        <input type="date" name="akhir" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
-                    </div>
-                    <div class="col">
-                        <label for="kelompok">Kelompok Berdasarkan : @ViewBag.kelompok</label>
-                        <select name="kelompok" class="form-control">
-                            <option value="A">SEMUA</option>
-                            <option value="TR">TRANSFER</option>
-                            <option value="TU">TOP UP</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <label for="btn">FILTER</label>
-                        <input type="submit" name="btn" class="btn btn-primary" value="Set Mutasi" />
-                    </div>
-
                 </div>
             </form>
             <br />
@@ -114,13 +133,13 @@
                 <ul class="pagination">
                     @if (Model.PageNumber != 1)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber-1})">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber-1, awal = ViewBag.awal.ToString("yyyy-MM-dd"), akhir = ViewBag.akhir.ToString("yyyy-MM-dd"), kelompok = ViewBag.kelompok})">Previous</a></li>
                     }
 
                     <li class="page-item"><a class="page-link">@Model.PageNumber/@Model.PageCount</a></li>
                     @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
                     {
-                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber+1})">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="@Url.Action("mutasi",new { page = Model.PageNumber+1, awal = ViewBag.awal.ToString("yyyy-MM-dd"), akhir = ViewBag.akhir.ToString("yyyy-MM-dd"), kelompok = ViewBag.kelompok})">Next</a></li>
                     }
 
                 </ul>

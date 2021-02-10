@@ -3,20 +3,127 @@
     ViewBag.Title = "page_profil";    
     Layout = "~/Views/Shared/_RentalTemplate.cshtml";
 }
+<style>
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
 
+    /* Modal Content (Image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    /* Caption of Modal Image (Image Text) - Same Width as the Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation - Zoom in the Modal */
+    .modal-content, #caption {
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    /* The Close Button */
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
 <div class="container">
     <a>Profile </a> / <a href="">Profil Saya</a>
     <div class="card">
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <img src="~/Content/RoleRental/Image/Profil/@Model.profil" alt="Alternate Text" class="card-img" />
+                    <img src="~/Content/RoleRental/Image/Profil/@Model.profil" alt="Alternate Text" class="card-img" onclick="modal(this.src,'Profil')" style="cursor:pointer"/>
                 </div>
-                <div class="col-8">
-                    <h3><b>Data Profil</b></h3>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col">
+                            <h3><b>Data Profil</b></h3>
+                        </div>
+                        <div class="col">
+                            <h3 class=" float-right">
+                                @if (Model.rating >= 1.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (Model.rating >= 2.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (Model.rating >= 3.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (Model.rating >= 4.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                @if (Model.rating == 5.0)
+                                {
+                                    <span class="fa fa-star" style="color:yellow"></span>
+                                }
+                                else
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                                <span>@Model.rating/5</span>
+                            </h3>
+                        </div>
+                    </div>                    
                     <hr />
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>Nama</p>
                         </div>
                         <div class="col">
@@ -24,7 +131,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>Jenis kelamin</p>
                         </div>
                         <div class="col">
@@ -41,7 +148,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>NIK</p>
                         </div>
                         <div class="col">
@@ -49,7 +156,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>Email</p>
                         </div>
                         <div class="col">
@@ -57,7 +164,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>No telepon</p>
                         </div>
                         <div class="col">
@@ -65,7 +172,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>Tempat lahir</p>
                         </div>
                         <div class="col">
@@ -73,7 +180,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>Tanggal lahir</p>
                         </div>
                         <div class="col">
@@ -81,7 +188,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>Alamat</p>
                         </div>
                         <div class="col">
@@ -89,7 +196,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-md-3">
                             <p>Kodepos</p>
                         </div>
                         <div class="col">
@@ -138,11 +245,11 @@
                     <div class="row">
                         <div class="col">
                             <b>Berkas 1</b>
-                            <img src="~/Content/RoleRental/Image/Berkas1/@Model.berkas1" alt="" class="card-img" />
+                            <img src="~/Content/RoleRental/Image/Berkas1/@Model.berkas1" onclick="modal(this.src,'Berkas 1')" alt="" class="card-img"  style="height:auto;width:200px;cursor:pointer"/>
                         </div>
                         <div class="col">
                             <b>Berkas 2</b>
-                            <img src="~/Content/RoleRental/Image/Berkas2/@Model.berkas2" alt="" class="card-img" />
+                            <img src="~/Content/RoleRental/Image/Berkas2/@Model.berkas2" onclick="modal(this.src,'Berkas 2')" alt="" class="card-img"  style="height:auto;width:200px;cursor:pointer"/>
                         </div>
                     </div>
                 </div>
@@ -150,3 +257,22 @@
         </div>
     </div>
 </div>
+<div id="myModal" class="modal" onclick="tutup()">
+    <span class="close" onclick="tutup()">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+</div>
+<script>
+    function batal() {
+        document.getElementById("div_konfirmasi").hidden = true;
+        document.getElementById("div_view").hidden = false;
+    }
+    function modal(img,caption) {
+        document.getElementById("myModal").style.display = "block";
+        document.getElementById("img01").src = img;
+        document.getElementById("caption").innerHTML = caption;
+    }
+    function tutup() {
+        document.getElementById("myModal").style.display = "none";
+    }
+</script>

@@ -11,15 +11,23 @@ namespace Rental_Centre.Models
 
         public IEnumerable<trkeranjang> getAllByPenyewa(int id)
         {
-            var a = (from data in _DB.trkeranjang
-                        where data.id_penyewa == id
+            var a = (from data in _DB.trkeranjang                     
+                     where data.id_penyewa == id
                         select data);
             return a;
         }
         public void add(trkeranjang trkeranjang)
         {
             _DB.trkeranjang.Add(trkeranjang);
-            _DB.SaveChanges();
+            try
+            {
+                _DB.SaveChanges();
+            }
+            catch
+            {
+
+            }
+            
         }
         public bool ada(int id_barang, int id_penyewa)
         {
@@ -41,9 +49,12 @@ namespace Rental_Centre.Models
         }
         public void remove(int id_penyewa, int id_barang)
         {
-            trkeranjang data = _DB.trkeranjang.SingleOrDefault<trkeranjang>(s => s.id_penyewa == id_penyewa && s.id_barang == id_barang);            
-            _DB.trkeranjang.Remove(data);            
-            _DB.SaveChanges();
+            trkeranjang data = _DB.trkeranjang.SingleOrDefault<trkeranjang>(s => s.id_penyewa == id_penyewa && s.id_barang == id_barang);                        
+            if(data != null)
+            {
+                _DB.trkeranjang.Remove(data);
+                _DB.SaveChanges();
+            }            
         }
     }
 }

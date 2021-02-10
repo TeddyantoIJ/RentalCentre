@@ -1,0 +1,133 @@
+﻿
+@{
+    ViewBag.Title = "All";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+
+
+<section>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="title-all text-center">
+                <a href="@Url.Action("All","Penyewa")" class="btn btn-outline-danger">Our Products</a>
+                <br /><br />
+                <div class="row">
+                    <div class="col"></div>
+                    <div class="col-md-4">
+                        <form action="@Url.Action("All","Penyewa")" method="post" autocomplete="off">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        Tanggal sewa
+                                        @if (ViewBag.tgl_sewa != null)
+                                        {
+                                            <input onkeypress="return false" min="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" name="tgl_sewa" value="@ViewBag.tgl_sewa.ToString("yyyy-MM-dd")" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input onkeypress="return false" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="tanggal2" onchange="cektanggal('2')" type="date" name="tgl_sewa" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
+                                        }
+                                    </div>                                                                        
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        Lama sewa
+                                        @if (ViewBag.lama_sewa == null)
+                                        {
+                                            <input type="number" name="lama_sewa" value="1" min="1" onkeypress="return false" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="number" name="lama_sewa" value="@ViewBag.lama_sewa" min="1" onkeypress="return false" class="form-control" />
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="submit" name="submit" value="Periksa produk sesuai tanggal" class="btn btn-outline-primary" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col"></div>
+                </div>                
+            </div>
+        </div>
+    </div>    
+    <div class="row special-list">
+        @foreach (Rental_Centre.Models.msbarang barang in ViewBag.msbarang)
+        {
+            if (Session["filter"] != null)
+            {
+                if (barang.id_jenisbarang.ToString() != Session["filter"].ToString())
+                {
+                    continue;
+                }
+            }
+            if(barang.stok_barang <= 0)
+            {                
+                continue;
+            }
+            <div class="col-lg-3 col-md-6 special-grid">
+                <div class="products-single fix">
+                    <div class="box-img-hover">
+                        <img src="~/Content/RoleRental/Image/Barang/@barang.link_gambar" class="img-fluid" alt="Image" style="height:200px;width:auto">
+                        <div class="mask-icon">
+                            @if (Session["username"] == null)
+                            {
+                                <ul>
+                                    <li><a href="@Url.Action("Product","Penyewa",new { id = barang.id_barang })" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                    <li><a href="#" id="wishlist" data-toggle="tooltip" data-placement="right" title="Add to Wishlist" onclick="alert('mohon untuk login terlebih dahulu')"><i class="far fa-heart"></i></a></li>
+                                </ul>
+                                <a class="cart" data-cart="@barang.id_barang" href="#" onclick="alert('mohon untuk login terlebih dahulu')"><span class="fa fa-cart-plus"></span> Keranjang</a>
+                            }
+                            else
+                            {
+                                if (Session["filter"] != null)
+                                {
+                                    <ul>
+                                        <li><a href="@Url.Action("Product","Penyewa",new { id = barang.id_barang })" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                        <li><a href="@Url.Action("add_toWishList0", "Penyewa", new { id_barang = barang.id_barang, filter = Session["filter"].ToString() })" id="wishlist" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
+                                    </ul>
+                                    <a class="cart" data-cart="@barang.id_barang" href="@Url.Action("add_ToCart", "Penyewa",new { id = barang.id_barang, filter = Session["filter"].ToString() })"><span class="fa fa-cart-plus"></span> Keranjang</a>
+                                }
+                                else
+                                {
+                                    <ul>
+                                        <li><a href="@Url.Action("Product","Penyewa",new { id = barang.id_barang})" data-toggle="tooltip" data-placement="right" title="View"><i class="fas fa-eye"></i></a></li>
+                                        <li><a href="@Url.Action("add_toWishList0", "Penyewa", new { id_barang = barang.id_barang})" id="wishlist" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i class="far fa-heart"></i></a></li>
+                                    </ul>
+                                    <a class="cart" data-cart="@barang.id_barang" href="@Url.Action("add_ToCart", "Penyewa",new { id = barang.id_barang})"><span class="fa fa-cart-plus"></span> Keranjang</a>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="why-text">
+                        @{string uang = String.Format("{0:c}", barang.harga_sewa);}
+                        <h4 style="width:200px;text-overflow: ellipsis;overflow: hidden !important;white-space: nowrap;">@barang.nama_barang</h4>
+                        <p> @uang / hari</p>
+                        <p><b>Stok Tersedia</b></p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+</section>
+@if (Session["username"] == null)
+{
+    <hr />
+    <section class="subscription my-5 d-flex justify-content-center align-items-center">
+        <div class="d-flex align-items-center flex-column">
+            <h3 class="text-center font-weight-bold">Jadilah bagian dari kami</h3>
+            <p class="text-center">Tunggu apa lagi! Mari daftarkan diri anda segera</p>
+            <div class="d-flex mt-3">
+                <a href="@Url.Action("add_myAccount", "Penyewa")" class="btn btn-danger mr-4">Jadi Penyewa</a>
+                <a href="@Url.Action("page_signup", "Rental")" class="btn btn-outline-danger">Jadi Rentaller</a>
+            </div>
+        </div>
+    </section>
+}
+<br />

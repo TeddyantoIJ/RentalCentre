@@ -8,7 +8,7 @@
 
 <br />
 <div class="container">
-    <label><a href="@Url.Action("Index")">Home </a> > <a href="@Url.Action("Checkout")"> Checkout </a> > Konfirmasi terima</label>
+    <label><a class="text-muted">Shop </a> > <a href="@Url.Action("Checkout")"> Checkout </a> > Konfirmasi terima</label>
     <div class="row">
         <div class="col-2"></div>
         <div class="col"><center><label style="background-color:dodgerblue;color:white"> &nbsp;&nbsp;&nbsp;&nbsp; PILIH METODE PEMBAYARAN &nbsp;&nbsp;&nbsp;&nbsp; </label></center></div>
@@ -23,8 +23,8 @@
 
                         <label class="radio-inline"> <input type="checkbox" name="pilihan_bayar" id="radiodana" value="1" checked onclick="ubahmetode('1')"> DANA AKUN</label><br />
 
-                        <label>BIAYA  : <b style="color:black">@String.Format("{0:c}", Model.total_dp)</b></label>
-                        <label>SALDO AKUN : <b style="color:black">@String.Format("{0:c}", ViewBag.dana)</b></label>
+                        <label>BIAYA  : <b style="color:black">@String.Format("{0:c}", Model.total_dp)</b></label><br />
+                        <label>SALDO AKUN : <b style="color:black">@String.Format("{0:c}", ViewBag.dana)</b></label><br />
                         <label><div class="d-inline" id="status"></div></label>
                         <input type="hidden" id="danaku" name="danaku" value="@ViewBag.dana" />
                         <input type="hidden" id="dp" name="total_dp" value="@Model.total_dp" />

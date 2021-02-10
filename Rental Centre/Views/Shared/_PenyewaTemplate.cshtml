@@ -35,8 +35,7 @@
 
 </head>
 
-<body style="background-color:ghostwhite">
-    @ViewBag.error
+<body style="background-color:ghostwhite">    
     <!-- Start Main Top -->
     <div class="main-top">
         <div class="container-fluid">
@@ -73,27 +72,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    @*<div class="custom-select-box">
-                            <select id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
-                                <option>¥ JPY</option>
-                                <option>$ USD</option>
-                                <option>€ EUR</option>
-                            </select>
-                        </div>*@
-                    @*<div class="right-phone-box">
-                            <p>Call US :- <a href="#"> +11 900 800 100</a></p>
-                        </div>*@
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">                    
                     <div class="our-link">
                         <ul>
                             @{ string hidden = "hidden";
-                                if (ViewBag.logged_in == "hidden")
+                                if (Session["username"] == null)
                                 {
-                                    hidden = "";
+                                    hidden = "hidden";
                                 }
                                 else
                                 {
-                                    hidden = "hidden";
+                                    hidden = "";
                                 }
                             }
                             <div @hidden>
@@ -104,7 +93,7 @@
                                         </a>
 
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="#" style="color:black"><small>Lihat profile</small></a>
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("page_myAccount", "Penyewa")" style="color:black"><small>Lihat profile</small></a>
                                             <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("edit_myAccount", "Penyewa")" style="color:black"><small>Edit Profile</small></a>
                                             <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("edit_password", "Penyewa")" style="color:black"><small>Ubah Password</small></a>
                                             <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("hapus_myAccount", "Penyewa")" style="color:black"><small>Nonaktifkan akun</small></a>
@@ -127,9 +116,10 @@
 
                                 </li>
                             </div>
-                            <div @ViewBag.logged_in>
+                            @if (Session["username"] == null)
+                            {
                                 <li><a data-toggle="modal" data-target="#detail" href="#">Sign-in</a></li>
-                            </div>
+                            }
                         </ul>
                     </div>
                 </div>
@@ -172,10 +162,25 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="navbar-menu">
                     <ul class="nav navbar-nav ml-auto" data-in="fadeInDown" data-out="fadeOutUp">
-                        <li class="nav-item active"><a class="nav-link" href="@Url.Action("Index", "Penyewa")">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
-                        <li class="dropdown megamenu-fw">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Product</a>
+                        @if (Request.Url.ToString() == "http://localhost:51457/" || Request.Url.ToString() == "http://localhost:51457/Penyewa/" || Request.Url.ToString() == "http://localhost:51457/Penyewa/Index/")
+                        {
+                            <li class="nav-item active"><a class="nav-link" href="@Url.Action("Index", "Penyewa")">Home</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Penyewa")">Home</a></li>
+                        }
+                        @{string aktif = "";}
+                        @if (Request.Url.ToString().Contains("Penyewa/All") || Request.Url.ToString().Contains("Penyewa/Product"))
+                        {
+                            aktif = "active";
+                        }
+                        else
+                        {
+                            aktif = "";
+                        }
+                        <li class="dropdown @aktif megamenu-fw">
+                            <a href="#" class="nav-link  dropdown-toggle" data-toggle="dropdown">Product</a>
                             <ul class="dropdown-menu megamenu-content" role="menu">
                                 <li>
                                     <div class="row">
@@ -189,7 +194,7 @@
                                                         {
                                                             if (item.id_kelompokjenis == jb.id_kelompokjenis)
                                                             {
-                                                                <li><a href="#">@jb.nama_jenisbarang</a></li>
+                                                                <li><a href="@Url.Action("All", "Penyewa", new { filter = jb.id_jenisbarang })">@jb.nama_jenisbarang</a></li>
                                                             }
 
                                                         }
@@ -204,31 +209,67 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">SHOP</a>
+                        @if (Request.Url.ToString().Contains("Penyewa/Wishlist") || Request.Url.ToString().Contains("Penyewa/Cart") || Request.Url.ToString().Contains("Penyewa/Checkout") || Request.Url.ToString().Contains("Penyewa/Riwayat_pembayaran") || Request.Url.ToString().Contains("Penyewa/Beri_ulasan"))
+                        {
+                            aktif = "active";
+                        }
+                        else
+                        {
+                            aktif = "";
+                        }
+                        <li class="dropdown @aktif">
+                            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Shop</a>
                             <ul class="dropdown-menu">
+                                <li><a href="@Url.Action("Wishlist","Penyewa")">Wishlist</a></li>
                                 <li><a href="@Url.Action("Cart","Penyewa")">Cart</a></li>
                                 <li><a href="@Url.Action("Checkout","Penyewa")">Checkout</a></li>
-                                <li><a href="@Url.Action("Wishlist","Penyewa")">Wishlist</a></li>
                                 <li><a href="@Url.Action("Riwayat_pembayaran","Penyewa")">Riwayat pembayaran</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        @if (Request.Url.ToString().Contains("Penyewa/cek_saldo") ||
+                            Request.Url.ToString().Contains("Penyewa/transfer") ||
+                            Request.Url.ToString().Contains("Penyewa/top_up") ||
+                            Request.Url.ToString().Contains("Penyewa/Uangkan") ||
+                            Request.Url.ToString().Contains("Penyewa/lihat_mutasi")
+                            )
+                        {
+                            aktif = "active";
+                        }
+                        else
+                        {
+                            aktif = "";
+                        }
+                        <li class="dropdown @aktif">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Our Service</a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown">
                                     <a class="nav-link" href="#" data-toggle="dropdown">Dana akun</a>
                                     <ul class="dropdown-menu">
                                         <li><a href="@Url.Action("cek_saldo","Penyewa")">Cek saldo</a></li>
-                                        <li><a href="@Url.Action("top_up","Penyewa")">Top up</a></li>
                                         <li><a href="@Url.Action("transfer","Penyewa")">Transfer</a></li>
+                                        <li><a href="@Url.Action("top_up","Penyewa")">Top up</a></li>
+                                        <li><a href="@Url.Action("Uangkan","Penyewa")">Uangkan saldo</a></li>
                                         <li><a href="@Url.Action("lihat_mutasi","Penyewa")">Lihat mutasi</a></li>
                                     </ul>
                                 </li>
-
+                                <li class="dropdown">
+                                    <a class="nav-link" href="#" data-toggle="dropdown">Pesan teks</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="@Url.Action("Pesan_baru","Penyewa")">Pesan baru</a></li>
+                                        <li><a href="@Url.Action("Obrolan","Penyewa")">Obrolan</a></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        @if (Request.Url.ToString().Contains("Penyewa/kritik_saran"))
+                        {
+                            aktif = "active";
+                        }
+                        else
+                        {
+                            aktif = "";
+                        }
+                        <li class="dropdown @aktif">
                             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Contact Us</a>
                             <ul class="dropdown-menu">
                                 <li><a href="@Url.Action("kritik_saran","Penyewa")">Kritik dan saran</a></li>
@@ -243,8 +284,7 @@
                         <li class="search"><a href="#"><i class="fa fa-search"></i></a></li>
                         <li class="side-menu">
                             <a href="#">
-                                <i class="fa fa-shopping-bag"></i>
-                                
+                                <i class="fa fa-shopping-bag"></i>                                
                             </a>
                         </li>
                     </ul>
@@ -274,7 +314,7 @@
                                             </li>
                                         }
 
-                                    }
+                                                                }
 
                                 }
                             }
@@ -321,9 +361,9 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-12 col-sm-12">
                         <div class="footer-widget">
-                            <h4>About ThewayShop</h4>
+                            <h4>About Rental Centre</h4>
                             <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                Rental Centre adalah website pihak ketiga yang menghubungkan antara penyewa dengan rentaller dalam hal sewa menyewa alat multimedia, semua produk di sini terjamin keamannya karena semua proses dipantau langsung oleh pihak pengelola website.
                             </p>
                             <ul>
                                 <li><a href="#"><i class="fab fa-facebook" aria-hidden="true"></i></a></li>
@@ -341,11 +381,11 @@
                             <h4>Information</h4>
                             <ul>
                                 <li><a href="#">About Us</a></li>
-                                <li><a href="#">Customer Service</a></li>
-                                <li><a href="#">Our Sitemap</a></li>
-                                <li><a href="#">Terms &amp; Conditions</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Delivery Information</a></li>
+                                <li><a href="#"><strike>Customer Service</strike></a></li>
+                                <li><a href="#"><strike>Our Sitemap</strike></a></li>
+                                <li><a href="#"><strike>Terms &amp; Conditions</strike></a></li>
+                                <li><a href="#"><strike>Privacy Policy</strike></a></li>
+                                <li><a href="#"><strike>Delivery Information</strike></a></li>
                             </ul>
                         </div>
                     </div>
@@ -354,13 +394,13 @@
                             <h4>Contact Us</h4>
                             <ul>
                                 <li>
-                                    <p><i class="fas fa-map-marker-alt"></i>Address: Michael I. Days 3756 <br>Preston Street Wichita,<br> KS 67213 </p>
+                                    <p><i class="fas fa-map-marker-alt"></i>Alamat: DKI Jakarta, Jakarta Utara <br>Sunter Utara, 14350 </p>
                                 </li>
                                 <li>
-                                    <p><i class="fas fa-phone-square"></i>Phone: <a href="tel:+1-888705770">+1-888 705 770</a></p>
+                                    <p><i class="fas fa-phone-square"></i>Phone: <a href="#">0895 - 6064 - 25999</a></p>
                                 </li>
                                 <li>
-                                    <p><i class="fas fa-envelope"></i>Email: <a href="mailto:contactinfo@gmail.com">contactinfo@gmail.com</a></p>
+                                    <p><i class="fas fa-envelope"></i>Email: <a href="mailto:rentalcentreofficial@gmail.com">rentalcentreofficial@gmail.com</a></p>
                                 </li>
                             </ul>
                         </div>
@@ -376,19 +416,18 @@
         <div class="modal-dialog" role="document" style="width:400px;">
             <div class="modal-content" style="background-color:whitesmoke">
                 <div class="modal-header">
-
                     <h1 class="lead" style="color:black">LOGIN</h1>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/Home/Login" method="post" autocomplete="off">
+                    <form action="@Url.Action("Login","Home")" method="post" autocomplete="off">
                         <div class="row">
                             <div class="col-1"></div>
                             <div class="col">
-                                <input type="text" name="username" value="" class="form-control text-center" placeholder="Username" required />
-                                <input type="password" name="password" value="" class="form-control text-center" placeholder="Password" required />
+                                <input type="text" id="username" name="username" value="" class="form-control text-center" placeholder="Username" required />
+                                <input type="password" id="password" name="password" value="" class="form-control text-center" placeholder="Password" required />
                             </div>
                             <div class="col-1"></div>
                         </div>
@@ -396,12 +435,48 @@
                         <div class="row">
                             <div class="col-2"></div>
                             <div class="col">
-                                <input type="submit" name="btnSubmit" value="Masuk" class="btn btn-success form-control" style="border-radius:0px" />
+                                @if (Request.Url.ToString() == "http://localhost:51457/" || Request.Url.ToString() == "http://localhost:51457/Penyewa/" || Request.Url.ToString() == "http://localhost:51457/Penyewa/Index/")
+                                {
+                                    <input type="submit" name="btnSubmit" value="Masuk" class="btn btn-success form-control" style="border-radius:0px" />
+                                }
+                                else
+                                {
+                                    <a href="#" onclick="sending()" class="btn btn-success form-control" style="border-radius:0px"> Masuk </a>
+                                }
                                 <center><a href="#">Lupa password</a></center>
                             </div>
                             <div class="col-2"></div>
                         </div>
                     </form>
+                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                    <script>
+                        function sending() {                            
+                            var data = new Object();
+
+                            data.username = $('#username').val();
+                            data.password = $('#password').val();
+
+                            if (data.username != "" && data.password != "") {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "http://localhost:51457/Home/masuk",
+                                    data: JSON.stringify(data),
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (response) {
+                                        alert('Selamat datang ' + response);
+                                        location.reload();
+                                    },
+                                    failure: function (response) {
+                                        alert(response.responseText);
+                                    },
+                                    error: function (response) {
+                                        alert(response.responseText);
+                                    }
+                                });
+                            }
+                        }
+                    </script>
                     <br />
                     <div class="row">
                         <div class="col">
@@ -409,10 +484,6 @@
                             <p>Buat akun <a href="@Url.Action("add_myAccount", "Penyewa")" style="color:blue">Penyewa</a> atau <a href="@Url.Action("page_signup", "Rental")" style="color:blue">Rentaller</a> </p>
                         </div>
                     </div>
-
-
-
-
                 </div>
             </div>
         </div>

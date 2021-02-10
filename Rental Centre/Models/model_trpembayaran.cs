@@ -11,7 +11,8 @@ namespace Rental_Centre.Models
 
         public IEnumerable<trpembayaran> getAll()
         {
-            var pem = (from data in _DB.trpembayaran                       
+            var pem = (from data in _DB.trpembayaran
+                       orderby data.creadate descending
                        select data);
             return pem;
         }
@@ -21,6 +22,7 @@ namespace Rental_Centre.Models
             var pem = (from data in _DB.trpembayaran
                        join sewa in _DB.trpenyewaan
                        on data.id_penyewaan equals sewa.id_penyewaan
+                       orderby data.creadate descending
                        where sewa.id_penyewa == id_penyewa
                        select data);
             return pem;

@@ -14,6 +14,7 @@ namespace Rental_Centre.Models
         public IEnumerable<trtopup> getAll()
         {
             var trtopup = (from data in _DB.trtopup
+                           orderby data.creadate descending
                            where data.status == 1
                             select data                            
                             );

@@ -1,0 +1,104 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.trpencairan>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "pencairan";
+    Layout = "~/Views/Shared/_AdminTemplate.cshtml";
+}
+
+<div class="row">
+    <div class="col">
+        <label>Keuangan / pencarian</label>
+    </div>
+    <div class="col">
+        @*@using (Html.BeginForm("pencarian", "Admin", FormMethod.Get, new { @class = "d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search float-right" }))
+        {
+            @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Pencarian..", @id = "lala" })
+            <input type="submit" value="Cari" class="btn btn-primary" />
+        }*@
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col">
+        <table class="table table-striped">
+            <thead class="thead-dark text-center">
+                <tr>
+                    <th>No</th>
+                    <th>Terkait</th>
+                    <th>No rekening</th>
+                    <th>Jumlah</th>
+                    <th>Waktu pencairan</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>                
+            </thead>
+            <tbody class="text-center">
+                @{ int i = 1;}
+                @foreach (var item in Model)
+                {
+                    string terkait = "";                    
+                    if(item.id_rental != null)
+                    {
+                        foreach (var rental in ViewBag.msrental)
+                        {
+                            if(rental.id_rental == item.id_rental)
+                            {
+                                terkait = rental.nama_rental;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var penyewa in ViewBag.mspenyewa)
+                        {
+                            if(penyewa.id_penyewa == item.id_penyewa)
+                            {
+                                terkait = penyewa.nama_penyewa;
+                            }
+                        }
+                    }
+                <tr>
+                    <td>@i.</td>
+                    <td>@terkait</td>
+                    <td>@item.no_rek</td>
+                    <td class="text-right">@String.Format("{0:c}", item.jml_pencairan)</td>
+                    <td>@item.creadate.ToString("dd-MM-yyyy HH:mm WIB")</td>
+                    @if (item.status_pencairan == 0)
+                    {
+                        <td class="text-center" style="color:red">BELUM DIKIRIM</td>
+                        <td class="text-center">
+                            <form action="pencairan" method="post">
+                                <input type="hidden" name="id_pencairan" value="@item.id_pencairan" />
+                                <button href="#" class="btn-sm btn-primary" onclick="return confirm('Dengan menekan OK maka status dikonfirmasi!')"><span class="fa fa-check"></span> Konfirmasi Dikirim</button>
+                            </form>
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="text-center" style="color:green">SUDAH DIKIRIM</td>
+                        <td class="text-center">-</td>
+                    }
+                </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        @if (Model.PageNumber != 1)
+        {
+            <li class="page-item"><a class="page-link" href="@Url.Action("pencarian",new { page = Model.PageNumber-1})">Previous</a></li>
+        }
+
+        <li class="page-item"><a class="page-link" href="@Url.Action("pencarian",new { page = Model.PageNumber})">@Model.PageNumber/@Model.PageCount</a></li>
+        @if (Model.PageNumber != Model.PageCount && Model.PageCount != 0)
+        {
+            <li class="page-item"><a class="page-link" href="@Url.Action("pencarian",new { page = Model.PageNumber+1 })">Next</a></li>
+        }
+
+    </ul>
+</nav>
+

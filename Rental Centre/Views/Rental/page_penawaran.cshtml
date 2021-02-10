@@ -18,16 +18,19 @@
                                 Semua jenis
                                 <div id="semua"></div>
                             </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$0</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <span id="jumlah"></span>
+                            </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="fas fa-tools fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        @foreach (var data in ViewBag.msjenisbarang)
+        @{ int total = 0;}
+        @foreach (Rental_Centre.Models.msjenisbarang data in ViewBag.msjenisbarang)
         {
             <div class="col-xl-3 col-md-6 mb-4">
                 <div id="headerjenisbarang_@data.id_jenisbarang" class="card border-left-secondary shadow h-100 py-2" style="cursor:pointer" onclick="changeDataKelompok(@data.id_jenisbarang)">
@@ -37,10 +40,21 @@
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     @data.nama_jenisbarang
                                 </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">$0</div>
+                                @{ int jumlah = 0;}
+                                @foreach (var item in Model)
+                                {
+                                    if(item.id_jenisbarang == data.id_jenisbarang)
+                                    {
+                                        jumlah++;
+                                        total++;
+                                    }
+                                }
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @jumlah
+                                </div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                <i class="fas fa-tools fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
@@ -48,6 +62,9 @@
             </div>
         }
     </div>
+    <script>
+        document.getElementById("jumlah").innerHTML = @total
+    </script>
     <div class="row">
         <div class="col">
             <form action="ajukan_penawaran">
@@ -65,68 +82,7 @@
         </div>
     </div>
     <br />
-    <!-- CARD PENAWARAN-->
-    <div class="row" hidden>
-        <!-- Dropdown Card Example -->
-        <div class="col">
-            <div class="card shadow mb-4">
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="dropdown no-arrow float-right">
-                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                             aria-labelledby="dropdownMenuLink">
-                            <div class="dropdown-header">Kelola penawaran</div>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Perbarui</a>
-                            <a class="dropdown-item" href="#">Hapus</a>
-
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-2">
-                            <img src="~/Content/RoleAdmin/img/Canon_1.jpg" class="card-img-top" alt="...">
-                        </div>
-                        <div class="col">
-
-                            <h5 style="color:black"><b>Kamera Canon</b></h5>
-                            <p style=" color:black;line-height:1px">
-                                <small>
-                                    Rp 75.000/hari
-                                </small>
-                            </p>
-                            <p style="line-height:1px">
-                                <small>
-                                    Stok Tersedia · Diperbarui @DateTime.Now.ToString("dd/MM/yyyy")
-                                </small>
-                            </p>
-                            <p style="line-height:1px">
-                                <small>
-                                    10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
-                                    ·
-                                    3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
-                                </small>
-                            </p>
-
-                            <p>
-                                <small>
-                                    Dropdown menus can be placed in the card header in order to extend the functionality
-                                    of a basic card. In this dropdown card example, the Font Awesome vertical ellipsis
-                                    icon in the card header can be clicked on in order to toggle a dropdown menu.
-                                </small>
-                            </p>
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
+    <!-- CARD PENAWARAN-->    
 
     @foreach (var data in Model)
     {
@@ -147,7 +103,7 @@
                                      aria-labelledby="dropdownMenuLink">
                                     <div class="dropdown-header">Kelola penawaran</div>
                                     <div class="dropdown-divider"></div>
-
+                                    <a class="dropdown-item" href="@Url.Action("Product", "Rental",new { id= @data.id_barang} )">Lihat detail</a>
                                     <a class="dropdown-item" href="@Url.Action("edit_penawaran", "Rental",new { id= @data.id_barang} )">Perbarui</a>
                                     <a class="dropdown-item" href="@Url.Action("hapus_penawaran", "Rental",new { id= @data.id_barang} )" onclick="return confirm('Yakin akan menghapus produk?')">Hapus</a>
                                 </div>
@@ -167,16 +123,27 @@
                                             Rp @harga.Replace("Rp", "")/hari
                                         </small>
                                     </p>
-                                    <p style="line-height:1px">
+                                    @if (data.stok_barang > 0)
+                                    {
+                                    <p>
                                         <small>
-                                            Stok Tersedia · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
+                                            <b>Stok Tersedia</b> · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
                                         </small>
                                     </p>
+                                    }
+                                    else
+                                    {
+                                    <p>
+                                        <small>
+                                            <b>Stok Sedang kosong</b> · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </p>
+                                    }                                    
                                     <p style="line-height:1px">
                                         <small>
-                                            10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
+                                            N Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
                                             ·
-                                            3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
+                                            N Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
                                         </small>
                                     </p>
 

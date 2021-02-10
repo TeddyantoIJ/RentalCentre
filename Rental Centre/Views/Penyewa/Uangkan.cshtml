@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.Title = "Uangkan";
+    Layout = "~/Views/Shared/_PenyewaTemplate.cshtml";
+}
+<style>
+    input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 3px solid blue;
+        width: inherit;
+    }
+</style>
+<br />
+<div class="container">    
+    <div class="card shadow">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="cek_saldo">Cek saldo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="transfer">Transfer</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="top_up">Top up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="Uangkan">Uangkan saldo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="lihat_mutasi">Lihat mutasi</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-center">SALDO PADA AKUN ANDA</p>
+                    @{
+                        string saldo = String.Format("{0:c}", ViewBag.penyewa.saldo);
+                    }
+                    <p class="text-center" style="font-size:50px">@saldo</p>
+                    <p class="text-center">*Proses pencairan setidaknya membutuhkan waktu 1x24 Jam</p>
+                </div>
+                <div class="col-md-6" style="border-left:1px solid">
+                    <form action="Uangkan" method="post" autocomplete="off">
+                        <p class="text-center">UANGKAN SALDO SAYA</p>
+                        <div class="form-group">
+                            <label>Jumlah uang</label>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <input type="text" id="uang" name="uang" value="" class="form-control" placeholder="Rp 1.000.000" oninput="ubah()" onkeyup="this.value = formatCurrency(this.value,'')" required />
+                                </div>
+                                <div class="col">
+                                    <span class="btn btn-primary form-control" onclick="semua()">Semua</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="uangkan" name="uangkan" value="" />
+                        </div>
+                        <div class="form-group">
+                            <label>Rekening tujuan</label>
+                            <input type="text" name="no_rek" value="" class="form-control" placeholder="Tulis di sini..." required />
+                        </div>
+                        <br />
+                        <input type="submit" id="tombol" name="submit" value="PROSES SEKARANG" class="btn btn-success form-control" onclick="ubah()" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<script>
+    function formatCurrency(value, prefix) {
+
+        var number_string = value.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    }
+    function semua() {
+        document.getElementById("uang").value = @ViewBag.penyewa.saldo;
+        document.getElementById("uang").value = formatCurrency(document.getElementById("uang").value, '');
+    }
+    function ubah() {
+        var harga = document.getElementById("uang").value;
+
+        document.getElementById("uangkan").value = harga.replace(/[^,\d]/g, '').toString(),
+            split = harga.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        cekkebenaran();
+    }
+    function cekkebenaran() {
+        var uang = document.getElementById("uangkan").value;
+        if (uang > @ViewBag.penyewa.saldo) {
+            document.getElementById("tombol").disabled = true;
+        } else {
+            document.getElementById("tombol").disabled = false;
+        }
+    }
+</script>
+

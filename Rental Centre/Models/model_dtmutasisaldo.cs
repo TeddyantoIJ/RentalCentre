@@ -11,7 +11,7 @@ namespace Rental_Centre.Models
 
         public IEnumerable<dtmutasisaldo> getAll()
         {
-            var dtmutasisaldo = (from data in _DB.dtmutasisaldo                                 
+            var dtmutasisaldo = (from data in _DB.dtmutasisaldo
                                  select data);
             return dtmutasisaldo;
         }
@@ -29,9 +29,7 @@ namespace Rental_Centre.Models
                                  where data.id_rental == id_rental
                                  select data);
             return dtmutasisaldo;
-        }
-
-
+        }        
         public void penyewa_mutasi(int? id_penyewa, int uang, string jenis, int total)
         {
             dtmutasisaldo mutasi = new dtmutasisaldo();

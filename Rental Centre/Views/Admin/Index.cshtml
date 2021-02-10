@@ -1,12 +1,838 @@
 ﻿
 @{
-    ViewBag.Title = "Page 1";
-    ViewBag.Profile = "undraw_profile_2.svg";
-    ViewBag.Nama_user = "Admin 1";
-    ViewBag.mskelompokjenis = ViewBag.mskelompokjenis;
     Layout = "~/Views/Shared/_AdminTemplate.cshtml";
 }
-<div class="container">
-    <h1>Index</h1>
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Dashboard</h1>
+    <br />
+    <!-- PILIHAN REPORT -->
+    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+        pilih tampilan :
+        <span><input type="checkbox" name="master" value="" checked onchange="master(this)" /></span>  MASTER
+        <span><input type="checkbox" name="master" value="" checked onchange="pengguna(this)" /></span>  PENGGUNA aktif
+        <span><input type="checkbox" name="master" value="" checked onchange="transaksi(this)" /></span>  TRANSAKSI
+        <span><input type="checkbox" name="master" value="" checked onchange="statistik(this)" /></span>  STATISTIK
+    </div>
+    <hr />
+    <!-- MASTER DATA -->
+    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+
+        <script>
+            function master(a) {
+                if (a.checked == true) {
+                    document.getElementById("DATA_MASTER").hidden = false;
+                } else {
+                    document.getElementById("DATA_MASTER").hidden = true;
+                }
+            }
+        </script>
+    </div>
+    <div id="DATA_MASTER">
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Kelompok jenis barang
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_kelompokjenisbarang
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-cubes fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Jenis barang
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_jenisbarang
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-cubes fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Barang sewa
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_barang
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-cubes fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    provinsi
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_provinsi
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-map-marked fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Kode pos
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_kodepos
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-code-branch fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <hr />
+    </div>
+    <!-- DATA PENGGUNA -->
+    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+
+        <script>
+            function pengguna(a) {
+                if (a.checked == true) {
+                    document.getElementById("DATA_PENGGUNA").hidden = false;
+                } else {
+                    document.getElementById("DATA_PENGGUNA").hidden = true;
+                }
+            }
+        </script>
+    </div>
+    <div id="DATA_PENGGUNA">
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    admin
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_admin
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user-secret fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Penyewa
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_penyewa
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Rentaller
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.jum_rental
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+    </div>
+    <!-- TRANSAKSI SAAT INI-->
+    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+
+        <script>
+            function transaksi(a) {
+                if (a.checked == true) {
+                    document.getElementById("DATA_TRANSAKSI").hidden = false;
+                } else {
+                    document.getElementById("DATA_TRANSAKSI").hidden = true;
+                }
+            }
+        </script>
+    </div>
+    <div id="DATA_TRANSAKSI">
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-secondary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total transaksi
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @Session["total_penyewaan"]
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Perlu validasi
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @Session["total_konfirmasi"]
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-check fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Diproses
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @Session["total_diproses"]
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-recycle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Disiapkan
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @Session["total_siap"]
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-truck-pickup fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Berjalan
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @Session["total_berjalan"]
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-play fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Selesai
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @Session["total_selesai"]
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-list-alt fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Dibatalkan
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @Session["total_gagal"]
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-certificate fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <hr />
+    </div>
+    <!-- danlainlain-->
+    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+
+        <script>
+            function statistik(a) {
+                if (a.checked == true) {
+                    document.getElementById("DATA_STATISTIK").hidden = false;
+                } else {
+                    document.getElementById("DATA_STATISTIK").hidden = true;
+                }
+            }
+        </script>
+    </div>
+    <div id="DATA_STATISTIK">
+        <div class="row">
+            <div class="col">
+                <form action="@Url.Action("Index","Admin")" method="get" id="submitform">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <input type="date" id="date1" name="date1" onblur="submit()" value="@ViewBag.date1.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" onkeypress="return false" />
+                            <input type="hidden" id="dulu" value="@DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <input type="date" id="date2" name="date2" onblur="submit()" value="@ViewBag.date2.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" onkeypress="return false" />
+                            <input type="hidden" id="sekarang" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col">
+                            <p class="text-primary">Ubah tanggal lalu tekan di mana saja agar dashboard diperbarui atau tekan <span class="text-danger" style="cursor:pointer" onclick="submit1tahun()">di sini</span> untuk melihat laporan 1 tahun ke belakang</p>
+                        </div>
+                        <script>
+                            function submit1tahun() {
+                                document.getElementById("date1").value = document.getElementById("dulu").value;
+                                document.getElementById("date2").value = document.getElementById("sekarang").value;
+                                document.getElementById("submitform").submit();
+                            }
+                            function submit() {
+                                document.getElementById("submitform").submit();
+                            }
+                        </script>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Pendapatan
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @String.Format("{0:c}", ViewBag.total_uang_masuk)
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-money-bill fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Transaksi
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.total_transaksi
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Product disewa
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    @ViewBag.total_product_sewa
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-tools fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <!-- Content Row -->
+        <div class="row">
+            <div class="col-xl-8 col-lg-7">
+                <!-- Area Chart -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Pemetaan Pendapatan <span class="float-right"> </span></h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="myArea"></canvas>
+                        </div>
+                        <hr>
+                        Data didapatkan berdasarkan <code>Range</code> tanggal yang ditentukan di atas
+                    </div>
+                </div>
+                <!-- Bar Chart -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Pemetaan transaksi <span class="float-right"> @ViewBag.total_transaksi</span></h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="myBar"></canvas>
+                        </div>
+                        <hr>
+                        Data didapatkan berdasarkan <code>Range</code> tanggal yang ditentukan di atas
+                    </div>
+                </div>
+            </div>
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Pemetaan produk sewa <span class="float-right"> @ViewBag.total_product_sewa</span></h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="myPie"></canvas>
+                        </div>
+                        <hr>
+                        Arahkan <code>cursor</code> anda ke potongan donat untuk mengetahui product yang tersewa
+                    </div>
+                </div>
+                <br />
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Rincian produk sewa</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <small>
+                            <table class="table">
+                                <thead class="thead thead-dark">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama</th>
+                                        <th>Jml</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ int i = 1;}
+                                    @foreach (var item in ViewBag.produks)
+                                    {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@item.nama</td>
+                                            <td>@item.jumlah</td>
+                                        </tr>
+                                        i++;
+                                    }
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>@ViewBag.total_product_sewa</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script src="~/Content/RoleAdmin/vendor/chart.js/Chart.min.js"></script>
+<script type="text/javascript">
+
+    var dynamicColors = function () {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgb(" + r + "," + g + "," + b + ")";
+    };
+
+    // Set new default font family and font color to mimic Bootstrap's default styling
+    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#858796';
+
+    // Pie Chart Example
+
+    var array = @Html.Raw(Json.Encode(@ViewBag.produk));
+    var label = [];
+    var data = [];
+    var backgroundColor = [];
+    var hoverBackgroundColor = [];
+    var hoverBorderColor = [];
+    for (var i = 0; i < array.length; i++) {
+        //push ke array
+        label.push(array[i].label);
+        data.push(array[i].data);
+        backgroundColor.push(dynamicColors());
+        hoverBackgroundColor.push(dynamicColors());
+        hoverBorderColor.push(dynamicColors());
+    }
+    // PIE CHART
+    {
+        var ctx = document.getElementById("myPie");
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: label,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    hoverBackgroundColor: hoverBackgroundColor,
+                    hoverBorderColor: hoverBorderColor,
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 80,
+            },
+        });
+    }
+
+
+    function number_format(number, decimals, dec_point, thousands_sep) {
+        // *     example: number_format(1234.56, 2, ',', ' ');
+        // *     return: '1 234,56'
+        number = (number + '').replace(',', '').replace(' ', '');
+        var n = !isFinite(+number) ? 0 : +number,
+            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+            s = '',
+            toFixedFix = function (n, prec) {
+                var k = Math.pow(10, prec);
+                return '' + Math.round(n * k) / k;
+            };
+        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+        if (s[0].length > 3) {
+            s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+        }
+        if ((s[1] || '').length < prec) {
+            s[1] = s[1] || '';
+            s[1] += new Array(prec - s[1].length + 1).join('0');
+        }
+        return s.join(dec);
+    }
+
+    // Area Chart Example
+    array = @Html.Raw(Json.Encode(@ViewBag.pemasukkan));
+    label = [];
+    data = [];
+    backgroundColor = [];
+    hoverBackgroundColor = [];
+    hoverBorderColor = [];
+    for (var i = 0; i < array.length; i++) {
+        //push ke array
+        label.push(array[i].label);
+        data.push(array[i].data);
+    }
+    // AREA LINE CHART
+    ctx = document.getElementById("myArea");
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: label,
+            datasets: [{
+                label: "Pendapatan",
+                lineTension: 0.3,
+                backgroundColor: "rgba(78, 115, 223, 0.05)",
+                borderColor: "rgba(78, 115, 223, 1)",
+                pointRadius: 3,
+                pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointBorderColor: "rgba(78, 115, 223, 1)",
+                pointHoverRadius: 3,
+                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                pointHitRadius: 10,
+                pointBorderWidth: 2,
+                data: data,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'date'
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 7
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        maxTicksLimit: 5,
+                        padding: 10,
+                        // Include a dollar sign in the ticks
+                        callback: function (value, index, values) {
+                            return 'Rp' + number_format(value);
+                        }
+                    },
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                intersect: false,
+                mode: 'index',
+                caretPadding: 10,
+                callbacks: {
+                    label: function (tooltipItem, chart) {
+                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                        return datasetLabel + ': Rp' + number_format(tooltipItem.yLabel);
+                    }
+                }
+            }
+        }
+    });
+
+
+    // Area Chart Example
+    array = @Html.Raw(Json.Encode(@ViewBag.transaksi));
+    label = [];
+    data = [];
+    backgroundColor = [];
+    hoverBackgroundColor = [];
+    hoverBorderColor = [];
+    for (var i = 0; i < array.length; i++) {
+        //push ke array
+        label.push(array[i].label);
+        data.push(array[i].data);
+        backgroundColor.push(dynamicColors());
+        hoverBackgroundColor.push(dynamicColors());
+        hoverBorderColor.push(dynamicColors());
+    }
+
+    // AREA BAR CHART
+    ctx = document.getElementById("myBar");
+    var myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: label,
+            datasets: [{
+                label: "Jumlah transaksi",
+                backgroundColor: backgroundColor,
+                hoverBackgroundColor: hoverBackgroundColor,
+                borderColor: hoverBorderColor,
+                data: data,
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    left: 10,
+                    right: 25,
+                    top: 25,
+                    bottom: 0
+                }
+            },
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'month'
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 6
+                    },
+                    maxBarThickness: 25,
+                }],
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: 10,
+                        maxTicksLimit: 5,
+                        padding: 10
+                    },
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function (tooltipItem, chart) {
+                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                        return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
+                    }
+                }
+            },
+        }
+    });
+
+</script>

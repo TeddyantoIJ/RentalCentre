@@ -12,9 +12,8 @@ namespace Rental_Centre.Models
     {  
         [Key]
         public int id_chat { get; set; }
-        public Nullable<int> id_penyewa { get; set; }
-        public Nullable<int> id_rental { get; set; }
-        public Nullable<int> id_admin { get; set; }
+        public string username_pengirim { get; set; }
+        public string username_penerima { get; set; }        
         public string isi_pesan { get; set; }
         public int dibaca { get; set; }
         public DateTime creadate { get; set; }

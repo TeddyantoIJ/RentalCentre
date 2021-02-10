@@ -18,8 +18,7 @@ namespace Rental_Centre.Models
         public void editData(msadmin msadmin)
         {
             msadmin oldData = _DB.msadmin.Single<msadmin>(data => data.id_admin == msadmin.id_admin);
-            oldData.nama_admin = msadmin.nama_admin;
-            oldData.password = msadmin.password;
+            oldData.nama_admin = msadmin.nama_admin;            
             oldData.profil = msadmin.profil;
             oldData.tempat_lahir = msadmin.tempat_lahir;
             oldData.tgl_lahir = msadmin.tgl_lahir;
@@ -49,6 +48,12 @@ namespace Rental_Centre.Models
         public IEnumerable<msadmin> getAllData()
         {
             var msadmin = (from data in _DB.msadmin select data);
+
+            return msadmin;
+        }
+        public IEnumerable<msadmin> getAllDataAktif()
+        {
+            var msadmin = (from data in _DB.msadmin where data.status == 1 select data);
 
             return msadmin;
         }

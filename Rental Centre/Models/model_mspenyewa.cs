@@ -34,6 +34,7 @@ namespace Rental_Centre.Models
             oldData.berkas2 = mspenyewa.berkas2;
             oldData.modiby = mspenyewa.modiby;
             oldData.modidate = mspenyewa.modidate;
+            oldData.alamat = mspenyewa.alamat;
 
             oldData.modiadminby = mspenyewa.modiadminby;
             oldData.modiadmindate = mspenyewa.modiadmindate;
@@ -71,7 +72,13 @@ namespace Rental_Centre.Models
         {
             var mspenyewa = (from data in _DB.mspenyewa
                              select data);
-
+            return mspenyewa;
+        }
+        public IEnumerable<mspenyewa> getAllDataAktif()
+        {
+            var mspenyewa = (from data in _DB.mspenyewa
+                             where data.status == 1
+                             select data);
             return mspenyewa;
         }
         public bool adaUsername(string username)

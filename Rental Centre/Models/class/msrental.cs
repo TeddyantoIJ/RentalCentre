@@ -31,7 +31,7 @@ namespace Rental_Centre.Models
         public int jml_barang { get; set; }
         public int status { get; set; }
         public int saldo { get; set; }
-        public decimal rating { get; set; }
+        public double rating { get; set; }
         public DateTime creadate { get; set; }
         public Nullable<DateTime> modidate { get; set; }
         public string berkas1 { get; set; }

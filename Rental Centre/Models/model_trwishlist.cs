@@ -26,13 +26,27 @@ namespace Rental_Centre.Models
         public void add(trwishlist trwishlist)
         {
             _DB.trwishlist.Add(trwishlist);
-            _DB.SaveChanges();
+            try
+            {
+                _DB.SaveChanges();
+            }catch(Exception ex)
+            {
+            }
+            
         }
         public void remove(int id_penyewa, int id_barang)
         {
             trwishlist trwishlist = _DB.trwishlist.SingleOrDefault<trwishlist>(t => t.id_penyewa == id_penyewa && t.id_barang == id_barang);
-            _DB.trwishlist.Remove(trwishlist);
-            _DB.SaveChanges();
+            try
+            {
+                _DB.trwishlist.Remove(trwishlist);
+                _DB.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
         }
     }
 }

@@ -1,0 +1,221 @@
+﻿@model Rental_Centre.Models.mspenyewa
+@{
+    ViewBag.Title = "page_myAccount";
+    Layout = "~/Views/Shared/_PenyewaAddTemplate.cshtml";
+}
+
+<style>
+    input {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-bottom: 3px solid blue;
+        width: inherit;
+    }
+</style>
+<style>
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
+
+    /* Modal Content (Image) */
+    .modal-content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    /* Caption of Modal Image (Image Text) - Same Width as the Image */
+    #caption {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        text-align: center;
+        color: #ccc;
+        padding: 10px 0;
+        height: 150px;
+    }
+
+    /* Add Animation - Zoom in the Modal */
+    .modal-content, #caption {
+        animation-name: zoom;
+        animation-duration: 0.6s;
+    }
+
+    /* The Close Button */
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+<form action="edit_myAccount" method="post">
+    <div class="container">
+        <div class="footer-widget">
+            <h4 style="color:black">My Profile</h4>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-4">
+                <img id="gambar" style="cursor:pointer" src="~/Content/RoleUser/images/profil_user/@Model.profil" alt="" class="card-img" onclick="modal(this.src,'Profil')"/>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col-md-4">
+                        Nama pengguna
+                    </div>
+                    <div class="col">
+                        <label>: @Model.nama_penyewa</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Jenis kelamin
+                    </div>
+                    <div class="col">
+                        @if (Model.jenis_kelamin == 0)
+                        {
+                            <label>: Laki-laki</label>
+                        }
+                        else
+                        {
+                            <label>: Perempuan</label>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Email
+                    </div>
+                    <div class="col">
+                        <label>: <a href="mailto:@Model.email"> @Model.email</a></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        No Telepon
+                    </div>
+                    <div class="col">
+                        <label>: @Model.no_telepon</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Tempat lahir
+                    </div>
+                    <div class="col">
+                        <label>: @Model.tempat_lahir</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Tanggal lahir
+                    </div>
+                    <div class="col">
+                        <label>: @Model.tgl_lahir.ToString("dd-MM-yyyy")</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Alamat
+                    </div>
+                    <div class="col">
+                        <label>: @Model.alamat</label> <br />
+                        <label>  @Model.kodepos</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-widget">
+            <h4></h4>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col-md-4">
+                        NIK
+                    </div>
+                    <div class="col">
+                        <label>: @Model.NIK</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        Username
+                    </div>
+                    <div class="col">
+                        <label>: @Model.username</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="border-left:1px solid orange">
+                <div class="row">
+                    <div class="col text-center">
+                        BERKAS
+                    </div>
+                </div>
+                <div class="row  text-center">
+                    <div class="col">
+                        <img src="~/Content/RoleUser/images/berkas_1/@Model.berkas1" alt="Alternate Text" class="card-img" style="height:auto;width:150px;cursor:pointer" onclick="modal(this.src,'BERKAS')"/>
+                    </div>
+                    <div class="col">
+                        <img src="~/Content/RoleUser/images/berkas_2/@Model.berkas2" alt="Alternate Text" class="card-img" style="height:auto;width:150px;cursor:pointer" onclick="modal(this.src,'BERKAS')"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="footer-widget">
+            <h4></h4>
+        </div>
+
+        <script>
+            document.write('<a href="' + document.referrer + '" class="btn btn-secondary" style="border-radius:0"">Home</a>');
+        </script>
+        <a type="submit" class="btn btn-primary" style="border-radius:0;" href="@Url.Action("edit_myAccount", "Penyewa")">Edit profile</a>
+    </div>
+
+</form>
+
+<div id="myModal" class="modal" onclick="tutup()">
+    <span class="close" onclick="tutup()">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+</div>
+<script>
+    function batal() {
+        document.getElementById("div_konfirmasi").hidden = true;
+        document.getElementById("div_view").hidden = false;
+    }
+    function modal(img, caption) {
+        document.getElementById("myModal").style.display = "block";
+        document.getElementById("img01").src = img;
+        document.getElementById("caption").innerHTML = caption;
+    }
+    function tutup() {
+        document.getElementById("myModal").style.display = "none";
+    }
+</script>

@@ -52,10 +52,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card-img">
-                        <img id="gambar" src="~/Content/RoleUser/images/profil_user/@Model.profil" alt="" class="card-img" />
-                    </div>
+                <div class="col text-center">
+                    <img id="gambar" src="~/Content/RoleUser/images/profil_user/@Model.profil" alt="" class="card-img" style="height:auto;width:200px"/>                    
                 </div>
             </div>
             <hr />
@@ -75,8 +73,7 @@
                     <div class="row">
                         <div class="col">
                             Alamat
-                            <textarea rows="3" id="isi_alamat" class="form-control" required>@Model.alamat</textarea>
-                            <input type="hidden" name="alamat" id="alamat" value="@Model.alamat" />
+                            <textarea rows="3" id="isi_alamat" name="alamat" class="form-control" required>@Model.alamat</textarea>                            
                         </div>
                         <div class="col-4">
                             Kodepos
@@ -123,23 +120,14 @@
                 <h4 style="color:black">Akun</h4>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col-md-4">
                     Username Akun
                     <input type="text" name="username" id="username" class="form-control" required value="@Model.username" readonly />
-
-                </div>
-                <div class="col">
-                    Password
-                    <input type="password" name="password" id="passsword" required value="@Model.password" readonly/>
-                </div>
-                <div class="col">
-                    Verifikasi Password
-                    <input type="password" name="ver_password" id="ver_passsword" required value="@Model.password" readonly/>
-                </div>
+                </div>                
             </div>
             <hr />
             <script>
-                document.write('<a href="' + document.referrer + '" class="btn btn-secondary" style="border-radius:0"">Home</a>');
+                document.write('<a href="' + document.referrer + '" class="btn btn-secondary" style="border-radius:0"">Kembali</a>');
             </script>
             <input type="submit" name="btnInsert" id="btnInsert" class="btn btn-primary" style="border-radius:0;" value="Perbarui data" />
         </div>
@@ -189,9 +177,7 @@
                 $("#berkas2").val(a.files[0].name);
             }
         });
-        $("#btnInsert").click(function () {
-            alert('jalan');
-            document.getElementById("alamat").value = document.getElementById("isi_alamat").value;
+        $("#btnInsert").click(function () {                        
 
             var gambar = document.getElementById("iprofil");
             var berkas_1 = document.getElementById("iberkas1");

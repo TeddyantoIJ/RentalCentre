@@ -28,7 +28,7 @@ namespace Rental_Centre.Controllers
             msrental msrental = this.msrental.getAllData().SingleOrDefault<msrental>(s => s.username == username && s.password == password);
             if (msadmin != null && msadmin.status == 1)
             {
-                Session["id"] = msadmin.id_admin;
+                Session["admin"] = msadmin.id_admin;
                 return RedirectToAction("Index", "Admin");
             }                        
             if (mspenyewa != null && mspenyewa.status == 1)
@@ -44,6 +44,28 @@ namespace Rental_Centre.Controllers
             }
             Session["error"] = "Gagal untuk login, username atau password tidak tepat!";
             return RedirectToAction("Index", "Penyewa");
-        }        
+        }     
+        [HttpPost]
+        public JsonResult masuk(string username, string password)
+        {
+            msadmin msadmin = this.msadmin.getAllData().SingleOrDefault<msadmin>(s => s.username == username && s.password == password);
+            mspenyewa mspenyewa = this.mspenyewa.getAllData().SingleOrDefault<mspenyewa>(s => s.username == username && s.password == password);
+            msrental msrental = this.msrental.getAllData().SingleOrDefault<msrental>(s => s.username == username && s.password == password);
+            if (msadmin != null && msadmin.status == 1)
+            {
+                
+                Login(username,password);
+            }
+            if (mspenyewa != null && mspenyewa.status == 1)
+            {
+                Session["penyewa"] = mspenyewa.id_penyewa;
+                Session["username"] = username;                
+            }
+            if (msrental != null && msrental.status == 1)
+            {                
+                Login(username, password);
+            }
+            return Json(mspenyewa.nama_penyewa, JsonRequestBehavior.AllowGet);
+        }
     }
 }

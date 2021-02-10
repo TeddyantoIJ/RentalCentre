@@ -1,0 +1,416 @@
+﻿
+@{
+    ViewBag.Title = "Obrolan";
+    Layout = "~/Views/Shared/_PenyewaAddTemplate.cshtml";
+}
+
+
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    .text1 {
+        display: inline-block;
+        width: 180px;
+        white-space: nowrap;
+        overflow: hidden !important;
+        text-overflow: ellipsis;
+    }
+
+    .chat_people {
+        background-color: white;
+        border-radius: 4px;
+        max-width: 75%;
+        padding-left: 1em;
+        padding-right: 2em;
+        float: left;
+        word-break: break-all;
+        color: black;
+        height: 75%;
+    }
+
+    .chat_me {
+        background-color: lightgreen;
+        border-radius: 4px;
+        max-width: 75%;
+        height:75%;
+        padding-left: 1em;
+        padding-right: 2em;
+        margin-right: 5px;
+        float: right;
+        word-break: break-all;
+        color: black;
+    }
+
+    .myButton:hover {
+        color: blue;
+    }
+
+    .myButton {
+        border: 0px;
+        background-color: transparent;
+        cursor: pointer;
+    }
+</style>
+<div class="container">
+    <label>Pesan teks / Obrolan</label><br />
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="Pesan_baru">Pesan baru</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="Obrolan">Obrolan</a>
+                </li>
+                <li class="nav-item float-right">
+                    <a href="Index" class="nav-link" style="border-radius:0">Home</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="row shadow">
+                <div class="col-md-4">
+                    @*<div class="row align-items-center">
+                            <div class="col">
+                                <input type="text" onchange="cariobrolan(this.value)" list="suggestions" name="cari" value="" style="border-radius:15px;" placeholder="Cari pengguna obrolan.." class="form-control" />
+                                <datalist id="suggestions">
+                                    @foreach (var item in ViewBag.listobrolan)
+                                    {
+                                        <option value="@item"></option>
+                                    }
+                                </datalist>
+                            </div>
+                        </div>*@
+                    <div class="row align-items-center" style="height:50px;background-color:white">
+                        <div class="col">
+                            <a href="@Url.Action("Pesan_baru","Penyewa")" class="btn btn-primary form-control"><span class="fa fa-comment"></span> Pesan baru</a>
+                        </div>
+                    </div>
+                    <div class="row" style="height:450px; overflow:scroll; overflow-x:hidden;background-color:white;">
+                        <table class="table table-hover">
+                            <tbody style="color:black">
+                                <!-- INI BUAT NAMA NAMA OBROLAN NYA -->
+                                @foreach (var item in ViewBag.listobrolan)
+                                {
+                                    if (Session["username"].ToString() == item)
+                                    {
+                                        continue;
+                                    }
+                                    bool ada = false;
+                                    foreach (var penyewa in ViewBag.mspenyewa)
+                                    {
+                                        if (item == penyewa.username)
+                                        {
+                                            ada = true;
+                                            <tr style="cursor:pointer" onclick="roomchat('@item')" id="obrolan_@item">
+                                                <td style="width:50px">
+                                                    <img src="~/Content/RoleUser/images/profil_user/@penyewa.profil" alt="Alternate Text" class="img-profile rounded-circle card-img" style="height:60px;width:60px" />
+                                                </td>
+                                                <td>
+                                                    <div class="col">
+                                                        <div class="row" style="height:15px">
+                                                            <div class="col">
+                                                                <label>
+                                                                    <b>@penyewa.nama_penyewa</b>
+                                                                </label>
+                                                                <form action="Pesan_hapus" method="delete" class="d-inline float-right">
+                                                                    <input type="hidden" name="username" value="@item" />
+                                                                    <button onclick="return confirm('Dengan menekan OK maka riwayat pesan akan dihapus')" type="submit" class="myButton" title="Hapus pesan"><span class="fa fa-trash"></span></button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" style="height:20px">
+                                                            <div class="col text1" id="lastchat_@item">
+                                                                @foreach (var lastchat in ViewBag.dtchatdescen)
+                                                                {
+                                                                    if (lastchat.username_penerima == penyewa.username || lastchat.username_pengirim == penyewa.username)
+                                                                    {
+                                                                        <p>@lastchat.isi_pesan</p>
+                                                                        <small>
+                                                                            <label class="float-right text-muted">
+                                                                                @lastchat.creadate.ToString("HH:mm") WIB | @lastchat.creadate.ToString("dd MMM")
+                                                                                @if (lastchat.dibaca == 0 && lastchat.username_penerima == Session["username"].ToString())
+                                                                                {
+                                                                                    <span id="new_@item" class="badge  badge-danger">new</span>
+                                                                                }
+                                                                            </label>
+                                                                        </small>
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+                                            break;
+                                        }
+                                    }
+                                    if (!ada)
+                                    {
+                                        foreach (var rental in ViewBag.msrental)
+                                        {
+                                            if (item == rental.username)
+                                            {
+                                                <tr style="cursor:pointer;" onclick="roomchat('@item')">
+                                                    <td style="width:50px">
+                                                        <img src="~/Content/RoleRental/Image/Profil/@rental.profil" alt="Alternate Text" class="img-profile rounded-circle card-img" style="height:60px;width:60px" />
+                                                    </td>
+                                                    <td>
+                                                        <div class="col">
+                                                            <div class="row" style="height:15px">
+                                                                <div class="col">
+                                                                    <label><b>@rental.nama_rental (@rental.nama_toko)</b></label>
+                                                                    <form action="Pesan_hapus" method="delete" class="d-inline float-right">
+                                                                        <input type="hidden" name="username" value="@item" />
+                                                                        <button onclick="return confirm('Dengan menekan OK maka riwayat pesan akan dihapus')" type="submit" class="myButton" title="Hapus pesan"><span class="fa fa-trash"></span></button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row" style="height:20px">
+                                                                <div class="col text1" id="lastchat_@item">
+                                                                    @foreach (var lastchat in ViewBag.dtchatdescen)
+                                                                    {
+                                                                        if (lastchat.username_penerima == rental.username || lastchat.username_pengirim == rental.username)
+                                                                        {
+                                                                            <p>@lastchat.isi_pesan</p>
+                                                                            <small>
+                                                                                <label class="float-right text-muted">
+                                                                                    @lastchat.creadate.ToString("HH:mm") WIB | @lastchat.creadate.ToString("dd MMM")
+                                                                                    @if (lastchat.dibaca == 0 && lastchat.username_penerima == Session["username"].ToString())
+                                                                                    {
+                                                                                        <span id="new_@item" class="badge  badge-danger">new</span>
+                                                                                    }
+                                                                                </label>
+                                                                            </small>
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- TEMPAT CHAT NYA -->                
+                @foreach (var item in ViewBag.listobrolan)
+                {
+                    string nama = "";
+                    string profil = "";
+                    bool ada = false;
+                    if (Session["username"].ToString() == item)
+                    {
+                        continue;
+                    }
+                    foreach (var penyewa in ViewBag.mspenyewa)
+                    {
+                        if (penyewa.username == item)
+                        {
+                            nama = penyewa.nama_penyewa;
+                            profil = "RoleUser/images/profil_user/" + penyewa.profil;
+                            ada = true;
+                            break;
+                        }
+                    }
+                    if (!ada)
+                    {
+                        foreach (var rental in ViewBag.msrental)
+                        {
+                            if (rental.username == item)
+                            {
+                                nama = rental.nama_rental;
+                                profil = "RoleRental/Image/Profil/" + rental.profil;
+                                break;
+                            }
+                        }
+                    }
+
+                    
+                <div class="col" style="border-left:1px solid;background-image:url(../../Content/Background/background_chat.png); height:500px" id="@item" hidden>
+                    <!-- INI HEADER NYA -->
+                    <div class="row">
+                        <div class="col">
+                            <div class="row align-items-center" style="background-color:white;height:40px">
+                                <div class="col" style="font-family:'Arial';color:black">
+                                    <img src="~/Content/@profil" alt="Alternate Text" class="img-profile rounded-circle card-img" style="height:30px;width:30px" />
+                                    <span>
+                                        <b>&nbsp;&nbsp;@nama</b>
+                                    </span>
+                                    <button title="Scroll" class="myButton float-right" onclick="scrolldown('@item')">
+                                        <span href="#" class="fa fa-arrow-down"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- INI ISI PESANNYA -->
+                    <div style="font-family:'Arial';height:410px; overflow:scroll; overflow-x:hidden;" id="roomchat_@item">
+                        <br />
+                        @foreach (var chat in ViewBag.dtchat)
+                        {
+                            if (chat.username_pengirim == Session["username"].ToString() && chat.username_penerima == item)
+                            {
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="chat_me">
+                                            @chat.isi_pesan
+                                            <br />
+                                            <small>
+                                                <label class="float-right text-muted">@chat.creadate.ToString("HH:mm") WIB | @chat.creadate.ToString("dd MMM")</label>
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                            else if (chat.username_pengirim == item && chat.username_penerima == Session["username"].ToString())
+                            {
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="chat_people">
+                                            @chat.isi_pesan
+                                            <br />
+                                            <small>
+                                                <label class="float-right text-muted">@chat.creadate.ToString("HH:mm") WIB | @chat.creadate.ToString("dd MMM")</label>
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <!-- INI CHAT TEXT BOX NYA-->
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <input type="hidden" id="username" value="Test" />
+                                <input type="text" onkeypress="send('@item')" name="pesan" id="pesan_@item" value="" placeholder="Type a message" class="d-inline form-control" style="width:90%" autocomplete="off" />
+                                <button title="Kirim" id="myButton_@item" class="myButton" onclick="sending('@item')">
+                                    <span href="#" class="fa fa-paper-plane"></span>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                    
+                }
+            </div>
+        </div>
+    </div>    
+</div>
+<br />
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    function baca(a) {
+        var fd = new FormData();
+        fd.append('username', a);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Penyewa/baca');
+        xhr.send(fd);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+
+            }
+        }
+    }
+    function scrolldown(a) {
+        var elem = document.getElementById('roomchat_' + a);
+        elem.scrollTop = elem.scrollHeight;
+    }
+    function roomchat(id) {
+        var list = @Html.Raw(Json.Encode(ViewBag.listobrolan));;
+
+        for (var i = 1; i <= list.length; i++) {
+            if (list[i - 1] != null) {
+                document.getElementById(list[i - 1]).hidden = true;
+            }
+        }
+        baca(id);
+        if (document.getElementById("new_" + id) != null) {
+            document.getElementById("new_" + id).hidden = true;
+        }
+        document.getElementById(id).hidden = false;
+    }
+    function send(a) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("myButton_"+a).click();
+        }
+    }
+    function sending(a) {
+
+        var chat = new Object();
+
+        chat.username_penerima = a;
+        chat.isi_pesan = $('#pesan_'+a).val();
+
+        if (chat.isi_pesan != "") {
+            $.ajax({
+                type: "POST",
+                url: "/Penyewa/sendChat",
+                data: JSON.stringify(chat),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var data = "<div class='row'>" +
+                        "<div class='col'>" +
+                        "<p class='chat_me'>" +
+                        response.isi_pesan +
+                        "<br />" +
+                        "<small>" +
+                        "<label class='float-right text-muted'>" + response.username_pengirim +" WIB | " + response.username_penerima + "</label>" +
+                            "</small>" +
+                            "</p>" +
+                            "</div>" +
+                            "</div>";
+                    document.getElementById("roomchat_"+a).innerHTML += data;
+                    $('#pesan_'+a).val("");
+                    var elem = document.getElementById('roomchat_'+a);
+                    elem.scrollTop = elem.scrollHeight;
+
+                    data = "<p>"+ response.isi_pesan +"</p>"+
+                            "<small>"+
+                                  "<label class='float-right text-muted'>" + response.username_pengirim +" WIB | " + response.username_penerima + "</label>"+
+                        "</small>"
+                    document.getElementById("lastchat_" + a).innerHTML = data;
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+    }
+</script>
+

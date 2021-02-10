@@ -73,25 +73,57 @@
                         </div>
                     </div>
                 </div>
-                @*<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                    <div class="custom-select-box">
-                        <select id="basic" class="selectpicker show-tick form-control" data-placeholder="$ USD">
-                            <option>¥ JPY</option>
-                            <option>$ USD</option>
-                            <option>€ EUR</option>
-                        </select>
-                    </div>
-                    <div class="right-phone-box">
-                        <p>Call US :- <a href="#"> +11 900 800 100</a></p>
-                    </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <div class="our-link">
                         <ul>
-                            <li><a href="Penyewa/page_penyewa">My Account</a></li>
-                            <li><a href="#">Our location</a></li>
-                            <li><a href="#">Contact Us</a></li>
+                            @{ string hidden = "hidden";
+                                if (Session["username"] != null)
+                                {
+                                    hidden = "";
+                                }
+                                else
+                                {
+                                    hidden = "hidden";
+                                }
+                            }
+                            <div @hidden>
+                                <li>
+                                    <div class="dropdown show">
+                                        <a class="dropdown-item" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Profile
+                                        </a>
+
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("page_myAccount", "Penyewa")" style="color:black"><small>Lihat profile</small></a>
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("edit_myAccount", "Penyewa")" style="color:black"><small>Edit Profile</small></a>
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("edit_password", "Penyewa")" style="color:black"><small>Ubah Password</small></a>
+                                            <a class="dropdown-item-text" onmousemove="coloring(this)" onmouseout="colored(this)" href="@Url.Action("hapus_myAccount", "Penyewa")" style="color:black"><small>Nonaktifkan akun</small></a>
+                                        </div>
+                                    </div>
+                                    <!-- SCRIPT -->
+                                    <script>
+                                        function coloring(a) {
+                                            a.style.color = "lightblue";
+                                        }
+                                        function colored(a) {
+                                            a.style.color = "black";
+                                        }
+                                    </script>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" style="color:red">
+                                        Logout
+                                    </a>
+                                </li>
+                            </div>
+                            @if (Session["username"] == null)
+                            {
+                                <li><a data-toggle="modal" data-target="#detail" href="#">Sign-in</a></li>
+                            }
                         </ul>
                     </div>
-                </div>*@
+                </div>
             </div>
         </div>
     </div>
@@ -106,7 +138,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-12 col-sm-12">
                         <div class="footer-widget">
-                            <h4>About ThewayShop</h4>
+                            <h4>About Rental Centre</h4>
                             <p>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                             </p>
@@ -154,6 +186,25 @@
             </div>
         </div>
     </footer>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Yakin ingin keluar?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Tekan tombol <span style="color:red">"Logout"</span> di bawah ketika kamu yakin ingin keluar.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger" href="@Url.Action("logout", "Penyewa")">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- End Footer  -->
     <!-- Start copyright  -->
     @*<div class="footer-copyright">

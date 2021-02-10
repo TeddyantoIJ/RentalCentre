@@ -37,7 +37,7 @@
             foreach (var b in ViewBag.msbarang)
             {
 
-                if (b.id_barang == item.id_barang && ViewBag.logged_in.id_rental == b.id_rental)
+                if (b.id_barang == item.id_barang && ViewBag.logged_id.id_rental == b.id_rental)
                 {
                     barang = b;
                     <div class="col-3">
@@ -57,6 +57,7 @@
                                 <form action="Pengemasan" method="post">
                                     <input type="hidden" name="id_penyewaan" value="@ViewBag.trpenyewaan.id_penyewaan" />
                                     <input type="hidden" name="id_barang" value="@barang.id_barang" />
+                                    
                                     @if (item.status_barang == "DIPROSES")
                                     {
                                         <input type="submit" name="submit" value="Kemas" class="btn btn-success form-control" />

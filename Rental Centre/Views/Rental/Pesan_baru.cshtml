@@ -1,0 +1,64 @@
+﻿@model Rental_Centre.Models.dtchat
+@{
+    ViewBag.Title = "Pesan_baru";
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+
+<div class="container">    
+    <label>Pesan teks / Pesan baru</label><br />
+    <div class="card shadow">
+        <div class="card-body">
+            <form action="sendChatBaru" method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        @if (ViewBag.notif != null)
+                        {
+                            <input type="text" name="username_penerima" list="suggestion" value="@Model.username_penerima" class="form-control is-invalid" placeholder="Username penerima .." autocomplete="off" required />
+                            <div class="invalid-feedback">@ViewBag.notif</div>
+                        }
+                        else
+                        {
+                            <input type="text" name="username_penerima" list="suggestion" value="@Model.username_penerima" class="form-control" placeholder="Username penerima .." autocomplete="off" required />
+                        }
+
+                            <datalist id="suggestion">
+                                @foreach (var item in ViewBag.mspenyewa)
+                                {
+                                    if (item.username != ViewBag.logged_id.username)
+                                    {
+                                        <option value="@item.username" />
+                                    }
+                                }
+                                @foreach (var item in ViewBag.msrental)
+                                {
+                                    if (item.username != ViewBag.logged_id.username)
+                                    {
+                                        <option value="@item.username" />
+                                    }
+                                }
+                            </datalist>
+                    </div>
+                    <div class="col text-right">
+                        <a tabindex="-1" class="btn btn-secondary" href="@Url.Action("Obrolan","Rental")"><span class="fa fa-address-book"></span> Lihat obrolan</a>
+                        <button tabindex="-1" id="sendButton" class="btn btn-success"><span class="fa fa-paper-plane"></span> Kirim</button>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col">
+                        <textarea onkeypress="send()" class="form-control shadow" name="isi_pesan" required>@Model.isi_pesan</textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function send() {
+        if (event.keyCode === 13) {            
+            document.getElementById("sendButton").click();
+        }
+    }
+</script>

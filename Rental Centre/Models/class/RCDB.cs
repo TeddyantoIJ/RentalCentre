@@ -34,6 +34,7 @@ namespace Rental_Centre.Models
         public DbSet<trwishlist> trwishlist { get; set; }
         public DbSet<trtopup> trtopup { get; set; }
         public DbSet<trtransfer> trtransfer { get; set; }
+        public DbSet<trpencairan> trpencairan { get; set; }
 
     }
 }

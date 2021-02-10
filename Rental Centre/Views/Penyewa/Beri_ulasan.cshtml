@@ -8,7 +8,7 @@
 <div class="container">
     <form action="Beri_ulasan_fix" method="post" autocomplete="off">
         <input type="hidden" name="id_penyewaan" value="@Model.id_penyewaan" />
-        <label><a href="@Url.Action("Index")">SHOP </a> > <a href="@Url.Action("Checkout","Penyewa")" class="text-muted">Checkout</a> > Ulasan</label>
+        <label><a class="text-muted">Shop </a> > <a href="@Url.Action("Checkout","Penyewa")" class="text-muted">Checkout</a> > Ulasan</label>
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -74,7 +74,7 @@
                                         </div>
                                         <div class="col">
                                             <label>: </label>
-                                            @if (item.rating >= 1.0M)
+                                            @if (item.rating >= 1.0)
                                             {
                                                 <span class="fa fa-star" style="color:yellow"></span>
                                             }
@@ -82,7 +82,7 @@
                                             {
                                                 <span class="fa fa-star"></span>
                                             }
-                                            @if (item.rating >= 2.0M)
+                                            @if (item.rating >= 2.0)
                                             {
                                                 <span class="fa fa-star" style="color:yellow"></span>
                                             }
@@ -90,7 +90,7 @@
                                             {
                                                 <span class="fa fa-star"></span>
                                             }
-                                            @if (item.rating >= 3.0M)
+                                            @if (item.rating >= 3.0)
                                             {
                                                 <span class="fa fa-star" style="color:yellow"></span>
                                             }
@@ -98,7 +98,7 @@
                                             {
                                                 <span class="fa fa-star"></span>
                                             }
-                                            @if (item.rating >= 4.0M)
+                                            @if (item.rating >= 4.0)
                                             {
                                                 <span class="fa fa-star" style="color:yellow"></span>
                                             }
@@ -106,7 +106,7 @@
                                             {
                                                 <span class="fa fa-star"></span>
                                             }
-                                            @if (item.rating == 5.0M)
+                                            @if (item.rating == 5.0)
                                             {
                                                 <span class="fa fa-star" style="color:yellow"></span>
                                             }

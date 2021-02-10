@@ -27,6 +27,13 @@ namespace Rental_Centre.Models
                             select data);
             return msrental;
         }
+        public IEnumerable<msrental> getAllAktif()
+        {
+            var msrental = (from data in _DB.msrental
+                            where data.status == 1
+                            select data);
+            return msrental;
+        }
         public void addData(msrental msrental)
         {
             _DB.msrental.Add(msrental);
@@ -117,21 +124,23 @@ namespace Rental_Centre.Models
                                 on data.id_barang equals barang.id_barang
                           join rental in _DB.msrental
                                 on barang.id_rental equals rental.id_rental
-                          where rental.id_rental == id_rental
+                          join sewa in _DB.trpenyewaan
+                                on data.id_penyewaan equals sewa.id_penyewaan
+                          where rental.id_rental == id_rental && sewa.status_ulasan == 1
                           select data);
             detail = detail.GroupBy(s => s.id_penyewaan).Select(g => g.FirstOrDefault());
-            int jumlah = detail.ToList<dtdetailpenyewaan>().Count()-1;
+            int jumlah = detail.ToList<dtdetailpenyewaan>().Count();
             msrental msrental = _DB.msrental.Single<msrental>(s => s.id_rental == id_rental);
-            decimal saat_ini = 0.0M;
+            double saat_ini = 0;
             if (jumlah == 0)
             {
-                saat_ini = msrental.rating;
-                msrental.rating = Convert.ToDecimal(rating);
+                saat_ini = (double) msrental.rating;
+                msrental.rating = (double) rating;
             }            
             else
             {
-                saat_ini = msrental.rating / jumlah;
-                msrental.rating = (saat_ini + rating) / jumlah + 1;
+                saat_ini = (double) msrental.rating / jumlah;
+                msrental.rating = (saat_ini + rating) / (jumlah + 1);
             }            
             _DB.SaveChanges();
         }        

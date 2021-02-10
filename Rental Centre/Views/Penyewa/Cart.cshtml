@@ -6,7 +6,7 @@
 
 <br />
 <div class="container">
-    <label><a href="@Url.Action("Index")" class="text-muted">Home </a> > Cart</label>
+    <label><a class="text-muted">Shop </a> </a> > Cart</label>
     <form action="@Url.Action("checkout","Penyewa")" method="post" autocomplete="off">
         <div class="row">
             <div class="col" style="height:600px; overflow:scroll">
@@ -44,20 +44,22 @@
                                                 }
                                                 Rp @harga.Replace("Rp", "")/hari
                                             </p>
-                                            <p>
-                                                Stok Tersedia · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
-                                            </p>
+                                            @if (data.stok_barang > 0)
+                                            {
+                                                <p>
+                                                    <b>Stok Tersedia</b> · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    <b>Stok Sedang kosong</b> · Diperbarui @data.modidate.ToString("dd/MM/yyyy")
+                                                </p>
+                                            }
                                             <p>
                                                 <a href="@Url.Action("dcart", "Penyewa", new { id = data.id_barang })"><u>Hapus</u></a> |
                                                 <a href="@Url.Action("add_toWishList1", "Penyewa", new { id_barang = data.id_barang })"><u>Masukkan ke wishlist</u></a>
                                             </p>
-                                            <!--<p>
-
-                                                    10 Penyewa  <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoSewa"></span>
-                                                    ·
-                                                    3 Tayangan <span class="fa fa-info-circle" style="cursor:pointer" data-toggle="modal" data-target="#infoTayangan"></span>
-
-                                            </p>-->
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +122,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     Tanggal sewa
-                                    <input type="date" id="tgl_penyewaan" name="tgl_penyewaan" onchange="ubahtanggal()" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="float-right" style="border:0px" />
+                                    <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" id="tgl_penyewaan" name="tgl_penyewaan" onchange="ubahtanggal()" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="float-right" style="border:0px" />
                                 </div>
                             </div>
                         </div>
@@ -128,7 +130,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     Tanggal selesai
-                                    <input type="date" id="tgl_pengembalian" name="tgl_pengembalian" onchange="ubahtanggal()" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" class="float-right" style="border:0px" />
+                                    <input type="date" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" id="tgl_pengembalian" name="tgl_pengembalian" onchange="ubahtanggal()" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" class="float-right" style="border:0px" />
                                 </div>
                             </div>
                         </div>
@@ -172,7 +174,7 @@
                 </div>
             </div>
         </div>
-    </form>
+    </form>    
 </div>
 <br />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -203,7 +205,9 @@
         var subharga = 0;
 
         const date1 = new Date(document.getElementById("tgl_pengembalian").value);
-        const date2 = new Date(document.getElementById("tgl_penyewaan").value);
+        const date2 = new Date(document.getElementById("tgl_penyewaan").value);        
+
+
         const diffTime = Math.abs(date2 - date1);
         const lamasewa = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
                 

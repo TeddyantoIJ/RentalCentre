@@ -1,0 +1,130 @@
+﻿@model PagedList.IPagedList<Rental_Centre.Models.trpenyewaan>
+@{
+    ViewBag.Title = "laporan_penyewaan";
+    Layout = "~/Views/Shared/_RentalTemplate.cshtml";
+}
+
+<div class="container">
+    <a>Laporan</a> / <a href="">Laporan Penyewaan</a>
+    <div class="card">
+        <div class="card-header"></div>
+        <div class="card-body">
+            <h5 class="lead text-center">LAPORAN PENYEWAAAN BULANAN</h5>
+            <br />
+            <form action="@Url.Action("laporan_penyewaan","Rental")" method="post">
+                <div class="row">
+
+                    <div class="col">
+                        <label for="awal">Dari : @ViewBag.awal</label>
+                        <input type="date" name="awal" value="@DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd")" class="form-control" />
+                    </div>
+                    <div class="col">
+                        <label for="akhir">Sampai:  @ViewBag.akhir</label>
+                        <input type="date" name="akhir" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
+                    </div>
+                    <div class="col-2">
+                        <label for="btn">FILTER</label>
+                        <br />
+                        <input type="submit" name="btn" class="btn btn-primary" value="Set Filter" />
+                    </div>
+
+                </div>
+            </form>
+            <br />
+            <table id="multi" class="table table-hover  text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <td>No.</td>
+                        <td>Bersangkutan</td>
+                        <td>Tanggal Penyewaan</td>
+                        <td>Biaya Total</td>
+                        <td>Aksi</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int no = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@no.</td>
+
+                            @foreach (var penyewa in ViewBag.mspenyewa)
+                            {
+                                if (penyewa.id_penyewa == item.id_penyewa)
+                                {
+                                    <td>@penyewa.username (@penyewa.nama_penyewa)</td>
+                                }
+                            }
+                            <td class="text-center">
+                                @item.tgl_penyewaan.ToString("dd-MM-yyyy")
+                            </td>
+                            <td class="text-right">
+                                @String.Format("{0:c}", item.total_harga)
+                            </td>
+                            @{
+                                string foto = "";
+                                foreach (var pembayaran in ViewBag.trpembayaran)
+                                {
+                                    if (pembayaran.id_penyewaan == item.id_penyewaan)
+                                    {
+                                        foto = pembayaran.bukti_pembayaran;
+                                    }
+                                }
+                            }
+                            <td>
+                                <form action="Pemesanan_details" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-info" title="Details"></span></button>
+                                </form>
+                            </td>
+                        </tr>
+                        no++;
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#multi').DataTable({
+            dom: '<"row"<"col-lg-4"l><"col-lg-4"B><"col-lg-4"f>>rtip',
+            buttons: [
+                {
+                    extend: 'copy',
+                }, {
+                    extend: 'excel',
+                    title: 'Laporan Penyewaan',
+                    filename: 'Laporan Penyewaan ',
+                    exportOption: {
+                        columns: ':not(:last-child)'
+                    }
+                }, {
+                    extend: 'pdf',
+                    title: 'Laporan Penyewaan',
+                    filename: 'Laporan Penyewaan',
+                    pageSize: 'LETTER',
+                    exportOption: {
+                        columns: ':not(:last-child)'
+                    }
+                }, {
+                    extend: 'print',
+                    title: 'Laporan Penyewaan',
+                    filename: 'Laporan Penyewaan ',
+                    exportOption: {
+                        columns: 'not(:last-child)'
+                    }
+                },
+            ],
+            lengthMenu: [
+                [10, 25, 50, -1],
+                ['10', '25', '50', 'All']
+            ],
+        });
+    });
+</script>

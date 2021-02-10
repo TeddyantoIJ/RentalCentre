@@ -8,7 +8,7 @@
 
 <br />
 <div class="container">
-    <label><a href="@Url.Action("Index")">SHOP </a> > Checkout</label>
+    <label><a class="text-muted">Shop </a> > Checkout</label>
     <div class="row">
         <div class="col" style="height:600px; overflow:scroll">
             @{ int i = ((Model.PageNumber - 1) * 10) + 1;}
@@ -46,8 +46,7 @@
                         </thead>
                         <tbody>
                             @foreach (var item in Model)
-                            {
-
+                            {                            
                             <tr class="text-center">
                                 <td>@i.</td>
 
@@ -77,9 +76,19 @@
                                 <td class="text-right">
                                     @String.Format("{0:c}", item.total_harga)
                                 </td>
-                                <td class="text-center">
-                                    @item.status_transaksi
-                                </td>
+                                @if (item.status_transaksi == "GAGAL")
+                                {
+                                    <td class="text-center">
+                                        DIBATALKAN
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="text-center">
+                                        @item.status_transaksi
+                                    </td>
+                                }
+
                                 <td>
                                     <div class="row">
                                         <div class="col text-center">
@@ -94,21 +103,27 @@
                                             {
                                                 <form action="Konfirmasi_terima" method="post" class="d-inline">
                                                     <input type="hidden" name="id" value="@item.id_penyewaan" />
-                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-check" title="Konfirmasi barang telah sampai"></span></button> |
+                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-check" title="Konfirmasi barang telah sampai"></span></button>
                                                 </form>
                                             }
-                                            @if (item.status_ulasan == 0)
+                                            @if (item.status_ulasan == 0 && item.status_transaksi == "SELESAI")
                                             {
                                                 <form action="Beri_ulasan" method="post" class="d-inline">
                                                     <input type="hidden" name="id" value="@item.id_penyewaan" />
-                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-comment" title="Beri ulasan hasil sewa"></span></button> |
+                                                    <button style="border:0px;background-color:transparent;cursor:pointer"><span class="fa fa-comment" title="Beri ulasan hasil sewa"></span></button>
                                                 </form>
                                             }
                                             <form action="Checkout_details" method="post" class="d-inline">
                                                 <input type="hidden" name="id" value="@item.id_penyewaan" />
-                                                <button style="background-color:transparent;border:0px;cursor:pointer"><span class="fa fa-info" title="Details Checkout"></span></button> |
+                                                <button style="background-color:transparent;border:0px;cursor:pointer"><span class="fa fa-info" title="Details Checkout"></span></button>
                                             </form>
-                                            <a href="#" onclick="return confirm('Tekan OK untuk membatalkan!')"><span class="fa fa-trash" title="Batalkan Transaksi"></span></a>
+                                            @if (item.status_transaksi == "DISIAPKAN")
+                                            {
+                                                <form action="Batal_transaksi" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@item.id_penyewaan" />
+                                                    <button onclick="return confirm('Tekan OK untuk membatalkan!')" style="background-color:transparent;border:0px;cursor:pointer"><span class="fa fa-trash" title="Batalkan Transaksi"></span></button>
+                                                </form>
+                                            }
                                         </div>
                                     </div>
 

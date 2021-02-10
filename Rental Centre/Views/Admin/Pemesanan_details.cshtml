@@ -55,30 +55,35 @@
                     string status = "SELESAI";}
                 @foreach (var item in Model)
                 {
-                    <tr class="text-center">
-                        <td>@i.</td>
-                        @foreach (var barang in ViewBag.msbarang)
+                <tr class="text-center">
+                    <td>@i.</td>
+                    @foreach (var barang in ViewBag.msbarang)
+                    {
+                        if (barang.id_barang == item.id_barang)
                         {
-                            if (barang.id_barang == item.id_barang)
-                            {
-                                <td class="text-left">@barang.nama_barang</td>
-                            }
+                            <td class="text-left">@barang.nama_barang</td>
                         }
-                        <td>@item.jml_barang</td>
-                        @{ subjum += item.jml_barang;}
-                        @{ subharga += item.harga_total;}
-                        <td class="text-right">@String.Format("{0:c}", item.harga_total)</td>
-                        @if (item.status_barang == "DIPROSES")
-                        {
-                            <td style="color:red">@item.status_barang</td>
-                            status = "BELUM SELESAI";
-                        }
-                        else
-                        {
-                            <td style="color:green">@item.status_barang</td>
-                        }
+                    }
+                    <td>@item.jml_barang</td>
+                    @{ subjum += item.jml_barang;}
+                    @{ subharga += item.harga_total;}
+                    <td class="text-right">@String.Format("{0:c}", item.harga_total)</td>
+                    @if (item.status_barang == "DIPROSES")
+                    {
+                        <td style="color:red">@item.status_barang</td>
+                        status = "BELUM SELESAI";
+                    }
+                    else if (item.status_barang == "DIBATALKAN")
+                    {
+                        <td style="color:red">@item.status_barang</td>
+                        status = "GAGAL";
+                    }
+                    else
+                    {
+                        <td style="color:green">@item.status_barang</td>
+                    }
 
-                    </tr>
+                </tr>
                     i++;
                 }
             </tbody>

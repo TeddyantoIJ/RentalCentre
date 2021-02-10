@@ -154,6 +154,7 @@
     <Compile Include="Models\class\dtkomentar.cs" />
     <Compile Include="Models\class\dtmutasisaldo.cs" />
     <Compile Include="Models\class\dttracking.cs" />
+    <Compile Include="Models\class\trpencairan.cs" />
     <Compile Include="Models\class\trtopup.cs" />
     <Compile Include="Models\model_dtchat.cs" />
     <Compile Include="Models\model_dtdetailpenyewaan.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="Models\model_trkritiksaran.cs" />
     <Compile Include="Models\model_trnotifikasi.cs" />
     <Compile Include="Models\model_trpembayaran.cs" />
+    <Compile Include="Models\model_trpencairan.cs" />
     <Compile Include="Models\model_trpenyewaan.cs" />
     <Compile Include="Models\model_trtopup.cs" />
     <Compile Include="Models\model_trtransfer.cs" />
@@ -2250,6 +2252,23 @@
     <Content Include="Views\Penyewa\Riwayat_pembayaran.cshtml" />
     <Content Include="Views\Penyewa\Beri_ulasan.cshtml" />
     <Content Include="Views\Penyewa\WishList.cshtml" />
+    <Content Include="Views\Rental\Uangkan.cshtml" />
+    <Content Include="Views\Admin\pencairan.cshtml" />
+    <Content Include="Views\Penyewa\Uangkan.cshtml" />
+    <Content Include="Views\Penyewa\page_myAccount.cshtml" />
+    <Content Include="Views\Rental\Obrolan.cshtml" />
+    <Content Include="Views\Rental\Pesan_baru.cshtml" />
+    <Content Include="Views\Penyewa\Pesan_baru.cshtml" />
+    <Content Include="Views\Penyewa\Obrolan.cshtml" />
+    <Content Include="Views\Admin\Pesan_baru.cshtml" />
+    <Content Include="Views\Admin\Obrolan.cshtml" />
+    <Content Include="Views\Penyewa\All.cshtml" />
+    <Content Include="Views\Penyewa\Product.cshtml" />
+    <Content Include="Views\Rental\Product.cshtml" />
+    <Content Include="Views\Penyewa\Rental_profile.cshtml" />
+    <Content Include="Views\Admin\laporan_mutasi.cshtml" />
+    <Content Include="Views\Admin\laporan_penyewaan.cshtml" />
+    <Content Include="Views\Rental\laporan_penyewaan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

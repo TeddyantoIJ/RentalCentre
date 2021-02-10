@@ -15,6 +15,13 @@ namespace Rental_Centre.Models
                             select data);
             return msbarang.Count<msbarang>();
         }
+        public IEnumerable<msbarang> getAllDataByRental(int id_rental)
+        {            
+            var msbarang = (from data in _DB.msbarang                                                        
+                            where data.id_rental == id_rental
+                            select data);
+            return msbarang;
+        }
         public IEnumerable<msbarang> getAllDataByIdRentGroupByKelompok(int logged_id, int id_kelompokjenis)
         {
             
@@ -101,6 +108,56 @@ namespace Rental_Centre.Models
             var msbarang = (from data in _DB.msbarang
                             select data);
             return msbarang;
+        }
+        public IEnumerable<msbarang> getAllData(DateTime tgl_awal, int hari)            
+        {
+            DateTime tgl_akhir = tgl_awal.AddDays(hari);
+            
+            var pemesanan = (from detail in _DB.dtdetailpenyewaan                            
+                            join penyewaan in _DB.trpenyewaan
+                            on detail.id_penyewaan equals penyewaan.id_penyewaan
+                            where 
+                            (penyewaan.tgl_penyewaan <= tgl_awal && penyewaan.tgl_pengembalian >= tgl_akhir) ||
+                            (penyewaan.tgl_penyewaan >= tgl_awal && penyewaan.tgl_penyewaan <= tgl_akhir) ||
+                            (penyewaan.tgl_pengembalian >= tgl_awal && penyewaan.tgl_pengembalian <= tgl_akhir) ||
+                            (penyewaan.tgl_penyewaan >= tgl_awal && penyewaan.tgl_pengembalian <= tgl_akhir)
+                            && penyewaan.status_transaksi != "GAGAL"
+                            group detail by detail.id_barang into id
+                            select new { id = id.Key, jumlah = id.Sum(d => d.jml_barang)}).ToList();
+            var berjalan = (from detail in _DB.dtdetailpenyewaan
+                             join penyewaan in _DB.trpenyewaan
+                             on detail.id_penyewaan equals penyewaan.id_penyewaan
+                             where
+                             penyewaan.tgl_penyewaan <= DateTime.Now && penyewaan.tgl_pengembalian <= tgl_akhir
+                             && penyewaan.status_transaksi != "GAGAL"
+                             group detail by detail.id_barang into id
+                             select new { id = id.Key, jumlah = id.Sum(d => d.jml_barang) }).ToList();
+            List<msbarang> barang = (from data in _DB.msbarang
+                                     select data).ToList();
+            List<msbarang> output = new List<msbarang>();
+            model_msbarang model_Msbarang = new model_msbarang();
+            
+            foreach (var item in barang)
+            {
+                foreach (var b in pemesanan)
+                {
+                    if(b.id == item.id_barang)
+                    {
+                        item.stok_barang = item.stok_barang - b.jumlah;
+                    }
+                }
+            }
+            foreach (var item in barang)
+            {
+                foreach (var b in berjalan)
+                {
+                    if (b.id == item.id_barang)
+                    {
+                        item.stok_barang = item.stok_barang + b.jumlah;
+                    }
+                }
+            }            
+            return barang;
         }
         public void barangBertambah(int id_barang, int jumlah)
         {
